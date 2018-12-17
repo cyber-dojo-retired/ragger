@@ -3,8 +3,8 @@ require_relative 'http_json_service'
 class RaggerService
 
   def initialize
-    @hostname = ENV['RAGGER_SERVICE_NAME']
-    @port = ENV['RAGGER_SERVICE_PORT'].to_i
+    @hostname = 'ragger'
+    @port = 5537
   end
 
   def colour(id, filename, content, stdout, stderr, status)

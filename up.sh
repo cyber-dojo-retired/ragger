@@ -6,7 +6,7 @@ set -e
 bundle exec rackup \
   --warn \
   --host 0.0.0.0 \
-  --port ${RAGGER_SERVICE_PORT} \
+  --port 5537 \
   --server thin \
   --env production \
     config.ru
