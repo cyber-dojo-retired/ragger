@@ -1,0 +1,45 @@
+
+version: '2.2'
+
+services:
+
+  ragger-client:
+    build:
+      context: client
+    user: nobody
+    image: cyberdojo/ragger-client
+    init: true
+    container_name: test-ragger-client
+    expose: [ "${RAGGER_CLIENT_PORT}" ]
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    depends_on:
+      - ragger
+    environment:
+      - RAGGER_HOME
+      - RAGGER_CLIENT_PORT
+      - RAGGER_SERVICE_NAME=ragger
+      - RAGGER_SERVICE_PORT
+    ports:
+      - ${RAGGER_CLIENT_PORT}:${RAGGER_CLIENT_PORT}
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  ragger:
+    build:
+      context: .
+    user: nobody
+    image: cyberdojo/ragger
+    init: true
+    container_name: test-ragger-server
+    expose: [ "${RAGGER_SERVICE_PORT}" ]
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - RAGGER_SERVICE_PORT
+      - RUNNER_SERVICE_PORT
+      - RUNNER_SERVICE_NAME=assessor-runner
