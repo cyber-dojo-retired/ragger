@@ -29,6 +29,7 @@ class RackDispatcher
     name = request.path_info[1..-1] # lose leading /
     well_formed_args(request.body.read)
     args = case name
+      when /^sha/     then []
       when /^colour$/ then [id,filename,content,stdout,stderr,status]
       else
         raise ClientError, 'json:malformed'

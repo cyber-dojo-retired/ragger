@@ -9,6 +9,15 @@ class RackDispatcherTest < TestBase
     'D06F7'
   end
 
+  test 'AB4', 'sha' do
+    rack_call({ path_info:'sha', body:{}.to_json})
+    assert_200
+    assert_body_contains('sha')
+    refute_body_contains('exception')
+    refute_body_contains('trace')
+    assert_nothing_logged
+  end
+
   # - - - - - - - - - - - - - - - - -
   # colour: not raising
   # - - - - - - - - - - - - - - - - -

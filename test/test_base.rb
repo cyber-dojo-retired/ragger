@@ -14,6 +14,10 @@ class TestBase < HexMiniTest
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  def sha
+    ragger.sha
+  end
+
   def colour_rb(content, stdout, stderr, status)
     @result = ragger.colour(id, 'colour.rb', content, stdout, stderr, status)
   end

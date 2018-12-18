@@ -21,6 +21,8 @@ services:
   ragger:
     build:
       context: .
+      args:
+        - SHA
     user: nobody
     image: cyberdojo/ragger
     init: true
