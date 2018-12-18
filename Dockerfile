@@ -2,11 +2,11 @@ FROM  cyberdojo/rack-base
 LABEL maintainer=jon@jaggersoft.com
 
 ARG HOME=/app
-COPY . ${HOME}
-RUN chown -R nobody:nogroup ${HOME}
-
 ARG SHA
+
+COPY . ${HOME}
 RUN echo ${SHA} > ${HOME}/sha.txt
+RUN chown -R nobody:nogroup ${HOME}
 
 EXPOSE 5537
 USER nobody
