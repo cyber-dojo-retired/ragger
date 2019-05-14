@@ -3,7 +3,7 @@ class Ragger
 
   def initialize(_external)
   end
-  
+
   def sha
     ENV['SHA']
   end

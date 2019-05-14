@@ -5,7 +5,8 @@ from the sss triple (stdout,stderr,status).
 I would like to strip that functionality from runner and put in
 into this ragger service. RAG = Red/Amber/Green.
 
-I envisage this starting as a straight "Sprout-Class" refactoring.
+I envisage this starting as a straight "Sprout-Class" refactoring
+and would work exactly the same way it currently does in runner.
 Viz the ragger service would hold a global rag_cache and it would
 populate this from the rag-lambda source file inside the target image.
 The extraction of the source of the rag-lambda file could be
@@ -38,9 +39,13 @@ class Ragger
         image_name,
         id,
         max_seconds = 5,
-        { 'cyber-dojo.sh' => 'cat /usr/local/bin/red_amber_green.rb' }  
+        { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }  
     )
     eval(result['stdout']['content'])
+  end
+
+  def intact(content)
+    { 'content' => content, 'truncated' => false }
   end
 
   #...
