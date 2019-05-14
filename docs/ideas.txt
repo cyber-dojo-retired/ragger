@@ -22,7 +22,9 @@ information. For example,
 Getting the rag-lambda source from the start-point image opens
 up the option of exposing it in the browser as an editable file.
 This would be a very nice feature for teachers wishing to make
-customizations like James does.
+customizations like James does, eg
+  - detecting printf's in the source
+  - detecting lack of coverage
 
 It also suggests the idea of somehow getting the rag-lambda source
 to create a separate file which acts as automated feedback.
