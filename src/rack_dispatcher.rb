@@ -1,54 +1,84 @@
 require_relative 'client_error'
-require_relative 'external'
-require_relative 'ragger'
 require_relative 'well_formed_args'
 require 'rack'
 require 'json'
 
 class RackDispatcher
 
-  def call(env, external = External.new, request = Rack::Request)
-    name, args = name_args(request.new(env))
-    ragger = Ragger.new(external)
-    result = ragger.public_send(name, *args)
-    json_triple(200, { name => result })
+  def initialize(traffic_light)
+    @traffic_light = traffic_light
+  end
+
+  def call(env, request_class = Rack::Request)
+    request = request_class.new(env)
+    path = request.path_info[1..-1] # lose leading /
+    body = request.body.read
+    name, args = name_args(path, body)
+    result = @traffic_light.public_send(name, *args)
+    json_response(200, json_plain({ name => result }))
   rescue => error
-    info = {
-      'exception' => error.message,
-      'trace' => error.backtrace,
-    }
-    external.log << to_json(info)
-    json_triple(code_400_500(error), info)
+    diagnostic = json_pretty({
+      'exception' => {
+        'path' => path,
+        'body' => body,
+        'class' => 'RaggerService',
+        'message' => error.message,
+        'backtrace' => error.backtrace
+      }
+    })
+    $stderr.puts(diagnostic)
+    $stderr.flush
+    json_response(code(error), diagnostic)
   end
 
   private # = = = = = = = = = = = =
 
   include WellFormedArgs
 
-  def name_args(request)
-    name = request.path_info[1..-1] # lose leading /
-    well_formed_args(request.body.read)
+  def name_args(name, body)
+    well_formed_args(body)
     args = case name
+      when /^ready$/  then []
       when /^sha/     then []
-      when /^colour$/ then [id,filename,content,stdout,stderr,status]
+      when /^colour$/ then [image_name,id,stdout,stderr,status]
       else
         raise ClientError, 'json:malformed'
     end
+    name += '?' if query?(name)
     [name, args]
   end
 
   # - - - - - - - - - - - - - - - -
 
-  def json_triple(code, body)
-    [ code, { 'Content-Type' => 'application/json' }, [ to_json(body) ] ]
+  def json_plain(body)
+    JSON.generate(body)
   end
 
-  def to_json(o)
-    JSON.pretty_generate(o)
+  def json_pretty(body)
+    JSON.pretty_generate(body)
   end
 
-  def code_400_500(error)
-    error.is_a?(ClientError) ? 400 : 500
+  def json_response(status, body)
+    [ status,
+      { 'Content-Type' => 'application/json' },
+      [ body ]
+    ]
+  end
+
+  # - - - - - - - - - - - - - - - -
+
+  def query?(name)
+    ['ready'].include?(name)
+  end
+
+  # - - - - - - - - - - - - - - - -
+
+  def code(error)
+    if error.is_a?(ClientError)
+      400 # client_error
+    else
+      500 # server_error
+    end
   end
 
 end

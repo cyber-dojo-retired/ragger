@@ -27,6 +27,25 @@ services:
     image: cyberdojo/ragger
     init: true
     container_name: test-ragger-server
+    ports:
+      - 5537:5537
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    volumes:
+      - ./test_server:/app/test:ro    
+    depends_on:
+      - runner
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  runner:
+    user: root
+    image: cyberdojo/runner-stateless
+    init: true
+    container_name: test-runner-server
+    ports:
+      - 4597:4597
     read_only: true
     tmpfs: /tmp
     restart: 'no'

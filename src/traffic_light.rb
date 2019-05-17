@@ -1,0 +1,58 @@
+
+class TrafficLight
+
+  def initialize(external)
+    @external = external
+    @cache = {}
+  end
+
+  def sha
+    ENV['SHA']
+  end
+
+  def ready?
+    #...
+  end
+
+  def colour(image_name, id, stdout, stderr, status)
+    @cache[image_name] ||= get_rag_lambda(image_name, id)
+    rag = @cache[image_name].call(stdout, stderr, status)
+    unless [:red,:amber,:green].include?(rag)
+      log << rag_message(rag.to_s)
+      rag = :amber
+    end
+    rag.to_s
+  rescue => error
+    log << rag_message(error.message)
+    'amber'
+  end
+
+  private
+
+  def get_rag_lambda(image_name, id)
+    result = runner.run_cyber_dojo_sh(
+        image_name,
+        id,
+        max_seconds = 5,
+        { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }
+    )
+    eval(result['stdout']['content'])
+  end
+
+  def rag_message(message)
+    "red_amber_green lambda error mapped to :amber\n#{message}"
+  end
+
+  def intact(content)
+    { 'content' => content, 'truncated' => false }
+  end
+
+  def runner
+    external.runner
+  end
+
+  def log
+    external.log
+  end
+
+end
