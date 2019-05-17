@@ -1,30 +1,12 @@
 
-Once ragger is a working I would like to enhance it...
-
-The rag-lambda source would come from the start-point image
-and not from the test-framework image.
-
-The rag-lambda would take a hash instead of stdin,stdout,status.
-So, eg, stdin ==> hash[:stdin]
-This would allow easy expansion getting web to pass extra
-information. For example,
-  - stdout,stderr,status
-  - timed_out (true/false)
-  - duration  (secs.msecs)
-  - all visible files
-  - created files
-  - changed files
-  - deleted files
-  - diff from previous files
-  - the full traffic-light sequence info (till this point)
+The rag-lambda source would come from the start-point image at first,
+(later from the browser as an editable file), and not from the
+test-framework image.
 
 
-Getting the rag-lambda source from the start-point image opens
-up the option of exposing it in the browser as an editable file.
-This would be a very nice feature for teachers wishing to make
-customizations like James does, eg
-  - detecting printf's in the source
-  - detecting lack of coverage
-
-It also suggests the idea of somehow getting the rag-lambda source
-to create a separate file which acts as automated feedback.
+Possible names: lighter?, trafficker?, ragger? colourer?
+I think this could be implemented by calling runner...
+The runner would be passed the cat command in its cyber-dojo.sh
+This still leaves the ragger doing the eval of the lambda src.
+It would be nice if the runner did the eval too.
+That will be required when the lambda-src is exposed in the browser.
