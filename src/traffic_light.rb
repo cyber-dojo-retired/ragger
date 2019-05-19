@@ -11,10 +11,12 @@ class TrafficLight
   end
 
   def ready?
-    #...
+    # TODO: runner.ready?
+    true
   end
 
   def colour(image_name, id, stdout, stderr, status)
+    # TODO: make this also return [stdout,stderr,status]
     @cache[image_name] ||= get_rag_lambda(image_name, id)
     rag = @cache[image_name].call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)

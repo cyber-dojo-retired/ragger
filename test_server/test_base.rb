@@ -1,6 +1,6 @@
 require_relative 'hex_mini_test'
 require_relative '../src/external'
-require_relative '../src/ragger'
+require_relative '../src/traffic_light'
 
 class TestBase < HexMiniTest
 
@@ -8,18 +8,24 @@ class TestBase < HexMiniTest
     @external ||= External.new
   end
 
-  def ragger
-    Ragger.new(external)
+  def traffic_light
+    TrafficLight.new(external)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def sha
-    ragger.sha
+  def ready?
+    traffic_light.ready?
   end
 
-  def colour_rb(content, stdout, stderr, status)
-    @result = ragger.colour(id, 'colour.rb', content, stdout, stderr, status)
+  def sha
+    traffic_light.sha
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def colour(image_name, id, stdout, stderr, status)
+    @result = traffic_light.colour(image_name, id, stdout, stderr, status)
   end
 
   attr_reader :result
@@ -146,8 +152,7 @@ class TestBase < HexMiniTest
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
   def id
-    s = hex_test_id
-    s += '5' * (10 - s.size)
+    hex_test_id[0..5]
   end
 
 end

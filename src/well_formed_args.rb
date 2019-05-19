@@ -1,5 +1,6 @@
 require_relative 'base58'
 require_relative 'client_error'
+require_relative 'well_formed_image_name'
 require 'json'
 
 # Checks for arguments synactic correctness
@@ -17,32 +18,21 @@ module WellFormedArgs
 
   # - - - - - - - - - - - - - - - -
 
+  def image_name
+    name = __method__.to_s
+    arg = @args[name]
+    unless well_formed_image_name?(arg)
+      malformed(name)
+    end
+    arg
+  end
+
+  # - - - - - - - - - - - - - - - -
+
   def id
     name = __method__.to_s
     arg = @args[name]
-    unless Base58.string?(arg) && arg.size == 10
-      malformed(name)
-    end
-    arg
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  def filename
-    name = __method__.to_s
-    arg = @args[name]
-    unless arg.is_a?(String)
-      malformed(name)
-    end
-    arg
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  def content
-    name = __method__.to_s
-    arg = @args[name]
-    unless arg.is_a?(String)
+    unless well_formed_id?(arg)
       malformed(name)
     end
     arg
@@ -82,6 +72,12 @@ module WellFormedArgs
   end
 
   private # = = = = = = = = = = = =
+
+  include WellFormedImageName
+
+  def well_formed_id?(arg)
+    Base58.string?(arg) && arg.size === 6
+  end
 
   def malformed(arg_name)
     raise ClientError, "#{arg_name}:malformed"
