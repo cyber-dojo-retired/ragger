@@ -3,7 +3,7 @@ require_relative 'http_helper'
 class RunnerService
 
   def initialize(external)
-    @http = HttpHelper.new(external, self, 'runner', 4597)
+    @http = HttpHelper.new(external, 'runner', 4597)
   end
 
   def ready?
