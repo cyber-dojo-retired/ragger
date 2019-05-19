@@ -5,7 +5,7 @@ services:
 
   ragger-client:
     build:
-      context: client
+      context: test_client
     user: nobody
     image: cyberdojo/ragger-client
     init: true
@@ -33,7 +33,7 @@ services:
     tmpfs: /tmp
     restart: 'no'
     volumes:
-      - ./test_server:/app/test:ro    
+      - ./test_server:/app/test:ro
     depends_on:
       - runner
 
