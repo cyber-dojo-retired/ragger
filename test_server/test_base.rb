@@ -19,8 +19,17 @@ class TestBase < HexMiniTest
     traffic_light.ready?
   end
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   def sha
     traffic_light.sha
+  end
+
+  def assert_sha(sha)
+    assert_equal 40, sha.size
+    sha.each_char do |ch|
+      assert "0123456789abcdef".include?(ch)
+    end
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

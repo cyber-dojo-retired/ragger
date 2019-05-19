@@ -14,14 +14,16 @@ class RackDispatcherTest < TestBase
 
   test 'AB3', 'sha' do
     rack_call({ path_info:'sha', body:{}.to_json })
-    assert_200('sha')
+    sha = assert_200('sha')
+    assert_sha(sha)
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'AB4', 'ready' do
     rack_call({ path_info:'ready', body:{}.to_json })
-    assert_200('ready?')
+    ready = assert_200('ready?')
+    assert ready
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -30,7 +32,8 @@ class RackDispatcherTest < TestBase
 
   test 'AB5', 'red' do
     rack_call({ path_info:'colour', body:colour_args.to_json })
-    assert_200('colour')
+    colour = assert_200('colour')
+    assert_equal 'red', colour
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -191,7 +194,10 @@ class RackDispatcherTest < TestBase
     refute_body_contains('exception')
     refute_body_contains('trace')
     assert_nothing_logged
+    JSON.parse(@body)[name]
   end
+
+  # - - - - - - - - - - - - - - - - -
 
   def assert_400
     assert_equal 400, @status
