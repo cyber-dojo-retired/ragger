@@ -6,10 +6,6 @@ class RunnerService
     @http = HttpHelper.new(external, self, 'runner', 4597)
   end
 
-  def sha
-    http.get
-  end
-
   def ready?
     http.get
   end

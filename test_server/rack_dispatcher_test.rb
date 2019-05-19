@@ -81,7 +81,7 @@ class RackDispatcherTest < TestBase
 
   test 'BB2',
   %w( malformed id becomes exception ) do
-    not_String.each do |malformed|
+    malformed_ids.each do |malformed|
       payload = colour_args
       payload['id'] = malformed
       assert_rack_call_exception('id:malformed', 'colour', payload.to_json)
