@@ -1,7 +1,7 @@
 require_relative 'test_base'
-require_relative '../src/log'
+require_relative '../src/stdout_log'
 
-class LogTest < TestBase
+class StdoutLogTest < TestBase
 
   def self.hex_prefix
     'CD476'
@@ -12,7 +12,7 @@ class LogTest < TestBase
   test '20C',
   'logging a string message send it directly to stdout' do
     stdout = captured_stdout {
-      Log.new << 'Hello'
+      StdoutLog.new << 'Hello'
     }
     assert_equal 'Hello', stdout
   end

@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 
-class Http
+class HttpJson
 
   def get(hostname, port, path, named_args)
     call(hostname, port, path, named_args) { |url|

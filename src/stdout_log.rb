@@ -1,5 +1,5 @@
 
-class Log
+class StdoutLog
 
   def <<(string)
     print string
