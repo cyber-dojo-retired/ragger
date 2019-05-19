@@ -1,0 +1,4 @@
+
+traffic_light.colour: make this also return [stdout,stderr,status]
+  I'd like to expose this when I expose the rag-lambda source file
+  in the browser.

@@ -43,7 +43,7 @@ services:
     user: root
     image: cyberdojo/runner-stateless
     init: true
-    container_name: test-runner-server
+    container_name: test-ragger-runner-server
     ports:
       - 4597:4597
     read_only: true

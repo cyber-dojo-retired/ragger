@@ -11,12 +11,10 @@ class TrafficLight
   end
 
   def ready?
-    # TODO: runner.ready?
-    true
+    runner.ready?
   end
 
   def colour(image_name, id, stdout, stderr, status)
-    # TODO: make this also return [stdout,stderr,status]
     @cache[image_name] ||= get_rag_lambda(image_name, id)
     rag = @cache[image_name].call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)
@@ -49,12 +47,14 @@ class TrafficLight
     { 'content' => content, 'truncated' => false }
   end
 
+  # - - - - - - - - - - - - - - - -
+
   def runner
-    external.runner
+    @external.runner
   end
 
   def log
-    external.log
+    @external.log
   end
 
 end

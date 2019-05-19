@@ -81,4 +81,7 @@ readonly MY_NAME=ragger
 wait_until_ready  "test-${MY_NAME}-server" 5537
 exit_unless_clean "test-${MY_NAME}-server"
 
+wait_until_ready  "test-${MY_NAME}-runner-server" 4597
+exit_unless_clean "test-${MY_NAME}-runner-server"
+
 wait_till_up "test-${MY_NAME}-client"
