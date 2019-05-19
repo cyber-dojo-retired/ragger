@@ -1,7 +1,7 @@
 require_relative 'test_base'
 require_relative 'python_pytest'
 
-class FeatureRedAmberGreenTest < TestBase
+class ColourRedAmberGreenTest < TestBase
 
   def self.hex_prefix
     'C60'

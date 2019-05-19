@@ -2,7 +2,7 @@ require_relative 'http_stub'
 require_relative 'python_pytest'
 require_relative 'test_base'
 
-class FeatureBadColourRbTest < TestBase
+class ColourAmberOnErrorTest < TestBase
 
   def self.hex_prefix
     'F6D'
@@ -11,8 +11,8 @@ class FeatureBadColourRbTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A3',
-  %w( colour lambda syntax-error recorded in log ) do
-    assert_stderr("undefined local variable or method `sdf'",
+  %w( syntax-error ) do
+    assert_amber_error("undefined local variable or method `sdf'",
       <<~RUBY
       sdf
       RUBY
@@ -22,8 +22,8 @@ class FeatureBadColourRbTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A4',
-  %w( colour lambda explicit raise recorded in log ) do
-    assert_stderr('wibble',
+  %w( explicit raise ) do
+    assert_amber_error('wibble',
       <<~RUBY
       lambda { |stdout, stderr, status|
         raise ArgumentError.new('wibble')
@@ -35,8 +35,8 @@ class FeatureBadColourRbTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A5',
-  %w( colour lambda returning non red/amber/green recorded in log ) do
-    assert_stderr('orange',
+  %w( returning non red/amber/green ) do
+    assert_amber_error('orange',
       <<~RUBY
       lambda { |stdout, stderr, status|
         return :orange
@@ -48,8 +48,8 @@ class FeatureBadColourRbTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A6',
-  %w( colour lambda with too few parameters recorded in log ) do
-    assert_stderr('wrong number of arguments (given 3, expected 2)',
+  %w( too few parameters ) do
+    assert_amber_error('wrong number of arguments (given 3, expected 2)',
       <<~RUBY
       lambda { |stdout, stderr|
         return :red
@@ -61,8 +61,8 @@ class FeatureBadColourRbTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A7',
-  %w( colour lambda with too many parameters is recorded in log ) do
-    assert_stderr('wrong number of arguments (given 3, expected 4)',
+  %w( too many parameters ) do
+    assert_amber_error('wrong number of arguments (given 3, expected 4)',
       <<~RUBY
       lambda { |stdout, stderr, status, extra|
         return :red
@@ -73,7 +73,7 @@ class FeatureBadColourRbTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def assert_stderr(expected, rag_src)
+  def assert_amber_error(expected, rag_src)
     http_stub = HttpStub.new
     http_stub.stub({
       'stdout' => {
