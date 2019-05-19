@@ -1,5 +1,5 @@
-require 'json'
 require 'net/http'
+require 'json'
 
 class Http
 
@@ -24,7 +24,7 @@ class Http
     req.body = named_args.to_json
     service = Net::HTTP.new(url.host, url.port)
     response = service.request(req)
-    JSON.parse!(response.body)
+    JSON.parse(response.body)
   end
 
 end
