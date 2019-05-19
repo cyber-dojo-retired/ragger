@@ -1,4 +1,5 @@
 require_relative 'test_base'
+require_relative 'python_pytest'
 
 class FeatureRedAmberGreenTest < TestBase
 
@@ -9,22 +10,18 @@ class FeatureRedAmberGreenTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '6A1', 'red' do
-    colour(python_pytest_image_name, id, python_pytest_stdout_red, '', '0')
-    assert red?
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
+    assert_red
   end
 
   test '6A2', 'amber' do
-    colour(python_pytest_image_name, id, python_pytest_stdout_amber, '', '0')
-    assert amber?
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
+    assert_amber
   end
 
   test '6A3', 'green' do
-    colour(python_pytest_image_name, id, python_pytest_stdout_green, '', '0')
-    assert green?
-  end
-
-  def python_pytest_image_name
-    'cyberdojofoundation/python_pytest'
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
+    assert_green
   end
 
 end

@@ -17,6 +17,8 @@ class FeatureBadColourRbTest < TestBase
     )
   end
 
+  # - - - - - - - - - - - - - - - - -
+
   test '5A4',
   %w( colour.rb explicit raise recorded in stderr ) do
     assert_stderr('wibble',
@@ -27,6 +29,8 @@ class FeatureBadColourRbTest < TestBase
       RUBY
     )
   end
+
+  # - - - - - - - - - - - - - - - - -
 
   test '5A5',
   %w( colour.rb returning non red/amber/green recorded in stdout ) do
@@ -39,6 +43,8 @@ class FeatureBadColourRbTest < TestBase
     )
   end
 
+  # - - - - - - - - - - - - - - - - -
+
   test '5A6',
   %w( colour.rb with too few parameters recorded in stderr ) do
     assert_stderr('wrong number of arguments (given 3, expected 2)',
@@ -49,6 +55,8 @@ class FeatureBadColourRbTest < TestBase
       RUBY
     )
   end
+
+  # - - - - - - - - - - - - - - - - -
 
   test '5A7',
   %w( colour.rb with too many parameters is recorded in stderr ) do

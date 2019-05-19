@@ -1,5 +1,6 @@
 require_relative '../src/rack_dispatcher'
 require_relative 'malformed_data'
+require_relative 'python_pytest'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require 'json'
@@ -231,11 +232,11 @@ class RackDispatcherTest < TestBase
 
   def colour_args
     {
-      image_name:'cyberdojofoundation/python_pytest',
-      id:id,
-      stdout:python_pytest_stdout_red,
-      stderr:'',
-      status:'0'
+      image_name: PythonPytest::IMAGE_NAME,
+      id: id,
+      stdout: PythonPytest::STDOUT_RED,
+      stderr: '',
+      status: '0'
     }
   end
 
