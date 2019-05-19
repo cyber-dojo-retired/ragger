@@ -3,7 +3,7 @@ require_relative 'test_base'
 class FeatureBadColourRbTest < TestBase
 
   def self.hex_prefix
-    'F6D43'
+    'F6D'
   end
 
   # - - - - - - - - - - - - - - - - -

@@ -25,9 +25,9 @@ class TestBase < HexMiniTest
     traffic_light.sha
   end
 
-  def assert_sha(sha)
-    assert_equal 40, sha.size
-    sha.each_char do |ch|
+  def assert_sha(string)
+    assert_equal 40, string.size
+    string.each_char do |ch|
       assert "0123456789abcdef".include?(ch)
     end
   end
@@ -40,18 +40,20 @@ class TestBase < HexMiniTest
 
   attr_reader :result
 
-  def stdout
-    result['stdout']['content']
+  def red?
+    colour?('red')
   end
 
-  def stderr
-    result['stderr']['content']
+  def amber?
+    colour?('amber')
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  def green?
+    colour?('green')
+  end
 
-  def assert_colour(expected)
-    assert_equal expected, stdout
+  def colour?(expected)
+    result === expected
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,12 +74,12 @@ class TestBase < HexMiniTest
 
   def python_pytest_colour_rb
     <<~RUBY
-    def colour(stdout,stderr,status)
+    lambda { |stdout,stderr,status|
       output = stdout + stderr
       return :red   if /=== FAILURES ===/.match(output)
       return :green if /=== (\d+) passed/.match(output)
       return :amber
-    end
+    }
     RUBY
   end
 
