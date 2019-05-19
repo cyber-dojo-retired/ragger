@@ -7,11 +7,11 @@ class RunnerService
   end
 
   def ready?
-    http.eget('ready?', {})
+    http.get('ready?', {})
   end
 
   def run_cyber_dojo_sh(image_name, id, files, max_seconds)
-    http.epost('run_cyber_dojo_sh', {
+    http.post('run_cyber_dojo_sh', {
       'image_name' => image_name,
       'id' => id,
       'files' => files,

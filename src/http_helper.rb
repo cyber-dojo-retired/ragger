@@ -10,15 +10,15 @@ class HttpHelper
     @port = port
   end
 
-  def get(*args)
+  def X_get(*args)
     call('get', name_of(caller), *args)
   end
 
-  def post(*args)
+  def X_post(*args)
     call('post', name_of(caller), *args)
   end
 
-  def eget(method, named_args)
+  def get(method, named_args)
     json = http.public_send('get', @hostname, @port, method, named_args)
     fail_unless(method, 'bad json') { json.class.name == 'Hash' }
     exception = json['exception']
@@ -27,7 +27,7 @@ class HttpHelper
     json[method]
   end
 
-  def epost(method, named_args)
+  def post(method, named_args)
     json = http.public_send('post', @hostname, @port, method, named_args)
     fail_unless(method, 'bad json') { json.class.name == 'Hash' }
     exception = json['exception']

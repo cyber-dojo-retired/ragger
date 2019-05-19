@@ -9,6 +9,7 @@ class HttpHelperTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
+=begin
   test 'AE0',
   %w( URL is assumed to return json Hash ) do
     user = Class.new do
@@ -28,6 +29,7 @@ class HttpHelperTest < TestBase
     }
     assert_equal 'bad json', error.message
   end
+=end
 
   # - - - - - - - - - - - - - - - - -
 
@@ -41,7 +43,7 @@ class HttpHelperTest < TestBase
     external = External.new({ 'http' => http_stub })
     target = HttpHelper.new(external, self, 'hostname', 'port')
     error = assert_raises(ServiceError) {
-      target.eget('sha', {})
+      target.get('sha', {})
     }
     assert_equal 'bad json', error.message
   end
