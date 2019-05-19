@@ -44,12 +44,12 @@ class RackDispatcherTest < TestBase
   test 'BAF',
   %w( unknown method becomes exception ) do
     expected = 'json:malformed'
-    assert_rack_call_exception(expected, nil,       '{}')
-    assert_rack_call_exception(expected, [],        '{}')
-    assert_rack_call_exception(expected, {},        '{}')
-    assert_rack_call_exception(expected, true,      '{}')
-    assert_rack_call_exception(expected, 42,        '{}')
-    assert_rack_call_exception(expected, 'unknown', '{}')
+    assert_rack_call_error(400, expected, nil,       '{}')
+    assert_rack_call_error(400, expected, [],        '{}')
+    assert_rack_call_error(400, expected, {},        '{}')
+    assert_rack_call_error(400, expected, true,      '{}')
+    assert_rack_call_error(400, expected, 42,        '{}')
+    assert_rack_call_error(400, expected, 'unknown', '{}')
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -58,12 +58,12 @@ class RackDispatcherTest < TestBase
   %w( malformed json in http payload becomes exception ) do
     expected = 'json:malformed'
     method_name = 'colour'
-    assert_rack_call_exception(expected, method_name, 'sdfsdf')
-    assert_rack_call_exception(expected, method_name, 'nil')
-    assert_rack_call_exception(expected, method_name, 'null')
-    assert_rack_call_exception(expected, method_name, '[]')
-    assert_rack_call_exception(expected, method_name, 'true')
-    assert_rack_call_exception(expected, method_name, '42')
+    assert_rack_call_error(400, expected, method_name, 'sdfsdf')
+    assert_rack_call_error(400, expected, method_name, 'nil')
+    assert_rack_call_error(400, expected, method_name, 'null')
+    assert_rack_call_error(400, expected, method_name, '[]')
+    assert_rack_call_error(400, expected, method_name, 'true')
+    assert_rack_call_error(400, expected, method_name, '42')
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -73,7 +73,7 @@ class RackDispatcherTest < TestBase
     malformed_image_names.each do |malformed|
       payload = colour_args
       payload['image_name'] = malformed
-      assert_rack_call_exception('image_name:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'image_name:malformed', 'colour', payload.to_json)
     end
   end
 
@@ -84,7 +84,7 @@ class RackDispatcherTest < TestBase
     malformed_ids.each do |malformed|
       payload = colour_args
       payload['id'] = malformed
-      assert_rack_call_exception('id:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'id:malformed', 'colour', payload.to_json)
     end
   end
 
@@ -95,30 +95,43 @@ class RackDispatcherTest < TestBase
     not_String.each do |malformed|
       payload = colour_args
       payload['stdout'] = malformed
-      assert_rack_call_exception('stdout:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'stdout:malformed', 'colour', payload.to_json)
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'BB4',
-  %w( malformed stderr becomes exception ) do
+  %w( malformed stderr becomes 400 error ) do
     not_String.each do |malformed|
       payload = colour_args
       payload['stderr'] = malformed
-      assert_rack_call_exception('stderr:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'stderr:malformed', 'colour', payload.to_json)
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'BB5',
-  %w( malformed status becomes exception ) do
+  %w( malformed status becomes 400 error ) do
     not_String.each do |malformed|
       payload = colour_args
       payload['status'] = malformed
-      assert_rack_call_exception('status:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'status:malformed', 'colour', payload.to_json)
     end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test 'BB6',
+  %w( server error becomes 500 error ) do
+    http_stub = Class.new do
+      def get(*args)
+        fail ServiceError.new('HttpStubRaiser', 'ready?', 'no key')
+      end
+    end.new
+    @external = External.new({ 'http' => http_stub })
+    assert_rack_call_error(500, 'no key', 'ready', {}.to_json)
   end
 
   private # = = = = = = = = = = = = =
@@ -137,10 +150,21 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def assert_rack_call_exception(expected, path_info, body)
+  def assert_200(name)
+    assert_equal 200, @status
+    assert_body_contains(name)
+    refute_body_contains('exception')
+    refute_body_contains('trace')
+    assert_nothing_logged
+    JSON.parse(@body)[name]
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def assert_rack_call_error(status, expected, path_info, body)
     env = { path_info:path_info, body:body }
     rack_call(env)
-    assert_400
+    assert_equal @status, status
 
     [@body, @stderr].each do |s|
       refute_nil s
@@ -189,30 +213,10 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def assert_200(name)
-    assert_equal 200, @status
-    assert_body_contains(name)
-    refute_body_contains('exception')
-    refute_body_contains('trace')
-    assert_nothing_logged
-    JSON.parse(@body)[name]
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def assert_400
-    assert_equal 400, @status
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def assert_body_contains(key, value = nil)
+  def assert_body_contains(key)
     refute_nil @body
     json = JSON.parse(@body)
     assert json.has_key?(key)
-    unless value.nil?
-      assert_equal value, json[key]
-    end
   end
 
   def refute_body_contains(key)
