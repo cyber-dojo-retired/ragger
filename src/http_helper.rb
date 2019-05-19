@@ -18,6 +18,24 @@ class HttpHelper
     call('post', name_of(caller), *args)
   end
 
+  def eget(method, named_args)
+    json = http.public_send('get', @hostname, @port, method, named_args)
+    fail_unless(method, 'bad json') { json.class.name == 'Hash' }
+    exception = json['exception']
+    fail_unless(method, pretty(exception)) { exception.nil? }
+    fail_unless(method, 'no key') { json.key?(method) }
+    json[method]
+  end
+
+  def epost(method, named_args)
+    json = http.public_send('post', @hostname, @port, method, named_args)
+    fail_unless(method, 'bad json') { json.class.name == 'Hash' }
+    exception = json['exception']
+    fail_unless(method, pretty(exception)) { exception.nil? }
+    fail_unless(method, 'no key') { json.key?(method) }
+    json[method]
+  end
+
   private
 
   def name_of(caller)

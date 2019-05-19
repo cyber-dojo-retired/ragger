@@ -31,5 +31,19 @@ class HttpHelperTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
+  test 'AE1',
+  %w( simpler version ) do
+    http_stub = Class.new do
+      def get(_hostname, _port, _path, _named_args)
+        [] # Array not Hash
+      end
+    end.new
+    external = External.new({ 'http' => http_stub })
+    target = HttpHelper.new(external, self, 'hostname', 'port')
+    error = assert_raises(ServiceError) {
+      target.eget('sha', {})
+    }
+    assert_equal 'bad json', error.message
+  end
 
 end
