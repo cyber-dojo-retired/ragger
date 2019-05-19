@@ -1,12 +1,16 @@
 
 class HttpStub
 
-  def stub(response)
+  def initialize(response)
     @response = response
   end
 
-  def post(_hostname, _port, method, _named_args)
-    { method.to_s => @response }
+  def get(_hostname, _port, _method, _named_args)
+    @response
+  end
+
+  def post(_hostname, _port, _method, _named_args)
+    @response
   end
 
 end

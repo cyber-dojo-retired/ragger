@@ -74,13 +74,14 @@ class ColourAmberOnErrorTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   def assert_amber_error(expected, rag_src)
-    http_stub = HttpStub.new
-    http_stub.stub({
-      'stdout' => {
-        'content' => rag_src
+    stub = HttpStub.new({
+      'run_cyber_dojo_sh' => {
+        'stdout' => {
+          'content' => rag_src
+        }
       }
     })
-    @external = External.new({ 'http' => http_stub })
+    @external = External.new({ 'http' => stub })
     with_captured_log {
       colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
       assert_amber

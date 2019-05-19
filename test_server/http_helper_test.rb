@@ -1,5 +1,6 @@
-require_relative 'test_base'
+require_relative 'http_stub'
 require_relative '../src/service_error'
+require_relative 'test_base'
 
 class HttpHelperTest < TestBase
 
@@ -11,13 +12,7 @@ class HttpHelperTest < TestBase
 
   test 'AE1',
   %w( URL is assumed to return JSON Hash ) do
-    http_stub = Class.new do
-      def get(_hostname, _port, _path, _named_args)
-        [] # Array not Hash
-      end
-    end.new
-    external = External.new({ 'http' => http_stub })
-    target = HttpHelper.new(external, 'hostname', 'port')
+    target = stubbed_http_helper([])
     error = assert_raises(ServiceError) {
       target.get('sha', {})
     }
@@ -30,40 +25,35 @@ class HttpHelperTest < TestBase
 
   test 'AE2',
   %w( when URL returns a Hash with 'exception' key, its value is raised as JSON ) do
-    http_stub = Class.new do
-      def get(_hostname, _port, _path, _named_args)
-        { 'exception' => { 'a' => 'a-msg', 'b' => 'b-msg' } }
-      end
-    end.new
-    external = External.new({ 'http' => http_stub })
-    target = HttpHelper.new(external, 'hostname', 'port')
+    json = { 'a' => 'a-msg', 'b' => 'b-msg' }
+    target = stubbed_http_helper({ 'exception' => json })
     error = assert_raises(ServiceError) {
       target.get('sha', {})
     }
     assert_equal 'HttpHelper', error.service_name
     assert_equal 'sha', error.method_name
-    expected = { 'a' => 'a-msg', 'b' => 'b-msg' }
     actual = JSON.parse(error.message)
-    assert_equal expected, actual
+    assert_equal json, actual
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'AE3',
   %w( when URL returns a Hash with the method key missing, it raises ) do
-    http_stub = Class.new do
-      def get(_hostname, _port, _path, _named_args)
-        {}
-      end
-    end.new
-    external = External.new({ 'http' => http_stub })
-    target = HttpHelper.new(external, 'hostname', 'port')
+    target = stubbed_http_helper({})
     error = assert_raises(ServiceError) {
       target.get('sha', {})
     }
     assert_equal 'HttpHelper', error.service_name
     assert_equal 'sha', error.method_name
     assert_equal 'method key missing', error.message
+  end
+
+  private
+
+  def stubbed_http_helper(stub)
+    external = External.new({ 'http' => HttpStub.new(stub) })
+    HttpHelper.new(external, 'hostname', 'port')
   end
 
 end
