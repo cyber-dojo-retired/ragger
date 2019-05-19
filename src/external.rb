@@ -4,16 +4,12 @@ require_relative 'runner_service'
 
 class External
 
-  def runner
-    RunnerService.new(self)
+  def initialize(options = {})
+    @http = options['http'] || Http.new
+    @log = Log.new
+    @runner = RunnerService.new(self)
   end
 
-  def http
-    Http.new
-  end
-
-  def log
-    Log.new
-  end
+  attr_reader :http, :log, :runner
 
 end
