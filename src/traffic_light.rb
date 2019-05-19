@@ -32,7 +32,7 @@ class TrafficLight
   def get_rag_lambda(image_name, id)
     files = { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }
     max_seconds = 5
-    result = runner.run_cyber_dojo_sh(image_name,id,files,max_seconds)
+    result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
     eval(result['stdout']['content'])
   end
 
