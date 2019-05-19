@@ -33,8 +33,8 @@ class TrafficLight
     result = runner.run_cyber_dojo_sh(
         image_name,
         id,
-        max_seconds = 5,
-        { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }
+        { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') },
+        max_seconds = 5
     )
     eval(result['stdout']['content'])
   end

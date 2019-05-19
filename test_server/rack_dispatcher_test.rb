@@ -1,4 +1,5 @@
 require_relative '../src/rack_dispatcher'
+require_relative 'malformed_data'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require 'json'
@@ -6,13 +7,26 @@ require 'json'
 class RackDispatcherTest < TestBase
 
   def self.hex_prefix
-    'D06F7'
+    'D06'
   end
 
-  test 'AB4', 'sha' do
-    rack_call({ path_info:'sha', body:{}.to_json})
+  # - - - - - - - - - - - - - - - - -
+
+  test 'AB3', 'sha' do
+    rack_call({ path_info:'sha', body:{}.to_json })
     assert_200
     assert_body_contains('sha')
+    refute_body_contains('exception')
+    refute_body_contains('trace')
+    assert_nothing_logged
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test 'AB4', 'ready' do
+    rack_call({ path_info:'ready', body:{}.to_json })
+    assert_200
+    assert_body_contains('ready?')
     refute_body_contains('exception')
     refute_body_contains('trace')
     assert_nothing_logged
@@ -67,33 +81,22 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB1',
-  %w( malformed id becomes exception ) do
-    not_String.each do |malformed|
+  %w( malformed image_name becomes exception ) do
+    malformed_image_names.each do |malformed|
       payload = colour_args
-      payload['id'] = malformed
-      assert_rack_call_exception('id:malformed', 'colour', payload.to_json)
-    end
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  test 'BB6',
-  %w( malformed filename becomes exception ) do
-    not_String.each do |malformed|
-      payload = colour_args
-      payload['filename'] = malformed
-      assert_rack_call_exception('filename:malformed', 'colour', payload.to_json)
+      payload['image_name'] = malformed
+      assert_rack_call_exception('image_name:malformed', 'colour', payload.to_json)
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'BB2',
-  %w( malformed content becomes exception ) do
+  %w( malformed id becomes exception ) do
     not_String.each do |malformed|
       payload = colour_args
-      payload['content'] = malformed
-      assert_rack_call_exception('content:malformed', 'colour', payload.to_json)
+      payload['id'] = malformed
+      assert_rack_call_exception('id:malformed', 'colour', payload.to_json)
     end
   end
 
@@ -132,6 +135,8 @@ class RackDispatcherTest < TestBase
 
   private # = = = = = = = = = = = = =
 
+  include MalformedData
+
   def not_String
     [
       nil,
@@ -148,34 +153,60 @@ class RackDispatcherTest < TestBase
     env = { path_info:path_info, body:body }
     rack_call(env)
     assert_400
-    assert_body_contains('exception', expected)
-    assert_body_contains('trace')
-    assert_log_contains('exception', expected)
-    assert_log_contains('trace')
+
+    [@body, @stderr].each do |s|
+      refute_nil s
+      json = JSON.parse(s)
+      ex = json['exception']
+      refute_nil ex
+      assert_equal 'RaggerService', ex['class']
+      assert_equal expected, ex['message']
+      assert_equal 'Array', ex['backtrace'].class.name
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   def rack_call(env, e = external)
-    rack = RackDispatcher.new
-    with_captured_log {
-      @triple = rack.call(env, e, RackRequestStub)
-      @code = @triple[0]
-      @type = @triple[1]
-      @body = @triple[2][0]
+    traffic_light = TrafficLight.new(e)
+    rack = RackDispatcher.new(traffic_light)
+    response = with_captured_stdout_stderr {
+      rack.call(env, RackRequestStub)
     }
+    @status = response[0]
+    @type = response[1]
+    @body = response[2][0]
+
     expected_type = { 'Content-Type' => 'application/json' }
     assert_equal expected_type, @type
   end
 
   # - - - - - - - - - - - - - - - - -
 
+  def with_captured_stdout_stderr
+    begin
+      old_stdout = $stdout
+      old_stderr = $stderr
+      $stdout = StringIO.new('', 'w')
+      $stderr = StringIO.new('', 'w')
+      response = yield
+      @stderr = $stderr.string
+      @stdout = $stdout.string
+      response
+    ensure
+      $stderr = old_stderr
+      $stdout = old_stdout
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
   def assert_200
-    assert_equal 200, @code, @triple
+    assert_equal 200, @status
   end
 
   def assert_400
-    assert_equal 400, @code, @triple
+    assert_equal 400, @status
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -197,26 +228,17 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def assert_log_contains(key, value = nil)
-    refute_nil @log
-    json = JSON.parse(@log)
-    assert json.has_key?(key)
-    unless value.nil?
-      assert_equal value, json[key]
-    end
-  end
-
   def assert_nothing_logged
-    assert_equal '', @log
+    assert_equal '', @stdout
+    assert_equal '', @stderr
   end
 
   # - - - - - - - - - - - - - - - - -
 
   def colour_args
     {
+      image_name:'cyberdojofoundation/python_pytest',
       id:id,
-      filename:'colour.rb',
-      content:python_pytest_colour_rb,
       stdout:python_pytest_stdout_red,
       stderr:'',
       status:'0'
