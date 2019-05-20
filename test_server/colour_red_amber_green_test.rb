@@ -11,17 +11,17 @@ class ColourRedAmberGreenTest < TestBase
 
   test '6A1', 'red' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
-    assert_red
+    assert red?
   end
 
   test '6A2', 'amber' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
-    assert_amber
+    assert amber?
   end
 
   test '6A3', 'green' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
-    assert_green
+    assert green?
   end
 
 end

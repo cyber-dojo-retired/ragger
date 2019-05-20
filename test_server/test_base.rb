@@ -35,16 +35,16 @@ class TestBase < HexMiniTest
     end
   end
 
-  def assert_red
-    assert colour?('red')
+  def red?
+    colour?('red')
   end
 
-  def assert_amber
-    assert colour?('amber')
+  def amber?
+    colour?('amber')
   end
 
-  def assert_green
-    assert colour?('green')
+  def green?
+    colour?('green')
   end
 
   def colour?(expected)

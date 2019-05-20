@@ -29,6 +29,8 @@ module PythonPytest
     =========================== 1 failed in 0.04 seconds ===========================
     STDOUT_RED
 
+    # - - - - - - - - - - - - - - - - - - - - - - - -
+
     STDOUT_AMBER =
       <<~STDOUT_AMBER
       ============================= test session starts ==============================

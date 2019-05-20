@@ -84,9 +84,11 @@ class ColourAmberOnErrorTest < TestBase
     spy = StdoutLogSpy.new
     @external = External.new({ 'http' => stub, 'log' => spy })
     colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
-    assert_amber
+    assert amber?
     assert spy.spied?(expected)
   end
+
+  # - - - - - - - - - - - - - - - - -
 
   class StdoutLogSpy
     def <<(string)
