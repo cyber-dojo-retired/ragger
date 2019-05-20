@@ -27,13 +27,13 @@ class HttpJsonArgsTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'for_colour' do
-    args = HttpJsonArgs.new(JSON.generate(colour_args)).for_colour
-    assert_equal colour_args.size, args.size
-    assert_equal colour_args[:image_name], args[0]
-    assert_equal colour_args[:id        ], args[1]
-    assert_equal colour_args[:stdout    ], args[2]
-    assert_equal colour_args[:stderr    ], args[3]
-    assert_equal colour_args[:status    ], args[4]
+    args = HttpJsonArgs.new(JSON.generate(colour_payload)).for_colour
+    assert_equal colour_payload.size, args.size
+    assert_equal colour_payload[:image_name], args[0]
+    assert_equal colour_payload[:id        ], args[1]
+    assert_equal colour_payload[:stdout    ], args[2]
+    assert_equal colour_payload[:stderr    ], args[3]
+    assert_equal colour_payload[:status    ], args[4]
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -63,9 +63,7 @@ class HttpJsonArgsTest < TestBase
   test 'CB2',
   %w( raises when color-image_name malformed ) do
     ImageNameData::malformed.each do |malformed|
-      body = colour_args
-      body['image_name'] = malformed
-      args = HttpJsonArgs.new(JSON.generate(body))
+      args = colour_args('image_name', malformed)
       assert_http_json_args_error('image_name is malformed') do
         args.for_colour
       end
@@ -77,9 +75,7 @@ class HttpJsonArgsTest < TestBase
   test 'CB3',
   %w( raises when colour-id is malformed ) do
     malformed_ids.each do |malformed|
-      body = colour_args
-      body['id'] = malformed
-      args = HttpJsonArgs.new(JSON.generate(body))
+      args = colour_args('id', malformed)
       assert_http_json_args_error('id is malformed') do
         args.for_colour
       end
@@ -91,9 +87,7 @@ class HttpJsonArgsTest < TestBase
   test 'CB4',
   %w( raises when colour-stdout is malformed ) do
     non_strings.each do |malformed|
-      body = colour_args
-      body['stdout'] = malformed
-      args = HttpJsonArgs.new(JSON.generate(body))
+      args = colour_args('stdout', malformed)
       assert_http_json_args_error('stdout is malformed') do
         args.for_colour
       end
@@ -105,9 +99,7 @@ class HttpJsonArgsTest < TestBase
   test 'CB5',
   %w( raises when colour-stderr is malformed ) do
     non_strings.each do |malformed|
-      body = colour_args
-      body['stderr'] = malformed
-      args = HttpJsonArgs.new(JSON.generate(body))
+      args = colour_args('stderr', malformed)
       assert_http_json_args_error('stderr is malformed') do
         args.for_colour
       end
@@ -119,16 +111,14 @@ class HttpJsonArgsTest < TestBase
   test 'CB6',
   %w( raises when colour-status is malformed ) do
     non_strings.each do |malformed|
-      body = colour_args
-      body['status'] = malformed
-      args = HttpJsonArgs.new(JSON.generate(body))
+      args = colour_args('status', malformed) 
       assert_http_json_args_error('status is malformed') do
         args.for_colour
       end
     end
   end
 
-  # - - - - - - - - - - - - - - - - -
+  private # = = = = = = = = = = = = =
 
   def assert_http_json_args_error(expected, body = nil)
     error = assert_raises(HttpJsonRequestError) do
@@ -141,9 +131,9 @@ class HttpJsonArgsTest < TestBase
     assert_equal expected, error.message
   end
 
-  private # = = = = = = = = = = = = =
+  # - - - - - - - - - - - - - - - - -
 
-  def colour_args
+  def colour_payload
     {
       image_name: PythonPytest::IMAGE_NAME,
       id: id,
@@ -151,6 +141,12 @@ class HttpJsonArgsTest < TestBase
       stderr: '',
       status: '0'
     }
+  end
+
+  def colour_args(key, value)
+    body = colour_payload
+    body[key] = value
+    HttpJsonArgs.new(JSON.generate(body))
   end
 
   # - - - - - - - - - - - - - - - - -
