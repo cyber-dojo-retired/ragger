@@ -36,8 +36,8 @@ class RackDispatcher
   def name_args(path, body)
     args = HttpJsonArgs.new(body)
     checked_args = case path
-      when /^ready$/  then []
-      when /^sha/     then []
+      when /^ready$/  then args.for_ready
+      when /^sha/     then args.for_sha
       when /^colour$/ then args.for_colour
       else
         raise HttpJsonRequestError, 'unknown path'
@@ -47,7 +47,7 @@ class RackDispatcher
   end
 
   def query?(name)
-    ['ready'].include?(name)
+    name === 'ready'
   end
 
   # - - - - - - - - - - - - - - - -

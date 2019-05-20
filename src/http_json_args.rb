@@ -18,6 +18,14 @@ class HttpJsonArgs
 
   # - - - - - - - - - - - - - - - -
 
+  def for_ready
+    []
+  end
+
+  def for_sha
+    []
+  end
+
   def for_colour
     [image_name, id, stdout, stderr, status]
   end
