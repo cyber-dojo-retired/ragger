@@ -12,16 +12,20 @@ class HttpJsonAdapter
   end
 
   def get(path, named_args)
-    call(path, named_args) { |url| Net::HTTP::Get.new(url) }
+    json_request(path, named_args) { |url|
+      Net::HTTP::Get.new(url)
+    }
   end
 
   def post(path, named_args)
-    call(path, named_args) { |url| Net::HTTP::Post.new(url) }
+    json_request(path, named_args) { |url|
+      Net::HTTP::Post.new(url)
+    }
   end
 
   private
 
-  def call(path, named_args)
+  def json_request(path, named_args)
     uri = URI.parse("http://#{@hostname}:#{@port}/#{path}")
     req = yield uri
     req.content_type = 'application/json'

@@ -10,16 +10,16 @@ class HttpJson
   end
 
   def get(method_name, named_args)
-    request('get', method_name, named_args)
+    json_request('get', method_name, named_args)
   end
 
   def post(method_name, named_args)
-    request('post', method_name, named_args)
+    json_request('post', method_name, named_args)
   end
 
   private
 
-  def request(gp, method_name, named_args)
+  def json_request(gp, method_name, named_args)
     json = http.public_send(gp, method_name, named_args)
     unless json.is_a?(Hash)
       message = 'json is not a Hash'
