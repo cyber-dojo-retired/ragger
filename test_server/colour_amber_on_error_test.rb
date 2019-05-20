@@ -81,12 +81,23 @@ class ColourAmberOnErrorTest < TestBase
         }
       }
     })
-    @external = External.new({ 'http' => stub })
-    with_captured_log {
-      colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
-      assert_amber
-    }
-    assert @log.include?(expected)
+    spy = StdoutLogSpy.new
+    @external = External.new({ 'http' => stub, 'log' => spy })
+    colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
+    assert_amber
+    assert spy.spied?(expected)
+  end
+
+  class StdoutLogSpy
+    def <<(string)
+      spied << string
+    end
+    def spied
+      @spied ||= []
+    end
+    def spied?(string)
+      spied[0].include?(string)
+    end
   end
 
 end

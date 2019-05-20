@@ -6,7 +6,7 @@ class External
 
   def initialize(options = {})
     @http = options['http'] || HttpJson.new
-    @log = StdoutLog.new
+    @log = options['log'] || StdoutLog.new
     @runner = RunnerService.new(self)
   end
 
