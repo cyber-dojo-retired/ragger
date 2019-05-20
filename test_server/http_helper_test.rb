@@ -12,13 +12,9 @@ class HttpHelperTest < TestBase
 
   test 'AE1',
   %w( URL is assumed to return JSON Hash ) do
-    target = stubbed_http_helper(not_hash = [])
-    error = assert_raises(ServiceError) {
-      target.get('sha', no_args = {})
+    stubbed_http_json(not_hash = []) { |error|
+      assert_equal 'json not a Hash', error.message
     }
-    assert_equal 'HttpHelper', error.service_name
-    assert_equal 'sha', error.method_name
-    assert_equal 'json not a Hash', error.message
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -26,34 +22,31 @@ class HttpHelperTest < TestBase
   test 'AE2',
   %w( when URL returns a Hash with 'exception' key, its value is raised as JSON ) do
     json = { 'a' => 'a-msg', 'b' => 'b-msg' }
-    target = stubbed_http_helper({ 'exception' => json })
-    error = assert_raises(ServiceError) {
-      target.get('sha', {})
+    stubbed_http_json({ 'exception' => json }) { |error|
+      assert_equal json, JSON.parse(error.message)
     }
-    assert_equal 'HttpHelper', error.service_name
-    assert_equal 'sha', error.method_name
-    actual = JSON.parse(error.message)
-    assert_equal json, actual
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'AE3',
   %w( raise when URL returns a Hash with the method key missing ) do
-    target = stubbed_http_helper({})
-    error = assert_raises(ServiceError) {
-      target.get('sha', {})
+    stubbed_http_json({}) { |error|
+      assert_equal 'method key missing', error.message
     }
-    assert_equal 'HttpHelper', error.service_name
-    assert_equal 'sha', error.method_name
-    assert_equal 'method key missing', error.message
   end
 
   private
 
-  def stubbed_http_helper(stub)
+  def stubbed_http_json(stub)
     external = External.new({ 'http' => HttpStub.new(stub) })
-    HttpHelper.new(external, 'hostname', 'port')
+    target = HttpHelper.new(external, 'hostname', 'port')
+    error = assert_raises(ServiceError) {
+      target.get('sha', no_args = {})
+    }
+    assert_equal 'HttpHelper', error.service_name
+    assert_equal 'sha', error.method_name
+    yield error
   end
 
 end
