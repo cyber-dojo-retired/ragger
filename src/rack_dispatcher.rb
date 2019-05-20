@@ -31,21 +31,23 @@ class RackDispatcher
     json_response(code(error), diagnostic)
   end
 
-  private # = = = = = = = = = = = =
-
-  include HttpJsonArgs
+  private
 
   def name_args(path, body)
-    http_json_args(body)
-    args = case path
+    args = HttpJsonArgs.new(body)
+    checked_args = case path
       when /^ready$/  then []
       when /^sha/     then []
-      when /^colour$/ then [image_name,id,stdout,stderr,status]
+      when /^colour$/ then [args.image_name,
+                            args.id,
+                            args.stdout,
+                            args.stderr,
+                            args.status]
       else
         raise HttpJsonRequestError, 'unknown path'
     end
     path += '?' if query?(path)
-    [path, args]
+    [path, checked_args]
   end
 
   # - - - - - - - - - - - - - - - -

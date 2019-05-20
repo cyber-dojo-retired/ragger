@@ -5,15 +5,15 @@ require 'json'
 
 # Checks for arguments synactic correctness
 
-module HttpJsonArgs
+class HttpJsonArgs
 
-  def http_json_args(body)
+  def initialize(body)
     @args = JSON.parse(body)
     unless @args.is_a?(Hash)
-      raise HttpJsonRequestError, 'body is not JSON Hash'
+      fail HttpJsonRequestError, 'body is not JSON Hash'
     end
   rescue JSON::ParserError
-    raise HttpJsonRequestError, 'body is not JSON'
+    fail HttpJsonRequestError, 'body is not JSON'
   end
 
   # - - - - - - - - - - - - - - - -
@@ -22,7 +22,7 @@ module HttpJsonArgs
     name = __method__.to_s
     arg = @args[name]
     unless well_formed_image_name?(arg)
-      malformed(name)
+      fail malformed(name)
     end
     arg
   end
@@ -33,7 +33,7 @@ module HttpJsonArgs
     name = __method__.to_s
     arg = @args[name]
     unless well_formed_id?(arg)
-      malformed(name)
+      fail malformed(name)
     end
     arg
   end
@@ -44,7 +44,7 @@ module HttpJsonArgs
     name = __method__.to_s
     arg = @args[name]
     unless arg.is_a?(String)
-      malformed(name)
+      fail malformed(name)
     end
     arg
   end
@@ -55,7 +55,7 @@ module HttpJsonArgs
     name = __method__.to_s
     arg = @args[name]
     unless arg.is_a?(String)
-      malformed(name)
+      fail malformed(name)
     end
     arg
   end
@@ -66,12 +66,12 @@ module HttpJsonArgs
     name = __method__.to_s
     arg = @args[name]
     unless arg.is_a?(String)
-      malformed(name)
+      fail malformed(name)
     end
     arg
   end
 
-  private # = = = = = = = = = = = =
+  private
 
   include WellFormedImageName
 
@@ -80,7 +80,7 @@ module HttpJsonArgs
   end
 
   def malformed(arg_name)
-    raise HttpJsonRequestError, "#{arg_name} is malformed"
+    HttpJsonRequestError.new("#{arg_name} is malformed")
   end
 
 end
