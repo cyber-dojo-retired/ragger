@@ -2,7 +2,7 @@ require_relative 'http_stub'
 require_relative '../src/service_error'
 require_relative 'test_base'
 
-class HttpHelperTest < TestBase
+class HttpJsonTest < TestBase
 
   def self.hex_prefix
     'F90'
@@ -13,7 +13,7 @@ class HttpHelperTest < TestBase
   test 'AE1',
   %w( URL is assumed to return JSON Hash ) do
     json = [] # not a {} Hash
-    assert_call_sha_with_http_json_stub_raises(json) { |error|
+    assert_sha_request_with_http_json_stub_raises(json) { |error|
       assert_equal 'json is not a Hash', error.message
     }
   end
@@ -23,7 +23,7 @@ class HttpHelperTest < TestBase
   test 'AE2',
   %w( when URL returns a Hash with 'exception' key, its value is raised as JSON ) do
     json = { 'a' => 'a-msg', 'b' => 'b-msg' }
-    assert_call_sha_with_http_json_stub_raises({ 'exception' => json }) { |error|
+    assert_sha_request_with_http_json_stub_raises({ 'exception' => json }) { |error|
       assert_equal json, JSON.parse(error.message)
     }
   end
@@ -33,14 +33,14 @@ class HttpHelperTest < TestBase
   test 'AE3',
   %w( raise when URL returns a Hash with the method key missing ) do
     json = {} # not { 'sha' => {...} }
-    assert_call_sha_with_http_json_stub_raises(json) { |error|
+    assert_sha_request_with_http_json_stub_raises(json) { |error|
       assert_equal "key for 'sha' is missing", error.message
     }
   end
 
   private
 
-  def assert_call_sha_with_http_json_stub_raises(stub)
+  def assert_sha_request_with_http_json_stub_raises(stub)
     external = External.new({ 'http' => HttpStub.new(stub) })
     target = HttpJson.new(external, 'runner', '4597')
     error = assert_raises(ServiceError) {
