@@ -5,9 +5,9 @@ require 'json'
 
 # Checks for arguments synactic correctness
 
-module WellFormedArgs
+module HttpJsonArgs
 
-  def well_formed_args(body)
+  def http_json_args(body)
     @args = JSON.parse(body)
     if @args.nil? || !@args.is_a?(Hash)
       raise HttpJsonRequestError, 'body is not JSON Hash'

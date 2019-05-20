@@ -1,5 +1,5 @@
+require_relative 'http_json_args'
 require_relative 'http_json_request_error'
-require_relative 'well_formed_args'
 require 'rack'
 require 'json'
 
@@ -33,10 +33,10 @@ class RackDispatcher
 
   private # = = = = = = = = = = = =
 
-  include WellFormedArgs
+  include HttpJsonArgs
 
   def name_args(path, body)
-    well_formed_args(body)
+    http_json_args(body)
     args = case path
       when /^ready$/  then []
       when /^sha/     then []
