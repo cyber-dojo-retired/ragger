@@ -13,6 +13,8 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
+  # not raising
+  # - - - - - - - - - - - - - - - - -
 
   test 'AB3', 'sha' do
     rack_call({ path_info:'sha', body:{}.to_json })
@@ -29,8 +31,6 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
-  # colour: not raising
-  # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'red' do
     rack_call({ path_info:'colour', body:colour_args.to_json })
@@ -39,11 +39,11 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
-  # colour: raising
+  # raising
   # - - - - - - - - - - - - - - - - -
 
   test 'BAF',
-  %w( unknown method-path becomes exception ) do
+  %w( unknown method-path becomes 400 client error ) do
     expected = 'unknown path'
     assert_rack_call_error(400, expected, nil,       '{}')
     assert_rack_call_error(400, expected, [],        '{}')
@@ -56,7 +56,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB0',
-  %w( malformed json in http body becomes exception ) do
+  %w( malformed json becomes 400 client error ) do
     method_name = 'colour'
     expected = 'body is not JSON'
     assert_rack_call_error(400, expected, method_name, 'sdfsdf')
@@ -71,7 +71,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB1',
-  %w( malformed image_name becomes exception ) do
+  %w( malformed image_name becomes 400 client error ) do
     ImageNameData::malformed.each do |malformed|
       payload = colour_args
       payload['image_name'] = malformed
@@ -82,7 +82,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB2',
-  %w( malformed id becomes exception ) do
+  %w( malformed id becomes 400 client error ) do
     malformed_ids.each do |malformed|
       payload = colour_args
       payload['id'] = malformed
@@ -93,7 +93,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB3',
-  %w( malformed stdout becomes exception ) do
+  %w( malformed stdout becomes 400 client error ) do
     not_String.each do |malformed|
       payload = colour_args
       payload['stdout'] = malformed
@@ -104,7 +104,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB4',
-  %w( malformed stderr becomes 400 error ) do
+  %w( malformed stderr becomes 400 client error ) do
     not_String.each do |malformed|
       payload = colour_args
       payload['stderr'] = malformed
@@ -115,7 +115,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB5',
-  %w( malformed status becomes 400 error ) do
+  %w( malformed status becomes 400 client error ) do
     not_String.each do |malformed|
       payload = colour_args
       payload['status'] = malformed
@@ -126,7 +126,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB6',
-  %w( server error becomes 500 error ) do
+  %w( other errors becomes 500 server error ) do
     http_stub = Class.new do
       include HttpHostnamePort
       def get(_name, _args)

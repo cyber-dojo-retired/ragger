@@ -1,4 +1,3 @@
-
 # https://github.com/moby/moby/blob/master/image/spec/v1.1.md
 # http://stackoverflow.com/questions/37861791/
 # https://github.com/docker/distribution/blob/master/reference/reference.go
