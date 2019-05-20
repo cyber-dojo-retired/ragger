@@ -7,13 +7,13 @@ require 'json'
 
 module WellFormedArgs
 
-  def well_formed_args(s)
-    @args = JSON.parse(s)
+  def well_formed_args(body)
+    @args = JSON.parse(body)
     if @args.nil? || !@args.is_a?(Hash)
-      malformed('json')
+      raise HttpJsonRequestError, 'body is not JSON Hash'
     end
-  rescue
-    malformed('json')
+  rescue JSON::ParserError
+    raise HttpJsonRequestError, 'body is not JSON'
   end
 
   # - - - - - - - - - - - - - - - -
@@ -80,7 +80,7 @@ module WellFormedArgs
   end
 
   def malformed(arg_name)
-    raise HttpJsonRequestError, "#{arg_name}:malformed"
+    raise HttpJsonRequestError, "#{arg_name} is malformed"
   end
 
 end

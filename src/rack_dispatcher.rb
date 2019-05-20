@@ -35,17 +35,17 @@ class RackDispatcher
 
   include WellFormedArgs
 
-  def name_args(name, body)
+  def name_args(path, body)
     well_formed_args(body)
-    args = case name
+    args = case path
       when /^ready$/  then []
       when /^sha/     then []
       when /^colour$/ then [image_name,id,stdout,stderr,status]
       else
-        raise HttpJsonRequestError, 'json:malformed'
+        raise HttpJsonRequestError, 'unknown path'
     end
-    name += '?' if query?(name)
-    [name, args]
+    path += '?' if query?(path)
+    [path, args]
   end
 
   # - - - - - - - - - - - - - - - -

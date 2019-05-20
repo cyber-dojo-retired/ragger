@@ -42,8 +42,8 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BAF',
-  %w( unknown method becomes exception ) do
-    expected = 'json:malformed'
+  %w( unknown method-path becomes exception ) do
+    expected = 'unknown path'
     assert_rack_call_error(400, expected, nil,       '{}')
     assert_rack_call_error(400, expected, [],        '{}')
     assert_rack_call_error(400, expected, {},        '{}')
@@ -55,11 +55,12 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB0',
-  %w( malformed json in http payload becomes exception ) do
-    expected = 'json:malformed'
+  %w( malformed json in http body becomes exception ) do
     method_name = 'colour'
+    expected = 'body is not JSON'
     assert_rack_call_error(400, expected, method_name, 'sdfsdf')
     assert_rack_call_error(400, expected, method_name, 'nil')
+    expected = 'body is not JSON Hash'
     assert_rack_call_error(400, expected, method_name, 'null')
     assert_rack_call_error(400, expected, method_name, '[]')
     assert_rack_call_error(400, expected, method_name, 'true')
@@ -73,7 +74,7 @@ class RackDispatcherTest < TestBase
     ImageNameData::malformed.each do |malformed|
       payload = colour_args
       payload['image_name'] = malformed
-      assert_rack_call_error(400, 'image_name:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'image_name is malformed', 'colour', payload.to_json)
     end
   end
 
@@ -84,7 +85,7 @@ class RackDispatcherTest < TestBase
     malformed_ids.each do |malformed|
       payload = colour_args
       payload['id'] = malformed
-      assert_rack_call_error(400, 'id:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'id is malformed', 'colour', payload.to_json)
     end
   end
 
@@ -95,7 +96,7 @@ class RackDispatcherTest < TestBase
     not_String.each do |malformed|
       payload = colour_args
       payload['stdout'] = malformed
-      assert_rack_call_error(400, 'stdout:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'stdout is malformed', 'colour', payload.to_json)
     end
   end
 
@@ -106,7 +107,7 @@ class RackDispatcherTest < TestBase
     not_String.each do |malformed|
       payload = colour_args
       payload['stderr'] = malformed
-      assert_rack_call_error(400, 'stderr:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'stderr is malformed', 'colour', payload.to_json)
     end
   end
 
@@ -117,7 +118,7 @@ class RackDispatcherTest < TestBase
     not_String.each do |malformed|
       payload = colour_args
       payload['status'] = malformed
-      assert_rack_call_error(400, 'status:malformed', 'colour', payload.to_json)
+      assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
     end
   end
 
