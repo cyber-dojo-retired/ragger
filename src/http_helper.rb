@@ -21,10 +21,10 @@ class HttpHelper
 
   def call(gp, method, named_args)
     json = http.public_send(gp, @hostname, @port, method, named_args)
-    fail_unless(method, 'json not a Hash') { json.class.name == 'Hash' }
+    fail_unless(method, 'json is not a Hash') { json.class.name == 'Hash' }
     exception = json['exception']
     fail_unless(method, pretty(exception)) { exception.nil? }
-    fail_unless(method, 'method key missing') { json.key?(method) }
+    fail_unless(method, "key for '#{method}' is missing") { json.key?(method) }
     json[method]
   end
 

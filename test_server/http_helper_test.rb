@@ -12,8 +12,9 @@ class HttpHelperTest < TestBase
 
   test 'AE1',
   %w( URL is assumed to return JSON Hash ) do
-    stubbed_http_json(not_hash = []) { |error|
-      assert_equal 'json not a Hash', error.message
+    json = [] # not a {} Hash
+    assert_call_sha_with_http_json_stub_raises(json) { |error|
+      assert_equal 'json is not a Hash', error.message
     }
   end
 
@@ -22,7 +23,7 @@ class HttpHelperTest < TestBase
   test 'AE2',
   %w( when URL returns a Hash with 'exception' key, its value is raised as JSON ) do
     json = { 'a' => 'a-msg', 'b' => 'b-msg' }
-    stubbed_http_json({ 'exception' => json }) { |error|
+    assert_call_sha_with_http_json_stub_raises({ 'exception' => json }) { |error|
       assert_equal json, JSON.parse(error.message)
     }
   end
@@ -31,14 +32,15 @@ class HttpHelperTest < TestBase
 
   test 'AE3',
   %w( raise when URL returns a Hash with the method key missing ) do
-    stubbed_http_json({}) { |error|
-      assert_equal 'method key missing', error.message
+    json = {} # not { 'sha' => {...} }
+    assert_call_sha_with_http_json_stub_raises(json) { |error|
+      assert_equal "key for 'sha' is missing", error.message
     }
   end
 
   private
 
-  def stubbed_http_json(stub)
+  def assert_call_sha_with_http_json_stub_raises(stub)
     external = External.new({ 'http' => HttpStub.new(stub) })
     target = HttpHelper.new(external, 'hostname', 'port')
     error = assert_raises(ServiceError) {
