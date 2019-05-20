@@ -10,6 +10,10 @@ class HttpJsonRequestor
     @port = value
   end
 
+  def base_url
+    "http://#{@hostname}:#{@port}"
+  end
+
   def get(path, named_args)
     json_request(path, named_args) do |url|
       Net::HTTP::Get.new(url)
@@ -25,7 +29,7 @@ class HttpJsonRequestor
   private
 
   def json_request(path, named_args)
-    uri = URI.parse("http://#{@hostname}:#{@port}/#{path}")
+    uri = URI.parse("#{base_url}/#{path}")
     req = yield uri
     req.content_type = 'application/json'
     req.body = named_args.to_json

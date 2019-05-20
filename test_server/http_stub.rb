@@ -17,6 +17,10 @@ class HttpStub
     @port = value
   end
 
+  def base_url
+    "http://#{@hostname}:#{@port}"    
+  end
+
   def get(_method, _named_args)
     @response
   end

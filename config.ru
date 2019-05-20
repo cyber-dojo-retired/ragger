@@ -1,6 +1,6 @@
-require 'rack'
 require 'prometheus/middleware/collector'
 require 'prometheus/middleware/exporter'
+require 'rack'
 require_relative './src/external'
 require_relative './src/rack_dispatcher'
 require_relative './src/traffic_light'

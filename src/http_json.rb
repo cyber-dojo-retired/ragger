@@ -38,11 +38,7 @@ class HttpJson
   end
 
   def http_json_error(method_name, message)
-    ServiceError.new(base_url, method_name, message)
-  end
-
-  def base_url
-    "http://#{http.hostname}:#{http.port}"
+    ServiceError.new(http.base_url, method_name, message)
   end
 
   def http

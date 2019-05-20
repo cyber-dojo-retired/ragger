@@ -1,6 +1,6 @@
 require_relative 'http_json'
 
-class RunnerService
+class Runner
 
   def initialize(external)
     @http = HttpJson.new(external, 'runner', 4597)
