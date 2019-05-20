@@ -1,17 +1,33 @@
-require_relative 'http_stub'
-require_relative 'python_pytest'
 require_relative 'test_base'
+require_relative 'python_pytest'
 
-class ColourAmberOnErrorTest < TestBase
+class ColourTest < TestBase
 
   def self.hex_prefix
-    'F6D'
+    'C60'
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test '6A1', 'red' do
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
+    assert red?
+  end
+
+  test '6A2', 'amber' do
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
+    assert amber?
+  end
+
+  test '6A3', 'green' do
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
+    assert green?
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test '5A3',
-  %w( syntax-error ) do
+  %w( amber for syntax-error ) do
     assert_amber_error("undefined local variable or method `sdf'",
       <<~RUBY
       sdf
@@ -22,7 +38,7 @@ class ColourAmberOnErrorTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A4',
-  %w( explicit raise ) do
+  %w( amber for explicit raise ) do
     assert_amber_error('wibble',
       <<~RUBY
       lambda { |stdout, stderr, status|
@@ -35,7 +51,7 @@ class ColourAmberOnErrorTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A5',
-  %w( returning non red/amber/green ) do
+  %w( amber for non red/amber/green ) do
     assert_amber_error('orange',
       <<~RUBY
       lambda { |stdout, stderr, status|
@@ -48,7 +64,7 @@ class ColourAmberOnErrorTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A6',
-  %w( too few parameters ) do
+  %w( amber for too few parameters ) do
     assert_amber_error('wrong number of arguments (given 3, expected 2)',
       <<~RUBY
       lambda { |stdout, stderr|
@@ -61,7 +77,7 @@ class ColourAmberOnErrorTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A7',
-  %w( too many parameters ) do
+  %w( amber for too many parameters ) do
     assert_amber_error('wrong number of arguments (given 3, expected 4)',
       <<~RUBY
       lambda { |stdout, stderr, status, extra|
