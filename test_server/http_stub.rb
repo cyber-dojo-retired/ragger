@@ -5,11 +5,21 @@ class HttpStub
     @response = response
   end
 
-  def get(_hostname, _port, _method, _named_args)
+  attr_reader :hostname, :port
+  
+  def hostname=(value)
+    @hostname = value
+  end
+
+  def port=(value)
+    @port = value
+  end
+
+  def get(_method, _named_args)
     @response
   end
 
-  def post(_hostname, _port, _method, _named_args)
+  def post(_method, _named_args)
     @response
   end
 

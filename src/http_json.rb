@@ -5,8 +5,8 @@ class HttpJson
 
   def initialize(external, hostname, port)
     @external = external
-    @hostname = hostname
-    @port = port
+    http.hostname = hostname
+    http.port = port
   end
 
   def get(method_name, named_args)
@@ -19,10 +19,8 @@ class HttpJson
 
   private
 
-  attr_reader :external, :hostname, :port
-
   def request(gp, method_name, named_args)
-    json = http.public_send(gp, hostname, port, method_name, named_args)
+    json = http.public_send(gp, method_name, named_args)
     unless json.is_a?(Hash)
       message = 'json is not a Hash'
       fail http_json_error(method_name, message)
@@ -39,15 +37,15 @@ class HttpJson
   end
 
   def http_json_error(method_name, message)
-    ServiceError.new(url, method_name, message)
+    ServiceError.new(base_url, method_name, message)
   end
 
-  def url
-    "http://#{hostname}:#{port}"
+  def base_url
+    "http://#{http.hostname}:#{http.port}"
   end
 
   def http
-    external.http
+    @external.http
   end
 
 end

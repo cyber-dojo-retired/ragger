@@ -126,6 +126,8 @@ class RackDispatcherTest < TestBase
   test 'BB6',
   %w( server error becomes 500 error ) do
     http_stub = Class.new do
+      def hostname=(_value); end
+      def port=(_value); end
       def get(*args)
         fail ServiceError.new('HttpStubRaiser', 'ready?', 'no key')
       end
