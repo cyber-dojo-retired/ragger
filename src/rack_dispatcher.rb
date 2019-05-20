@@ -75,11 +75,14 @@ class RackDispatcher
 
   # - - - - - - - - - - - - - - - -
 
+  CLIENT_ERROR_CODE = 400
+  SERVER_ERROR_CODE = 500
+
   def code(error)
     if error.is_a?(HttpJsonRequestError)
-      400 # client_error
+      CLIENT_ERROR_CODE
     else
-      500 # server_error
+      SERVER_ERROR_CODE
     end
   end
 
