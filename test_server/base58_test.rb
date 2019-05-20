@@ -7,14 +7,10 @@ class Base58Test < TestBase
     'F3A'
   end
 
-  def alphabet
-    Base58.alphabet
-  end
-
   # - - - - - - - - - - - - - - - - - - -
 
   test '064', %w(
-  alphabet has 58 characters (10+26+26) all of which get used ) do
+  alphabet has 58 characters (10+(26-2)+(26-2)) all of which get used ) do
     counts = {}
     Base58.string(5000).chars.each do |ch|
       counts[ch] = true
@@ -43,8 +39,8 @@ class Base58Test < TestBase
   test '068', %w(
   string?(s) true ) do
     assert string?('012456789')
-    assert string?('abcdefghjklmnpqrstuvwxyz')
-    assert string?('ABCDEFGHJKLMNPQRSTUVWXYZ')
+    assert string?('abcdefghjklmnpqrstuvwxyz') # no io
+    assert string?('ABCDEFGHJKLMNPQRSTUVWXYZ') # no IO
   end
 
   # - - - - - - - - - - - - - - - - - - -
@@ -58,6 +54,10 @@ class Base58Test < TestBase
   end
 
   private
+
+  def alphabet
+    Base58.alphabet
+  end
 
   def string?(s)
     Base58.string?(s)
