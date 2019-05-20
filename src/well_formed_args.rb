@@ -1,5 +1,5 @@
 require_relative 'base58'
-require_relative 'client_error'
+require_relative 'http_json_request_error'
 require_relative 'well_formed_image_name'
 require 'json'
 
@@ -80,7 +80,7 @@ module WellFormedArgs
   end
 
   def malformed(arg_name)
-    raise ClientError, "#{arg_name}:malformed"
+    raise HttpJsonRequestError, "#{arg_name}:malformed"
   end
 
 end

@@ -1,4 +1,4 @@
-require_relative 'client_error'
+require_relative 'http_json_request_error'
 require_relative 'well_formed_args'
 require 'rack'
 require 'json'
@@ -42,7 +42,7 @@ class RackDispatcher
       when /^sha/     then []
       when /^colour$/ then [image_name,id,stdout,stderr,status]
       else
-        raise ClientError, 'json:malformed'
+        raise HttpJsonRequestError, 'json:malformed'
     end
     name += '?' if query?(name)
     [name, args]
@@ -74,7 +74,7 @@ class RackDispatcher
   # - - - - - - - - - - - - - - - -
 
   def code(error)
-    if error.is_a?(ClientError)
+    if error.is_a?(HttpJsonRequestError)
       400 # client_error
     else
       500 # server_error

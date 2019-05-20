@@ -1,5 +1,5 @@
 
-class ClientError < StandardError
+class HttpJsonRequestError < StandardError
 
   def initialize(message)
     super
