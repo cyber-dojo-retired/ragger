@@ -1,6 +1,6 @@
 require_relative 'http_json_requestor'
-require_relative 'stdout_log'
 require_relative 'runner'
+require_relative 'stdout_log'
 
 class External
 
