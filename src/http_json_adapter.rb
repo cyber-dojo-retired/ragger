@@ -12,15 +12,15 @@ class HttpJsonAdapter
   end
 
   def get(path, named_args)
-    json_request(path, named_args) { |url|
+    json_request(path, named_args) do |url|
       Net::HTTP::Get.new(url)
-    }
+    end
   end
 
   def post(path, named_args)
-    json_request(path, named_args) { |url|
+    json_request(path, named_args) do |url|
       Net::HTTP::Post.new(url)
-    }
+    end
   end
 
   private

@@ -10,21 +10,17 @@ class HttpJson
   end
 
   def get(method_name, named_args)
-    json_response(method_name, named_args) {
-      http.get(method_name, named_args)
-    }
+    json_response(:get, method_name, named_args)
   end
 
   def post(method_name, named_args)
-    json_response(method_name, named_args) {
-      http.post(method_name, named_args)
-    }
+    json_response(:post, method_name, named_args)
   end
 
   private
 
-  def json_response(method_name, named_args)
-    json = yield
+  def json_response(gp, method_name, named_args)
+    json = http.send(gp, method_name, named_args)
     unless json.is_a?(Hash)
       message = 'json is not a Hash'
       fail http_json_error(method_name, message)
