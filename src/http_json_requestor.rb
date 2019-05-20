@@ -1,18 +1,9 @@
+require_relative 'http_hostname_port'
 require 'net/http'
 
 class HttpJsonRequestor
 
-  def hostname=(value)
-    @hostname = value
-  end
-
-  def port=(value)
-    @port = value
-  end
-
-  def base_url
-    "http://#{@hostname}:#{@port}"
-  end
+  include HttpHostnamePort
 
   def get(path, named_args)
     json_request(path, named_args) do |url|
