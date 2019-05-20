@@ -38,16 +38,16 @@ class RackDispatcher
     checked_args = case path
       when /^ready$/  then []
       when /^sha/     then []
-      when /^colour$/ then [args.image_name,
-                            args.id,
-                            args.stdout,
-                            args.stderr,
-                            args.status]
+      when /^colour$/ then args.for_colour
       else
         raise HttpJsonRequestError, 'unknown path'
     end
     path += '?' if query?(path)
     [path, checked_args]
+  end
+
+  def query?(name)
+    ['ready'].include?(name)
   end
 
   # - - - - - - - - - - - - - - - -
@@ -65,12 +65,6 @@ class RackDispatcher
       { 'Content-Type' => 'application/json' },
       [ body ]
     ]
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  def query?(name)
-    ['ready'].include?(name)
   end
 
   # - - - - - - - - - - - - - - - -

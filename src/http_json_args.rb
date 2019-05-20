@@ -18,6 +18,12 @@ class HttpJsonArgs
 
   # - - - - - - - - - - - - - - - -
 
+  def for_colour
+    [image_name, id, stdout, stderr, status]
+  end
+
+  private
+
   def image_name
     name = __method__.to_s
     arg = @args[name]
@@ -26,6 +32,8 @@ class HttpJsonArgs
     end
     arg
   end
+
+  include WellFormedImageName
 
   # - - - - - - - - - - - - - - - -
 
@@ -36,6 +44,10 @@ class HttpJsonArgs
       fail malformed(name)
     end
     arg
+  end
+
+  def well_formed_id?(arg)
+    Base58.string?(arg) && arg.size === 6
   end
 
   # - - - - - - - - - - - - - - - -
@@ -71,13 +83,7 @@ class HttpJsonArgs
     arg
   end
 
-  private
-
-  include WellFormedImageName
-
-  def well_formed_id?(arg)
-    Base58.string?(arg) && arg.size === 6
-  end
+  # - - - - - - - - - - - - - - - -
 
   def malformed(arg_name)
     HttpJsonRequestError.new("#{arg_name} is malformed")
