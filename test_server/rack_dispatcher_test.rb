@@ -1,5 +1,5 @@
 require_relative '../src/rack_dispatcher'
-require_relative 'malformed_data'
+require_relative 'image_name_data'
 require_relative 'python_pytest'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
@@ -70,7 +70,7 @@ class RackDispatcherTest < TestBase
 
   test 'BB1',
   %w( malformed image_name becomes exception ) do
-    malformed_image_names.each do |malformed|
+    ImageNameData::malformed.each do |malformed|
       payload = colour_args
       payload['image_name'] = malformed
       assert_rack_call_error(400, 'image_name:malformed', 'colour', payload.to_json)
@@ -135,8 +135,6 @@ class RackDispatcherTest < TestBase
   end
 
   private # = = = = = = = = = = = = =
-
-  include MalformedData
 
   def not_String
     [
@@ -242,6 +240,19 @@ class RackDispatcherTest < TestBase
       stderr: '',
       status: '0'
     }
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def malformed_ids
+    [
+      nil,          # not String
+      Object.new,   # not String
+      [],           # not String
+      '',           # not 6 chars
+      '12345',      # not 6 chars
+      '1234567',    # not 6 chars
+    ]
   end
 
 end

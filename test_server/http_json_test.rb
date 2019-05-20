@@ -11,7 +11,7 @@ class HttpJsonTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AE1',
-  %w( URL is assumed to return JSON Hash ) do
+  %w( URL must return a JSON Hash ) do
     json = [] # not a {} Hash
     assert_sha_request_with_http_json_stub_raises(json) { |error|
       assert_equal 'json is not a Hash', error.message
@@ -31,7 +31,7 @@ class HttpJsonTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AE3',
-  %w( raise when URL returns a Hash with the method key missing ) do
+  %w( raise when URL returns a JSON Hash with the method key missing ) do
     json = {} # not { 'sha' => {...} }
     assert_sha_request_with_http_json_stub_raises(json) { |error|
       assert_equal "key for 'sha' is missing", error.message
@@ -44,7 +44,7 @@ class HttpJsonTest < TestBase
     external = External.new({ 'http' => HttpStub.new(stub) })
     target = HttpJson.new(external, 'runner', '4597')
     error = assert_raises(ServiceError) {
-      target.get('sha', no_args = {})
+      target.get('sha', {})
     }
     assert_equal 'http://runner:4597', error.service_name
     assert_equal 'sha', error.method_name

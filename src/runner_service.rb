@@ -12,10 +12,10 @@ class RunnerService
 
   def run_cyber_dojo_sh(image_name, id, files, max_seconds)
     @http.post('run_cyber_dojo_sh', {
-      'image_name' => image_name,
-      'id' => id,
-      'files' => files,
-      'max_seconds' => max_seconds
+      image_name:image_name,
+      id:id,
+      files:files,
+      max_seconds:max_seconds
     })
   end
 
