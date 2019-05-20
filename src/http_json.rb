@@ -20,7 +20,8 @@ class HttpJson
   private
 
   def json_response(gp, method_name, named_args)
-    json = http.send(gp, method_name, named_args)
+    response = http.send(gp, method_name, named_args)
+    json = JSON.parse(response.body)
     unless json.is_a?(Hash)
       message = 'json is not a Hash'
       fail http_json_error(method_name, message)

@@ -1,7 +1,6 @@
 require 'net/http'
-require 'json'
 
-class HttpJsonAdapter
+class HttpJsonRequestor
 
   def hostname=(value)
     @hostname = value
@@ -31,8 +30,7 @@ class HttpJsonAdapter
     req.content_type = 'application/json'
     req.body = named_args.to_json
     service = Net::HTTP.new(uri.host, uri.port)
-    response = service.request(req)
-    JSON.parse(response.body)
+    service.request(req)
   end
 
 end

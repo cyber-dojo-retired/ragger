@@ -1,12 +1,14 @@
+require 'json'
+require 'ostruct'
 
 class HttpStub
 
   def initialize(response)
-    @response = response
+    @response = OpenStruct.new(body:JSON.generate(response))
   end
 
   attr_reader :hostname, :port
-  
+
   def hostname=(value)
     @hostname = value
   end
