@@ -143,9 +143,6 @@ class HttpJsonArgsTest < TestBase
 
   private # = = = = = = = = = = = = =
 
-
-  # - - - - - - - - - - - - - - - - -
-
   def colour_args
     {
       image_name: PythonPytest::IMAGE_NAME,
