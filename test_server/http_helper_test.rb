@@ -42,11 +42,11 @@ class HttpHelperTest < TestBase
 
   def assert_call_sha_with_http_json_stub_raises(stub)
     external = External.new({ 'http' => HttpStub.new(stub) })
-    target = HttpHelper.new(external, 'hostname', 'port')
+    target = HttpHelper.new(external, 'runner', '4597')
     error = assert_raises(ServiceError) {
       target.get('sha', no_args = {})
     }
-    assert_equal 'HttpHelper', error.service_name
+    assert_equal 'http://runner:4597', error.service_name
     assert_equal 'sha', error.method_name
     yield error
   end

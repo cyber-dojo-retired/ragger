@@ -9,37 +9,45 @@ class HttpHelper
     @port = port
   end
 
-  def get(method, named_args)
-    call('get', method, named_args)
+  def get(method_name, named_args)
+    http_request('get', method_name, named_args)
   end
 
-  def post(method, named_args)
-    call('post', method, named_args)
+  def post(method_name, named_args)
+    http_request('post', method_name, named_args)
   end
 
   private
 
-  def call(gp, method, named_args)
-    json = http.public_send(gp, @hostname, @port, method, named_args)
-    fail_unless(method, 'json is not a Hash') { json.class.name == 'Hash' }
-    exception = json['exception']
-    fail_unless(method, pretty(exception)) { exception.nil? }
-    fail_unless(method, "key for '#{method}' is missing") { json.key?(method) }
-    json[method]
-  end
+  attr_reader :external, :hostname, :port
 
-  def fail_unless(name, message, &block)
-    unless block.call
-      fail ServiceError.new(self.class.name, name, message)
+  def http_request(gp, method_name, named_args)
+    json = http.public_send(gp, hostname, port, method_name, named_args)
+    unless json.is_a?(Hash)
+      message = 'json is not a Hash'
+      fail http_json_error(method_name, message)
     end
+    if json.key?('exception')
+      message = JSON.pretty_generate(json['exception'])
+      fail http_json_error(method_name, message)
+    end
+    unless json.key?(method_name)
+      message = "key for '#{method_name}' is missing"
+      fail http_json_error(method_name, message)
+    end
+    json[method_name]
   end
 
-  def pretty(json)
-    JSON.pretty_generate(json)
+  def http_json_error(method_name, message)
+    ServiceError.new(url, method_name, message)
+  end
+
+  def url
+    "http://#{hostname}:#{port}"
   end
 
   def http
-    @external.http
+    external.http
   end
 
 end
