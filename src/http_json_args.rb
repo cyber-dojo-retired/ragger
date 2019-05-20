@@ -9,7 +9,7 @@ module HttpJsonArgs
 
   def http_json_args(body)
     @args = JSON.parse(body)
-    if @args.nil? || !@args.is_a?(Hash)
+    unless @args.is_a?(Hash)
       raise HttpJsonRequestError, 'body is not JSON Hash'
     end
   rescue JSON::ParserError
