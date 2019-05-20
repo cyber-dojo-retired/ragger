@@ -1,4 +1,3 @@
-require_relative 'service_error'
 require 'json'
 
 class HttpJson
@@ -24,21 +23,17 @@ class HttpJson
     json = JSON.parse(response.body)
     unless json.is_a?(Hash)
       message = 'json is not a Hash'
-      fail http_json_error(method_name, message)
+      fail StandardError, message
     end
     if json.key?('exception')
       message = JSON.pretty_generate(json['exception'])
-      fail http_json_error(method_name, message)
+      fail StandardError, message
     end
     unless json.key?(method_name)
       message = "key for '#{method_name}' is missing"
-      fail http_json_error(method_name, message)
+      fail StandardError, message
     end
     json[method_name]
-  end
-
-  def http_json_error(method_name, message)
-    ServiceError.new(http.base_url, method_name, message)
   end
 
   def http

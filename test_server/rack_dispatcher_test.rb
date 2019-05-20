@@ -1,3 +1,4 @@
+require_relative '../src/http_hostname_port'
 require_relative '../src/rack_dispatcher'
 require_relative 'image_name_data'
 require_relative 'python_pytest'
@@ -127,10 +128,9 @@ class RackDispatcherTest < TestBase
   test 'BB6',
   %w( server error becomes 500 error ) do
     http_stub = Class.new do
-      def hostname=(_value); end
-      def port=(_value); end
-      def get(*args)
-        fail ServiceError.new('HttpStubRaiser', 'ready?', 'no key')
+      include HttpHostnamePort
+      def get(_name, _args)
+        fail StandardError, 'no key'
       end
     end.new
     @external = External.new({ 'http' => http_stub })
