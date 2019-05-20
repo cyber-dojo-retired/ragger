@@ -12,9 +12,9 @@ class HttpHelperTest < TestBase
 
   test 'AE1',
   %w( URL is assumed to return JSON Hash ) do
-    target = stubbed_http_helper([])
+    target = stubbed_http_helper(not_hash = [])
     error = assert_raises(ServiceError) {
-      target.get('sha', {})
+      target.get('sha', no_args = {})
     }
     assert_equal 'HttpHelper', error.service_name
     assert_equal 'sha', error.method_name
@@ -39,7 +39,7 @@ class HttpHelperTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AE3',
-  %w( when URL returns a Hash with the method key missing, it raises ) do
+  %w( raise when URL returns a Hash with the method key missing ) do
     target = stubbed_http_helper({})
     error = assert_raises(ServiceError) {
       target.get('sha', {})
