@@ -40,6 +40,8 @@ class RackDispatcher
       when /^sha/     then args.for_sha
       when /^colour$/ then args.for_colour
       else
+        # the word path in error.message matches RackDispatcher's
+        # exception field 'path' => path
         raise HttpJsonRequestError, 'unknown path'
     end
     path += '?' if query?(path)

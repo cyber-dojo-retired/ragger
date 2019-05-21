@@ -8,6 +8,8 @@ require 'json'
 class HttpJsonArgs
 
   def initialize(body)
+    # the word body in error.message matches RackDispatcher's
+    # exception field 'body' => body
     @args = JSON.parse(body)
     unless @args.is_a?(Hash)
       fail HttpJsonRequestError, 'body is not JSON Hash'

@@ -100,7 +100,7 @@ class RackDispatcherTest < TestBase
     NOT_STRINGS.each do |status|
       payload = colour_args('status', status)
       assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
-    end 
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
