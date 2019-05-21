@@ -1,6 +1,7 @@
 require_relative '../src/http_json_args'
 require_relative 'data/ids'
 require_relative 'data/image_names'
+require_relative 'data/json'
 require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'test_base'
@@ -45,20 +46,18 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB0',
   %w( raises when body is not JSON ) do
-    expected = 'body is not JSON'
-    assert_http_json_args_error(expected, 'sdfsdf')
-    assert_http_json_args_error(expected, 'nil')
+    NOT_JSON.each do |arg|
+      assert_http_json_args_error('body is not JSON', arg)
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'CB1',
   %w( raises when body is not JSON Hash ) do
-    expected = 'body is not JSON Hash'
-    assert_http_json_args_error(expected, 'null')
-    assert_http_json_args_error(expected, '[]')
-    assert_http_json_args_error(expected, 'true')
-    assert_http_json_args_error(expected, '42')
+    JSON_NOT_HASH.each do |arg|
+      assert_http_json_args_error('body is not JSON Hash', arg)
+    end
   end
 
   # - - - - - - - - - - - - - - - - -

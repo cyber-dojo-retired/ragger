@@ -2,6 +2,7 @@ require_relative '../src/http_hostname_port'
 require_relative '../src/rack_dispatcher'
 require_relative 'data/ids'
 require_relative 'data/image_names'
+require_relative 'data/json'
 require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'rack_request_stub'
@@ -53,12 +54,16 @@ class RackDispatcherTest < TestBase
 
   test 'B00',
   %w( body not json becomes 400 client error ) do
-    assert_rack_call_error(400,'body is not JSON', 'colour', 'sdfsdf')
+    NOT_JSON.each do |arg|
+      assert_rack_call_error(400,'body is not JSON', 'colour', arg)
+    end
   end
 
   test 'B01',
   %w( body not json Hash becomes 400 client error ) do
-    assert_rack_call_error(400, 'body is not JSON Hash', 'colour', 'null')
+    JSON_NOT_HASH.each do |arg|
+      assert_rack_call_error(400, 'body is not JSON Hash', 'colour', arg)
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
