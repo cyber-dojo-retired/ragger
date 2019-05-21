@@ -15,7 +15,7 @@ class TrafficLight
   end
 
   def colour(image_name, id, stdout, stderr, status)
-    @cache[image_name] ||= get_rag_lambda(image_name, id)
+    @cache[image_name] ||= eval(get_rag_lambda_src(image_name, id))
     rag = @cache[image_name].call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)
       log << rag_message(rag.to_s)
@@ -29,11 +29,11 @@ class TrafficLight
 
   private
 
-  def get_rag_lambda(image_name, id)
+  def get_rag_lambda_src(image_name, id)
     files = { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }
     max_seconds = 5
     result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
-    eval(result['stdout']['content'])
+    result['stdout']['content']
   end
 
   def rag_message(message)
