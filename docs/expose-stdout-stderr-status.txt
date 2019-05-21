@@ -6,37 +6,7 @@ traffic_light.colour: make this also return [stdout,stderr,status]
 To prepare for that I can replace the eval() with a call to runner.
 It will need its own specific harness files.
 
-Note: code below assumes runner.run_cyber_dojo_sh
-returns an options like hash rather than an array.
-
-image_name = "cyberdojofoundation/ruby"
-files = {
-  "cyber-dojo.sh" => "ruby traffic_light.rb",
-  "stdout" => sandbox['stdout'],
-  "stderr" => sandbox['stderr'],
-  "status" => sandbox['status'],
-  "traffic_light.rb" =>
-    <<~RUBY
-    #{colour_source};
-    stdout = IO.read('stdout')
-    stderr = IO.read('stderr')
-    status = IO.read('status')
-    puts colour(stdout, stderr, status)
-    RUBY
-}
-max_seconds = 5
-light = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
-rgb = light['stdout'].trim
-colour = (rgb =~ /^red|amber|green$/) ? rgb : 'broken'
-
-Now light['stdout'], light['stderr'], light['status']
-can all be exposed in the browser.
-
-- - - - - - - - - - - - - - - - - - - - - - - - - -
-
-This assumes the lambda has been converted into a plain function.
 Eg, (python_pytest)
-
 lambda { |stdout,stderr,status|
   output = stdout + stderr
   return :red   if /=== FAILURES ===/.match(output)
@@ -44,16 +14,40 @@ lambda { |stdout,stderr,status|
   return :amber
 }
 
-becomes
+@cache[image_name] ||= get_rag_lambda_src(image_name, id)
+ruby = 'cyberdojofoundation/ruby'
+files = {
+  "cyber-dojo.sh" => intact("ruby ./traffic_light.rb"),
+  "lambda.rb" => intact(@cache[image_name]),
+  "stdout" => intact(stdout),
+  "stderr" => intact(stderr),
+  "status" => intact(status),
+  "traffic_light.rb" => intact(
+    <<~RUBY
+    rag = eval(IO.read('lambda.rb'))
+    stdout = IO.read('stdout')
+    stderr = IO.read('stderr')
+    status = IO.read('status')
+    print rag.call(stdout, stderr, status)
+    RUBY
+  )
+}
+max_seconds = 5
+result = runner.run_cyber_dojo_sh(ruby, id, files, max_seconds)
+rgb = result['stdout']['content'].strip
+rgb =~ /^red|amber|green$/ ? rgb : 'amber'
 
-def colour(stdout, stderr, status)
-  output = stdout + stderr
-  return :red   if /=== FAILURES ===/.match(output)
-  return :green if /=== (\d+) passed/.match(output)
-  return :amber
+
+def get_rag_lambda_src(image_name, id)
+  files = { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }
+  max_seconds = 5
+  result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
+  result['stdout']['content']
 end
 
-Hmmmm. To begin with, that could be converted automatically!
+
+Now light['stdout'], light['stderr'], light['status']
+can all be exposed in the browser.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - -
 
