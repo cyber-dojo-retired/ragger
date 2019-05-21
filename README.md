@@ -29,18 +29,17 @@ strings to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_
   * If eval'ing the lambda raises an exception, the colour is "amber".
   * If calling the lambda raises an exception, the colour is "amber".
   * If calling the lambda returns anything other than :red, :amber, or :green, the colour is "amber".
+  * eg
+    ```
+    $ docker run --rm cyberdojofoundation/gcc_assert bash -c 'cat /usr/local/bin/red_amber_green.rb'
 
-eg
-```
-$ docker run --rm cyberdojofoundation/gcc_assert bash -c 'cat /usr/local/bin/red_amber_green.rb'
-
-lambda { |stdout, stderr, status|
-  output = stdout + stderr
-  return :red   if /(.*)Assertion(.*)failed./.match(output)
-  return :green if /(All|\d+) tests passed/.match(output)
-  return :amber
-}
-```
+    lambda { |stdout, stderr, status|
+      output = stdout + stderr
+      return :red   if /(.*)Assertion(.*)failed./.match(output)
+      return :green if /(All|\d+) tests passed/.match(output)
+      return :amber
+    }
+    ```
 
 - parameters, eg
 ```
@@ -56,30 +55,28 @@ lambda { |stdout, stderr, status|
 
 ## GET ready?
 - returns true if the service is ready, otherwise false, eg
-```
+  ```
   { "ready?": true }
   { "ready?": false }
-```
+  ```
 - parameters, none
-```
+  ```
   {}
-```
+  ```
 
 - - - -
 
 ## GET sha
 - returns the git commit sha used to create the docker image, eg
-```
+  ```
   { "sha": "b28b3e13c0778fe409a50d23628f631f87920ce5" }
-```
+  ```
 - parameters, none
-```
+  ```
   {}
-```
+  ```
 
 - - - -
-- - - -
-
 - - - -
 
 * [Take me to cyber-dojo's home github repo](https://github.com/cyber-dojo/cyber-dojo).
