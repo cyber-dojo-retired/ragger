@@ -7,7 +7,8 @@ alt="cyber-dojo yin/yang logo" width="50px" height="50px"/>
 
 - A docker-containerized stateless micro-service for [cyber-dojo](http://cyber-dojo.org).
 - Returns the traffic-light colour, "red", "amber", or "green" for a
-[stdout,stderr,status] tuple produced by a runner.run_cyber_dojo_sh call.
+[stdout,stderr,status] tuple produced by a
+[runner.run_cyber_dojo_sh()](https://github.com/cyber-dojo/runner-stateless#post-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
 
 API:
   * [GET colour(image_name,id,stdout,stderr,status)](#get-colourimage_nameidstdoutstderrstatus)
