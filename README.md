@@ -23,6 +23,10 @@ API:
 
 # GET colour(image_name,id,stdout,stderr,status)
 - returns the [traffic-light colour](http://blog.cyber-dojo.org/2014/10/cyber-dojo-traffic-lights.html) "red", "amber", or "green", by passing **stdout**, **stderr**, and **status** to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb.
+  * If this file does not exist in **image_name**, the colour is "amber".
+  * If eval'ing the lambda raises an exception, the colour is "amber".
+  * If calling the lambda raises an exception, the colour is "amber".
+  * If calling the lambda returns anything other than :red, :amber, or :green, the colour is "amber".
 
 eg
 ```
@@ -34,10 +38,6 @@ lambda { |stdout, stderr, status|
   return :amber
 }
 ```
-  * If this file does not exist in **image_name**, the colour is "amber".
-  * If eval'ing the lambda raises an exception, the colour is "amber".
-  * If calling the lambda raises an exception, the colour is "amber".
-  * If calling the lambda returns anything other than :red, :amber, or :green, the colour is "amber".
 
 - parameters, eg
 ```
