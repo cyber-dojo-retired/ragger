@@ -53,6 +53,8 @@ def colour(stdout, stderr, status)
   return :amber
 end
 
+Hmmmm. To begin with, that could be converted automatically!
+
 - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 Note, dropping sss from main kata [test] page

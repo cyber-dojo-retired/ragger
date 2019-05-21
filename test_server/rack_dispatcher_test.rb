@@ -1,7 +1,9 @@
 require_relative '../src/http_hostname_port'
 require_relative '../src/rack_dispatcher'
-require_relative 'image_name_data'
-require_relative 'python_pytest'
+require_relative 'data/ids'
+require_relative 'data/image_names'
+require_relative 'data/not_strings'
+require_relative 'data/python_pytest'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require 'json'
@@ -63,31 +65,31 @@ class RackDispatcherTest < TestBase
 
   test 'BB1',
   %w( malformed image_name becomes 400 client error ) do
-    payload = colour_args('image_name', ImageNameData::malformed[0])
+    payload = colour_args('image_name', MALFORMED_IMAGE_NAMES[0])
     assert_rack_call_error(400, 'image_name is malformed', 'colour', payload.to_json)
   end
 
   test 'BB2',
   %w( malformed id becomes 400 client error ) do
-    payload = colour_args('id', malformed_ids[0])
+    payload = colour_args('id', MALFORMED_IDS[0])
     assert_rack_call_error(400, 'id is malformed', 'colour', payload.to_json)
   end
 
   test 'BB3',
   %w( malformed stdout becomes 400 client error ) do
-    payload = colour_args('stdout', non_strings[0])
+    payload = colour_args('stdout', NOT_STRINGS[0])
     assert_rack_call_error(400, 'stdout is malformed', 'colour', payload.to_json)
   end
 
   test 'BB4',
   %w( malformed stderr becomes 400 client error ) do
-    payload = colour_args('stderr', non_strings[0])
+    payload = colour_args('stderr', NOT_STRINGS[0])
     assert_rack_call_error(400, 'stderr is malformed', 'colour', payload.to_json)
   end
 
   test 'BB5',
   %w( malformed status becomes 400 client error ) do
-    payload = colour_args('status', non_strings[0])
+    payload = colour_args('status', NOT_STRINGS[0])
     assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
   end
 
@@ -106,6 +108,8 @@ class RackDispatcherTest < TestBase
   end
 
   private # = = = = = = = = = = = = =
+
+  include Test::Data
 
   def assert_200(name)
     assert_equal 200, @status
@@ -205,31 +209,6 @@ class RackDispatcherTest < TestBase
     args = colour_payload.dup
     args[arg_name] = value
     args
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def malformed_ids
-    [
-      nil,          # not String
-      Object.new,   # not String
-      [],           # not String
-      '',           # not 6 chars
-      '12345',      # not 6 chars
-      '1234567',    # not 6 chars
-    ]
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def non_strings
-    [
-      nil,
-      [],
-      0,
-      42,
-      { 'x' => [] },
-    ]
   end
 
 end

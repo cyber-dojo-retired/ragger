@@ -1,5 +1,7 @@
 
-module PythonPytest
+module Test
+  module Data
+    module PythonPytest
 
   IMAGE_NAME = 'cyberdojofoundation/python_pytest'
 
@@ -78,4 +80,6 @@ module PythonPytest
       =========================== 1 passed in 0.01 seconds ===========================
       STDOUT_GREEN
 
+end
+end
 end

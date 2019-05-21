@@ -1,11 +1,13 @@
 require_relative 'test_base'
-require_relative 'python_pytest'
+require_relative 'data/python_pytest'
 
 class ColourTest < TestBase
 
   def self.hex_prefix
     'C60'
   end
+
+  include Test::Data
 
   # - - - - - - - - - - - - - - - - -
 

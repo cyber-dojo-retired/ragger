@@ -1,6 +1,8 @@
 require_relative '../src/http_json_args'
-require_relative 'image_name_data'
-require_relative 'python_pytest'
+require_relative 'data/ids'
+require_relative 'data/image_names'
+require_relative 'data/not_strings'
+require_relative 'data/python_pytest'
 require_relative 'test_base'
 require 'json'
 
@@ -62,7 +64,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB2',
   %w( raises when color-image_name malformed ) do
-    ImageNameData::malformed.each do |malformed|
+    MALFORMED_IMAGE_NAMES.each do |malformed|
       args = colour_args('image_name', malformed)
       assert_http_json_args_error('image_name is malformed') do
         args.for_colour
@@ -74,7 +76,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB3',
   %w( raises when colour-id is malformed ) do
-    malformed_ids.each do |malformed|
+    MALFORMED_IDS.each do |malformed|
       args = colour_args('id', malformed)
       assert_http_json_args_error('id is malformed') do
         args.for_colour
@@ -86,7 +88,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB4',
   %w( raises when colour-stdout is malformed ) do
-    non_strings.each do |malformed|
+    NOT_STRINGS.each do |malformed|
       args = colour_args('stdout', malformed)
       assert_http_json_args_error('stdout is malformed') do
         args.for_colour
@@ -98,7 +100,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB5',
   %w( raises when colour-stderr is malformed ) do
-    non_strings.each do |malformed|
+    NOT_STRINGS.each do |malformed|
       args = colour_args('stderr', malformed)
       assert_http_json_args_error('stderr is malformed') do
         args.for_colour
@@ -110,8 +112,8 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB6',
   %w( raises when colour-status is malformed ) do
-    non_strings.each do |malformed|
-      args = colour_args('status', malformed) 
+    NOT_STRINGS.each do |malformed|
+      args = colour_args('status', malformed)
       assert_http_json_args_error('status is malformed') do
         args.for_colour
       end
@@ -119,6 +121,8 @@ class HttpJsonArgsTest < TestBase
   end
 
   private # = = = = = = = = = = = = =
+
+  include Test::Data
 
   def assert_http_json_args_error(expected, body = nil)
     error = assert_raises(HttpJsonRequestError) do
@@ -147,31 +151,6 @@ class HttpJsonArgsTest < TestBase
     body = colour_payload
     body[key] = value
     HttpJsonArgs.new(JSON.generate(body))
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def malformed_ids
-    [
-      nil,          # not String
-      Object.new,   # not String
-      [],           # not String
-      '',           # not 6 chars
-      '12345',      # not 6 chars
-      '1234567',    # not 6 chars
-    ]
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def non_strings
-    [
-      nil,
-      [],
-      0,
-      42,
-      { 'x' => [] },
-    ]
   end
 
 end
