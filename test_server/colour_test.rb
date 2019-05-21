@@ -13,17 +13,17 @@ class ColourTest < TestBase
 
   test '6A1', 'red' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
-    assert red?
+    assert red?, @result
   end
 
   test '6A2', 'amber' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
-    assert amber?
+    assert amber?, @result
   end
 
   test '6A3', 'green' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
-    assert green?
+    assert green?, @result
   end
 
   # - - - - - - - - - - - - - - - - -
