@@ -1,4 +1,61 @@
 
 traffic_light.colour: make this also return [stdout,stderr,status]
-  I'd like to expose this when I expose the rag-lambda source file
+  I'd like to expose these when I expose the rag-lambda source file
   in the browser.
+
+To prepare for that I can replace the eval() with a call to runner.
+It will need its own specific harness files.
+
+Note: code below assumes runner.run_cyber_dojo_sh
+returns an options like hash rather than an array.
+
+image_name = "cyberdojofoundation/ruby"
+files = {
+  "cyber-dojo.sh" => "ruby traffic_light.rb",
+  "stdout" => sandbox['stdout'],
+  "stderr" => sandbox['stderr'],
+  "status" => sandbox['status'],
+  "traffic_light.rb" =>
+    <<~RUBY
+    #{colour_source};
+    stdout = IO.read('stdout')
+    stderr = IO.read('stderr')
+    status = IO.read('status')
+    puts colour(stdout, stderr, status)
+    RUBY
+}
+max_seconds = 5
+light = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
+rgb = light['stdout'].trim
+colour = (rgb =~ /^red|amber|green$/) ? rgb : 'broken'
+
+Now light['stdout'], light['stderr'], light['status']
+can all be exposed in the browser.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+
+This assumes the lambda has been converted into a plain function.
+Eg, (python_pytest)
+
+lambda { |stdout,stderr,status|
+  output = stdout + stderr
+  return :red   if /=== FAILURES ===/.match(output)
+  return :green if /=== (\d+) passed/.match(output)
+  return :amber
+}
+
+becomes
+
+def colour(stdout, stderr, status)
+  output = stdout + stderr
+  return :red   if /=== FAILURES ===/.match(output)
+  return :green if /=== (\d+) passed/.match(output)
+  return :amber
+end
+
+- - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Note, dropping sss from main kata [test] page
+and showing sss when in [resume] mode
+means [test] page could actually have files
+called stdout,stderr,status if it wished!!!
