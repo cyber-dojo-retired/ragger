@@ -29,13 +29,14 @@ class HttpJsonArgsTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'for_colour' do
-    args = HttpJsonArgs.new(JSON.generate(colour_payload)).for_colour
-    assert_equal colour_payload.size, args.size
-    assert_equal colour_payload[:image_name], args[0]
-    assert_equal colour_payload[:id        ], args[1]
-    assert_equal colour_payload[:stdout    ], args[2]
-    assert_equal colour_payload[:stderr    ], args[3]
-    assert_equal colour_payload[:status    ], args[4]
+    body = JSON.generate(colour_body)
+    args = HttpJsonArgs.new(body).for_colour
+    assert_equal colour_body.size, args.size
+    assert_equal colour_body[:image_name], args[0]
+    assert_equal colour_body[:id        ], args[1]
+    assert_equal colour_body[:stdout    ], args[2]
+    assert_equal colour_body[:stderr    ], args[3]
+    assert_equal colour_body[:status    ], args[4]
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -137,7 +138,7 @@ class HttpJsonArgsTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def colour_payload
+  def colour_body
     {
       image_name: PythonPytest::IMAGE_NAME,
       id: id,
@@ -148,7 +149,7 @@ class HttpJsonArgsTest < TestBase
   end
 
   def colour_args(key, value)
-    body = colour_payload
+    body = colour_body
     body[key] = value
     HttpJsonArgs.new(JSON.generate(body))
   end
