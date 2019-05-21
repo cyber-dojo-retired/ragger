@@ -22,7 +22,8 @@ API:
 - - - -
 
 # GET colour(image_name,id,stdout,stderr,status)
-- returns the [traffic-light colour](http://blog.cyber-dojo.org/2014/10/cyber-dojo-traffic-lights.html) "red", "amber", or "green", by passing **stdout**, **stderr**, and **status** to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb.
+- returns the [traffic-light colour](http://blog.cyber-dojo.org/2014/10/cyber-dojo-traffic-lights.html) "red", "amber", or "green", by passing the **stdout**, **stderr**, **status** string
+to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb.
   * If this file does not exist in **image_name**, the colour is "amber".
   * If eval'ing the lambda raises an exception, the colour is "amber".
   * If calling the lambda raises an exception, the colour is "amber".
@@ -31,6 +32,7 @@ API:
 eg
 ```
 $ docker run --rm cyberdojofoundation/gcc_assert bash -c 'cat /usr/local/bin/red_amber_green.rb'
+
 lambda { |stdout, stderr, status|
   output = stdout + stderr
   return :red   if /(.*)Assertion(.*)failed./.match(output)
@@ -52,26 +54,26 @@ lambda { |stdout, stderr, status|
 - - - -
 
 ## GET ready?
-- parameters, none
-```
-  {}
-```
 - returns true if the service is ready, otherwise false, eg
 ```
   { "ready?": true }
   { "ready?": false }
 ```
-
-- - - -
-
-## GET sha
 - parameters, none
 ```
   {}
 ```
+
+- - - -
+
+## GET sha
 - returns the git commit sha used to create the docker image, eg
 ```
   { "sha": "b28b3e13c0778fe409a50d23628f631f87920ce5" }
+```
+- parameters, none
+```
+  {}
 ```
 
 - - - -
