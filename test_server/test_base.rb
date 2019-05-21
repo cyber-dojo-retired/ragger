@@ -35,20 +35,20 @@ class TestBase < HexMiniTest
     end
   end
 
-  def red?
-    colour?('red')
+  def assert_red
+    assert_colour('red')
   end
 
-  def amber?
-    colour?('amber')
+  def assert_amber
+    assert_colour('amber')
   end
 
-  def green?
-    colour?('green')
+  def assert_green
+    assert_colour('green')
   end
 
-  def colour?(expected)
-    @result === expected
+  def assert_colour(expected)
+    assert_equal expected, @result
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

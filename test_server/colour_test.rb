@@ -13,17 +13,17 @@ class ColourTest < TestBase
 
   test '6A1', 'red' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
-    assert red?, @result
+    assert_red
   end
 
   test '6A2', 'amber' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
-    assert amber?, @result
+    assert_amber
   end
 
   test '6A3', 'green' do
     colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
-    assert green?, @result
+    assert_green
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -102,7 +102,7 @@ class ColourTest < TestBase
     spy = StdoutLogSpy.new
     @external = External.new({ 'http' => stub, 'log' => spy })
     colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
-    assert amber?
+    assert_amber
     assert spy.spied?(expected)
   end
 
