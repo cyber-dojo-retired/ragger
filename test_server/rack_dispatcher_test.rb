@@ -65,32 +65,42 @@ class RackDispatcherTest < TestBase
 
   test 'BB1',
   %w( malformed image_name becomes 400 client error ) do
-    payload = colour_args('image_name', MALFORMED_IMAGE_NAMES[0])
-    assert_rack_call_error(400, 'image_name is malformed', 'colour', payload.to_json)
+    MALFORMED_IMAGE_NAMES.each do |image_name|
+      payload = colour_args('image_name', image_name)
+      assert_rack_call_error(400, 'image_name is malformed', 'colour', payload.to_json)
+    end
   end
 
   test 'BB2',
   %w( malformed id becomes 400 client error ) do
-    payload = colour_args('id', MALFORMED_IDS[0])
-    assert_rack_call_error(400, 'id is malformed', 'colour', payload.to_json)
+    MALFORMED_IDS.each do |id|
+      payload = colour_args('id', id)
+      assert_rack_call_error(400, 'id is malformed', 'colour', payload.to_json)
+    end
   end
 
   test 'BB3',
   %w( malformed stdout becomes 400 client error ) do
-    payload = colour_args('stdout', NOT_STRINGS[0])
-    assert_rack_call_error(400, 'stdout is malformed', 'colour', payload.to_json)
+    NOT_STRINGS.each do |stdout|
+      payload = colour_args('stdout', stdout)
+      assert_rack_call_error(400, 'stdout is malformed', 'colour', payload.to_json)
+    end
   end
 
   test 'BB4',
   %w( malformed stderr becomes 400 client error ) do
-    payload = colour_args('stderr', NOT_STRINGS[0])
-    assert_rack_call_error(400, 'stderr is malformed', 'colour', payload.to_json)
+    NOT_STRINGS.each do |stderr|
+      payload = colour_args('stderr', stderr)
+      assert_rack_call_error(400, 'stderr is malformed', 'colour', payload.to_json)
+    end
   end
 
   test 'BB5',
   %w( malformed status becomes 400 client error ) do
-    payload = colour_args('status', NOT_STRINGS[0])
-    assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
+    NOT_STRINGS.each do |status|
+      payload = colour_args('status', status)
+      assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
+    end 
   end
 
   # - - - - - - - - - - - - - - - - -

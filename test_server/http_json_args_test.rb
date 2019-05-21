@@ -64,8 +64,8 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB2',
   %w( raises when color-image_name malformed ) do
-    MALFORMED_IMAGE_NAMES.each do |malformed|
-      args = colour_args('image_name', malformed)
+    MALFORMED_IMAGE_NAMES.each do |image_name|
+      args = colour_args('image_name', image_name)
       assert_http_json_args_error('image_name is malformed') do
         args.for_colour
       end
@@ -76,8 +76,8 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB3',
   %w( raises when colour-id is malformed ) do
-    MALFORMED_IDS.each do |malformed|
-      args = colour_args('id', malformed)
+    MALFORMED_IDS.each do |id|
+      args = colour_args('id', id)
       assert_http_json_args_error('id is malformed') do
         args.for_colour
       end
@@ -88,8 +88,8 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB4',
   %w( raises when colour-stdout is malformed ) do
-    NOT_STRINGS.each do |malformed|
-      args = colour_args('stdout', malformed)
+    NOT_STRINGS.each do |stdout|
+      args = colour_args('stdout', stdout)
       assert_http_json_args_error('stdout is malformed') do
         args.for_colour
       end
@@ -100,8 +100,8 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB5',
   %w( raises when colour-stderr is malformed ) do
-    NOT_STRINGS.each do |malformed|
-      args = colour_args('stderr', malformed)
+    NOT_STRINGS.each do |stderr|
+      args = colour_args('stderr', stderr)
       assert_http_json_args_error('stderr is malformed') do
         args.for_colour
       end
@@ -112,8 +112,8 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB6',
   %w( raises when colour-status is malformed ) do
-    NOT_STRINGS.each do |malformed|
-      args = colour_args('status', malformed)
+    NOT_STRINGS.each do |status|
+      args = colour_args('status', status)
       assert_http_json_args_error('status is malformed') do
         args.for_colour
       end
