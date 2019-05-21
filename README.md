@@ -22,20 +22,7 @@ API:
 - - - -
 
 # GET colour(image_name,id,stdout,stderr,status)
-Returns the traffic-light colour "red", "amber", or "green"
-of [**stdout**,**stderr**,**status**] for **image_name**.
-- parameters, eg
-```
-  {        "image_name": "cyberdojofoundation/gcc_assert",
-                   "id": "15B9zD",
-               "stdout": "...",
-               "stderr": "...",
-               "status": "3",
-  }
-```
-The [traffic-light colour](http://blog.cyber-dojo.org/2014/10/cyber-dojo-traffic-lights.html)
-is determined by passing **stdout**, **stderr**, and **status** to a Ruby lambda, read from
-**image_name**, at /usr/local/bin/red_amber_green.rb.
+- returns the [traffic-light colour](http://blog.cyber-dojo.org/2014/10/cyber-dojo-traffic-lights.html) "red", "amber", or "green", by passing **stdout**, **stderr**, and **status** to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb.
 
 eg
 ```
@@ -47,9 +34,20 @@ lambda { |stdout, stderr, status|
   return :amber
 }
 ```
-- If this file does not exist in **image_name**, the colour is "amber".
-- If the contents of this file raises an exception when eval'd or called, the colour is "amber".
-- If the lambda returns anything other than :red, :amber, or :green, the colour is "amber".
+  * If this file does not exist in **image_name**, the colour is "amber".
+  * If eval'ing the lambda raises an exception, the colour is "amber".
+  * If calling the lambda raises an exception, the colour is "amber".
+  * If calling the lambda returns anything other than :red, :amber, or :green, the colour is "amber".
+
+- parameters, eg
+```
+  {        "image_name": "cyberdojofoundation/gcc_assert",
+                   "id": "15B9zD",
+               "stdout": "...",
+               "stderr": "...",
+               "status": "3",
+  }
+```
 
 - - - -
 
