@@ -9,7 +9,7 @@ module ImageName # mix-in
   def well_formed?(image_name)
     return false if image_name.nil?
     i = image_name.index('/')
-    if i.nil? || i === -1 || (
+    if i.nil? || (
         !image_name[0...i].include?('.') &&
         !image_name[0...i].include?(':') &&
          image_name[0...i] != 'localhost')
