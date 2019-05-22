@@ -21,8 +21,6 @@ module ImageName # mix-in
     [s[0..i-1], s[i+1..-1]]
   end
 
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
   def remote_name?(s)
     exclude?(s, '.') && exclude?(s, ':') && s != 'localhost'
   end
