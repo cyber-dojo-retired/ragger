@@ -59,33 +59,33 @@ module Test
 
     # - - - - - - - - - - - - - - - - - - - - - -
 
-    HEX = '3D'*16
+    HEX = 'D'
 
     MALFORMED_IMAGE_NAMES =
       [
         nil,
-        '<none>',         # [docker images] gives this
-        '',               # nothing!
-        '_',              # host-name cannot start with separator
-        'name_',          # host-name cannot end with separator
-        ';;;',            # host-name illegal char
-        'ALPHA/name',     # no uppercase in host-name
-        'gcc/Assert',     # no uppercase in remote-name
-        'alpha/name_',    # remote-name cannot end in separator
-        'alpha/_name',    # remote-name cannot begin with separator
-        'gcc:.',          # tag can't start with .
-        'gcc:-',          # tag can't start with -
-        'gcc:{}',         # {} is illegal tag
-        "gcc:#{'x'*129}", # tag too long
-        '-/gcc/assert:23',    # - is illegal host-name
-        '-x/gcc/assert:23',   # -x is illegal host-name
-        'x-/gcc/assert:23',   # x- is illegal host-name
-        '/gcc/assert',        # remote-name can't start with /
-        'gcc_assert@sha256:1234567890123456789012345678901',  # digest-hex is too short
-        "gcc_assert!sha256-2:#{HEX}",  # digest starts with @
-        "gcc_assert@256:#{HEX}",       # digest-component must start with letter
-        "gcc_assert@sha256-2:#{HEX}",  # digest-component must start with letter
-        "gcc_assert@sha256#{HEX}",     # hex-digits starts with :
+        '<none>',                 # [docker images] gives this
+        '',                       # nothing!
+        '_',                      # host-name cannot start with separator
+        'name_',                  # host-name cannot end with separator
+        ';;;',                    # host-name illegal char
+        'ALPHA/name',             # no uppercase in host-name
+        'gcc/Assert',             # no uppercase in remote-name
+        'alpha/name_',            # remote-name cannot end in separator
+        'alpha/_name',            # remote-name cannot begin with separator
+        'gcc:.',                  # tag can't start with .
+        'gcc:-',                  # tag can't start with -
+        'gcc:{}',                 # {} is illegal tag
+        "gcc:#{'x'*129}",         # tag too long
+        '-/gcc/assert:23',        # - is illegal host-name
+        '-x/gcc/assert:23',       # -x is illegal host-name
+        'x-/gcc/assert:23',       # x- is illegal host-name
+        '/gcc/assert',            # remote-name can't start with /
+        "gcc@sha256:#{HEX*31}",   # digest-hex is too short
+        "gcc!sha256-2:#{HEX*32}", # digest starts with @
+        "gcc@256:#{HEX*32}",      # digest-component must start with letter
+        "gcc@sha256-2:#{HEX*32}", # digest-component must start with letter
+        "gcc@sha256#{HEX*32}",    # hex-digits starts with :
       ]
 
   end
