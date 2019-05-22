@@ -59,7 +59,7 @@ module Test
 
     # - - - - - - - - - - - - - - - - - - - - - -
 
-    HEX = '9'*32
+    HEX = '3D'*16
 
     MALFORMED_IMAGE_NAMES =
       [

@@ -8,35 +8,16 @@ module ImageName # mix-in
 
   def well_formed?(image_name)
     return false if image_name.nil?
-    hostname,remote_name = split(image_name)
-    valid_hostname?(hostname) && valid_remote_name?(remote_name)
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def split(image_name)
     i = image_name.index('/')
     if i.nil? || i === -1 || (
         !image_name[0...i].include?('.') &&
         !image_name[0...i].include?(':') &&
          image_name[0...i] != 'localhost')
-      hostname = ''
-      remote_name = image_name
+      image_name =~ REMOTE_NAME
     else
-      hostname = image_name[0..i-1]
-      remote_name = image_name[i+1..-1]
+      image_name[0..i-1] =~ HOST_NAME &&
+        image_name[i+1..-1] =~ REMOTE_NAME
     end
-    [hostname,remote_name]
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def valid_hostname?(hostname)
-    hostname === '' || hostname =~ HOSTNAME
-  end
-
-  def valid_remote_name?(remote_name)
-    remote_name =~ REMOTE_NAME
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,7 +25,7 @@ module ImageName # mix-in
   CH = 'a-zA-Z0-9'
   COMPONENT = "([#{CH}]|[#{CH}][#{CH}-]*[#{CH}])"
   PORT = '[\d]+'
-  HOSTNAME = /^(#{COMPONENT}(\.#{COMPONENT})*)(:(#{PORT}))?$/
+  HOST_NAME = /^(#{COMPONENT}(\.#{COMPONENT})*)(:(#{PORT}))?$/
 
   ALPHA_NUMERIC = '[a-z0-9]+'
   SEPARATOR = '([.]{1}|[_]{1,2}|[-]+)'
