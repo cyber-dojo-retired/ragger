@@ -31,16 +31,20 @@ module ImageName # mix-in
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  CH = 'a-zA-Z0-9'
-  COMPONENT = "([#{CH}]|[#{CH}][#{CH}-]*[#{CH}])"
-  PORT = '[\d]+'
-  HOSTNAME = /^(#{COMPONENT}(\.#{COMPONENT})*)(:(#{PORT}))?$/
-
   def valid_hostname?(hostname)
     hostname === '' || hostname =~ HOSTNAME
   end
 
+  def valid_remote_name?(remote_name)
+    remote_name =~ REMOTE_NAME
+  end
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  CH = 'a-zA-Z0-9'
+  COMPONENT = "([#{CH}]|[#{CH}][#{CH}-]*[#{CH}])"
+  PORT = '[\d]+'
+  HOSTNAME = /^(#{COMPONENT}(\.#{COMPONENT})*)(:(#{PORT}))?$/
 
   ALPHA_NUMERIC = '[a-z0-9]+'
   SEPARATOR = '([.]{1}|[_]{1,2}|[-]+)'
@@ -53,9 +57,5 @@ module ImageName # mix-in
   DIGEST_HEX = "[0-9a-fA-F]{32,}"
   DIGEST = "#{DIGEST_ALGORITHM}[:]#{DIGEST_HEX}"
   REMOTE_NAME = /^(#{NAME})(:(#{TAG}))?(@#{DIGEST})?$/
-
-  def valid_remote_name?(remote_name)
-    remote_name =~ REMOTE_NAME
-  end
 
 end
