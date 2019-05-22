@@ -17,6 +17,8 @@ module ImageName # mix-in
     end
   end
 
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
   def local?(image_name)
     image_name.include?('.') ||
       image_name.include?(':') ||
@@ -29,6 +31,8 @@ module ImageName # mix-in
   COMPONENT = "([#{CH}]|[#{CH}][#{CH}-]*[#{CH}])"
   PORT = '[\d]+'
   HOST_NAME = /^(#{COMPONENT}(\.#{COMPONENT})*)(:(#{PORT}))?$/
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   ALPHA_NUMERIC = '[a-z0-9]+'
   SEPARATOR = '([.]{1}|[_]{1,2}|[-]+)'
