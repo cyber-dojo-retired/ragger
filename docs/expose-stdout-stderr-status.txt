@@ -45,9 +45,17 @@ def get_rag_lambda_src(image_name, id)
   result['stdout']['content']
 end
 
-
 Now light['stdout'], light['stderr'], light['status']
 can all be exposed in the browser.
+
+An issue with this is that doing the runner.run is a lot slower
+than doing the eval. But, I think I can get the both of best worlds.
+The red_amber_green.rb source can be editable in the browser.
+Initially this will come from the image or the start-point.
+When the ragger is sent red_amber_green.rb it can compare it against
+the original. If it has not changed it can use the already eval'd
+function, which is ready to go. If it has changed, it can send it
+to the runner.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - -
 
