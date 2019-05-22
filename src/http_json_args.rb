@@ -1,6 +1,6 @@
 require_relative 'base58'
 require_relative 'http_json_request_error'
-require_relative 'well_formed_image_name'
+require_relative 'image_name'
 require 'json'
 
 # Checks for arguments synactic correctness
@@ -37,13 +37,13 @@ class HttpJsonArgs
   def image_name
     name = __method__.to_s
     arg = @args[name]
-    unless well_formed_image_name?(arg)
+    unless ImageName::well_formed?(arg)
       fail malformed(name)
     end
     arg
   end
 
-  include WellFormedImageName
+  include ImageName
 
   # - - - - - - - - - - - - - - - -
 

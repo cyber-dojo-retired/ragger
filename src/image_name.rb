@@ -2,19 +2,19 @@
 # http://stackoverflow.com/questions/37861791/
 # https://github.com/docker/distribution/blob/master/reference/reference.go
 
-module WellFormedImageName # mix-in
+module ImageName # mix-in
 
   module_function
 
-  def well_formed_image_name?(s)
-    return false if s.nil?
-    hostname,remote_name = split_image_name(s)
+  def well_formed?(image_name)
+    return false if image_name.nil?
+    hostname,remote_name = split(image_name)
     valid_hostname?(hostname) && valid_remote_name?(remote_name)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def split_image_name(image_name)
+  def split(image_name)
     i = image_name.index('/')
     if i.nil? || i === -1 || (
         !image_name[0...i].include?('.') &&

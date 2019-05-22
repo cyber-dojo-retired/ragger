@@ -1,6 +1,6 @@
 
 The rag-lambda source would come from the start-point image at first,
-(later from the browser as an editable file), and not from the
+(later from the browser as an editable? file), and not from the
 test-framework image.
 
 
