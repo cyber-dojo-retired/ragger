@@ -1,5 +1,5 @@
-# https://github.com/moby/moby/blob/master/image/spec/v1.1.md
 # http://stackoverflow.com/questions/37861791/
+# https://github.com/moby/moby/blob/master/image/spec/v1.1.md
 # https://github.com/docker/distribution/blob/master/reference/reference.go
 
 module ImageName # mix-in
@@ -9,7 +9,7 @@ module ImageName # mix-in
   def image_name?(s)
     return false if s.nil?
     i = s.index('/')
-    if i.nil? || !local_name?(s[0...i])
+    if i.nil? || remote_name?(s[0...i])
       s =~ REMOTE_NAME
     else
       host_name,remote_name = cut(s, i)
@@ -23,10 +23,12 @@ module ImageName # mix-in
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def local_name?(s)
-    s.include?('.') ||
-      s.include?(':') ||
-        s === 'localhost'
+  def remote_name?(s)
+    exclude?(s, '.') && exclude?(s, ':') && s != 'localhost'
+  end
+
+  def exclude?(s, c)
+    !s.include?(c)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
