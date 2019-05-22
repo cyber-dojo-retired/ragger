@@ -37,7 +37,7 @@ class HttpJsonArgs
   def image_name
     name = __method__.to_s
     arg = @args[name]
-    unless ImageName::well_formed?(arg)
+    unless image_name?(arg)
       fail malformed(name)
     end
     arg
