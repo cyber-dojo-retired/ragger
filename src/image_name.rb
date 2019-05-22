@@ -9,15 +9,18 @@ module ImageName # mix-in
   def well_formed?(image_name)
     return false if image_name.nil?
     i = image_name.index('/')
-    if i.nil? || (
-        !image_name[0...i].include?('.') &&
-        !image_name[0...i].include?(':') &&
-         image_name[0...i] != 'localhost')
+    if i.nil? || !local?(image_name[0...i])
       image_name =~ REMOTE_NAME
     else
       image_name[0..i-1] =~ HOST_NAME &&
         image_name[i+1..-1] =~ REMOTE_NAME
     end
+  end
+
+  def local?(image_name)
+    image_name.include?('.') ||
+      image_name.include?(':') ||
+        image_name == 'localhost'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
