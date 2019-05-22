@@ -22,7 +22,7 @@ module ImageName # mix-in
   def local?(image_name)
     image_name.include?('.') ||
       image_name.include?(':') ||
-        image_name == 'localhost'
+        image_name === 'localhost'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - -
