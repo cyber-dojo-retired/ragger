@@ -8,7 +8,6 @@ require_relative 'http_stub'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require 'json'
-require 'ostruct'
 
 class RackDispatcherTest < TestBase
 
@@ -46,13 +45,6 @@ class RackDispatcherTest < TestBase
   # raising
   # - - - - - - - - - - - - - - - - -
 
-  test 'BAF',
-  %w( unknown method-path becomes 400 client error ) do
-    assert_rack_call_error(400, 'unknown path', nil, '{}')
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
   test 'B00',
   %w( body not json becomes 400 client error ) do
     NOT_JSON.each do |arg|
@@ -65,6 +57,13 @@ class RackDispatcherTest < TestBase
     JSON_NOT_HASH.each do |arg|
       assert_rack_call_error(400, 'body is not JSON Hash', 'colour', arg)
     end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test 'B02',
+  %w( unknown method-path becomes 400 client error ) do
+    assert_rack_call_error(400, 'unknown path', nil, '{}')
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -114,9 +113,7 @@ class RackDispatcherTest < TestBase
   test 'BB6',
   %w( other errors become 500 server error ) do
     @external = External.new({ 'http' => HttpStub })
-    HttpStub.define_method(:request) do |_req|
-      OpenStruct.new(:body => JSON.generate({}))
-    end
+    HttpStub.request_returns({})
     expected = "key for 'ready?' is missing"
     assert_rack_call_error(500, expected, 'ready', {}.to_json)
   end

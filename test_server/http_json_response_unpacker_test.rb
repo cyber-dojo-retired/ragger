@@ -2,7 +2,6 @@ require_relative '../src/http_json/request_packer'
 require_relative '../src/http_json/response_unpacker'
 require_relative 'http_stub'
 require_relative 'test_base'
-require 'ostruct'
 
 class HttpJsonResponseUnpackerTest < TestBase
 
@@ -44,9 +43,7 @@ class HttpJsonResponseUnpackerTest < TestBase
 
   def assert_sha_http_json_stub_raises(json)
     @external = External.new({ 'http' => HttpStub })
-    HttpStub.define_method(:request) do |_req|
-      OpenStruct.new(:body => JSON.generate(json))
-    end
+    HttpStub.request_returns(json)
     requester = HttpJson::RequestPacker.new(external, 'runner', 4597)
     target = HttpJson::ResponseUnpacker.new(requester)
     error = assert_raises { target.get('sha', {}) }
