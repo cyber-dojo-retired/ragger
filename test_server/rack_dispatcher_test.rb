@@ -20,7 +20,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB3', 'sha' do
-    rack_call({ path_info:'sha', body:{}.to_json })
+    rack_call('sha', {}.to_json)
     sha = assert_200('sha')
     assert_sha(sha)
   end
@@ -28,7 +28,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB4', 'ready' do
-    rack_call({ path_info:'ready', body:{}.to_json })
+    rack_call('ready', {}.to_json)
     ready = assert_200('ready?')
     assert ready
   end
@@ -36,7 +36,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'red' do
-    rack_call({ path_info:'colour', body:colour_payload.to_json })
+    rack_call('colour', colour_payload.to_json)
     colour = assert_200('colour')
     assert_equal 'red', colour
   end
@@ -138,8 +138,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   def assert_rack_call_error(status, expected, path_info, body)
-    env = { path_info:path_info, body:body }
-    rack_call(env)
+    rack_call(path_info, body)
     assert_equal @status, status
 
     [@body, @stderr].each do |s|
@@ -155,9 +154,10 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def rack_call(env, e = external)
-    traffic_light = TrafficLight.new(e)
+  def rack_call(path_info, body)
+    traffic_light = TrafficLight.new(external)
     rack = RackDispatcher.new(traffic_light)
+    env = { path_info:path_info, body:body }
     response = with_captured_stdout_stderr {
       rack.call(env, RackRequestStub)
     }
