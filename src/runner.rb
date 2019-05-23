@@ -19,6 +19,8 @@ class Runner
     })
   end
 
+  private
+  
   HOSTNAME = 'runner'
   PORT = 4597
 

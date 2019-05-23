@@ -1,5 +1,6 @@
-require 'uri'
+require 'json'
 require 'net/http'
+require 'uri'
 
 module HttpJson
 
@@ -23,7 +24,7 @@ module HttpJson
       uri = URI.parse("http://#{hostname}:#{port}/#{path}")
       req = yield uri
       req.content_type = 'application/json'
-      req.body = args.to_json
+      req.body = JSON.generate(args)
       service = Net::HTTP.new(uri.host, uri.port)
       service.request(req)
     end
