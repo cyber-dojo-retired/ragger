@@ -9,11 +9,11 @@ module HttpJson
     end
 
     def get(hostname, port, path, args)
-      json_response(:get, hostname, port, path, args)
+      json_response(:get, hostname, port, path.to_s, args)
     end
 
     def post(hostname, port, path, args)
-      json_response(:post, hostname, port, path, args)
+      json_response(:post, hostname, port, path.to_s, args)
     end
 
     private

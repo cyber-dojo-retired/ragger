@@ -7,11 +7,11 @@ class Runner
   end
 
   def ready?
-    @http.get(HOSTNAME, PORT, 'ready?', {})
+    @http.get(HOSTNAME, PORT, __method__, {})
   end
 
   def run_cyber_dojo_sh(image_name, id, files, max_seconds)
-    @http.post(HOSTNAME, PORT, 'run_cyber_dojo_sh', {
+    @http.post(HOSTNAME, PORT, __method__, {
       image_name:image_name,
       id:id,
       files:files,
