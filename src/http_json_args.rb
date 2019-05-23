@@ -22,12 +22,9 @@ class HttpJsonArgs
 
   def get(path)
     case path
-    when '/ready'
-      ['ready?',[]]
-    when '/sha'
-      ['sha',[]]
-    when '/colour'
-      ['colour',[image_name, id, stdout, stderr, status]]
+    when '/ready'  then ['ready?',[]]
+    when '/sha'    then ['sha',[]]
+    when '/colour' then ['colour',[image_name, id, stdout, stderr, status]]
     else
       raise HttpJson::Error, 'unknown path'
     end
@@ -36,8 +33,7 @@ class HttpJsonArgs
   private
 
   def image_name
-    name = __method__.to_s
-    arg = @args[name]
+    arg = @args[name = __method__.to_s]
     unless Docker::image_name?(arg)
       fail malformed(name)
     end
@@ -47,8 +43,7 @@ class HttpJsonArgs
   # - - - - - - - - - - - - - - - -
 
   def id
-    name = __method__.to_s
-    arg = @args[name]
+    arg = @args[name = __method__.to_s]
     unless well_formed_id?(arg)
       fail malformed(name)
     end
@@ -62,8 +57,7 @@ class HttpJsonArgs
   # - - - - - - - - - - - - - - - -
 
   def stdout
-    name = __method__.to_s
-    arg = @args[name]
+    arg = @args[name = __method__.to_s]
     unless arg.is_a?(String)
       fail malformed(name)
     end
@@ -73,8 +67,7 @@ class HttpJsonArgs
   # - - - - - - - - - - - - - - - -
 
   def stderr
-    name = __method__.to_s
-    arg = @args[name]
+    arg = @args[name = __method__.to_s]
     unless arg.is_a?(String)
       fail malformed(name)
     end
@@ -84,8 +77,7 @@ class HttpJsonArgs
   # - - - - - - - - - - - - - - - -
 
   def status
-    name = __method__.to_s
-    arg = @args[name]
+    arg = @args[name = __method__.to_s]
     unless arg.is_a?(String)
       fail malformed(name)
     end
