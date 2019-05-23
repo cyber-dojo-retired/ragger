@@ -22,16 +22,13 @@ class HttpJson
     response = http.send(gp, method_name, named_args)
     json = JSON.parse(response.body)
     unless json.is_a?(Hash)
-      message = 'json is not a Hash'
-      fail StandardError, message
+      fail 'json is not a Hash'
     end
     if json.key?('exception')
-      message = JSON.pretty_generate(json['exception'])
-      fail StandardError, message
+      fail JSON.pretty_generate(json['exception'])
     end
     unless json.key?(method_name)
-      message = "key for '#{method_name}' is missing"
-      fail StandardError, message
+      fail "key for '#{method_name}' is missing"
     end
     json[method_name]
   end
