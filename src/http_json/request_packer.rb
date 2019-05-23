@@ -4,7 +4,7 @@ require 'uri'
 
 module HttpJson
 
-  class Adapter
+  class RequestPacker
 
     def get(hostname, port, path, args)
       json_request(hostname, port, path, args) do |url|

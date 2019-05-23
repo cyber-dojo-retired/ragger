@@ -1,11 +1,11 @@
-require_relative 'http_json/adapter'
+require_relative 'http_json/request_packer'
 require_relative 'runner'
 require_relative 'stdout_log'
 
 class External
 
   def initialize(options = {})
-    @http = options['http'] || HttpJson::Adapter.new
+    @http = options['http'] || HttpJson::RequestPacker.new
     @log = options['log'] || StdoutLog.new
     @runner = Runner.new(self)
   end

@@ -2,7 +2,7 @@ require 'json'
 
 module HttpJson
 
-  class Requester
+  class ResponseUnpacker
 
     def initialize(external, hostname, port)
       @external = external
