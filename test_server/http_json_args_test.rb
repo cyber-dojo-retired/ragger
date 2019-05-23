@@ -159,7 +159,7 @@ class HttpJsonArgsTest < TestBase
   include Test::Data
 
   def assert_http_json_args_error(expected, body = nil)
-    error = assert_raises(HttpJsonRequestError) do
+    error = assert_raises(HttpJson::Error) do
       if block_given?
         yield
       else

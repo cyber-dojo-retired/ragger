@@ -53,7 +53,7 @@ class RackDispatcher
   SERVER_ERROR_CODE = 500
 
   def code(error)
-    if error.is_a?(HttpJsonRequestError)
+    if error.is_a?(HttpJson::Error)
       CLIENT_ERROR_CODE
     else
       SERVER_ERROR_CODE

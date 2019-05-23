@@ -1,9 +1,9 @@
-require_relative 'http_json_requester'
+require_relative 'http_json/requester'
 
 class Runner
 
   def initialize(external)
-    @http = HttpJsonRequester.new(external, 'runner', 4597)
+    @http = HttpJson::Requester.new(external, 'runner', 4597)
   end
 
   def ready?
