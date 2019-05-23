@@ -1,3 +1,4 @@
+require_relative '../src/http_json/request_packer'
 require_relative '../src/http_json/response_unpacker'
 require_relative 'http_stub'
 require_relative 'test_base'
