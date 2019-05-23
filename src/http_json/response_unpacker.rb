@@ -11,12 +11,12 @@ module HttpJson
     end
 
     def get(path, args)
-      response = http.get(@hostname, @port, path.to_s, args)
+      response = http_tmp.get(@hostname, @port, path.to_s, args)
       unpacked(response.body, path.to_s)
     end
 
     def post(path, args)
-      response = http.post(@hostname, @port, path.to_s, args)
+      response = http_tmp.post(@hostname, @port, path.to_s, args)
       unpacked(response.body, path.to_s)
     end
 
@@ -36,8 +36,8 @@ module HttpJson
       json[path]
     end
 
-    def http
-      @external.http
+    def http_tmp
+      @external.http_tmp
     end
 
   end
