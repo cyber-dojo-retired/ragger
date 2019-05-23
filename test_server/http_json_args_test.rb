@@ -18,20 +18,21 @@ class HttpJsonArgsTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB3', 'for_sha' do
-    assert_equal [], HttpJsonArgs.new('{}').for_sha
+    assert_equal ['sha'], HttpJsonArgs.new('{}').get('sha')
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'AB4', 'for_ready' do
-    assert_equal [], HttpJsonArgs.new('{}').for_ready
+    assert_equal ['ready?'], HttpJsonArgs.new('{}').get('ready')
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'for_colour' do
     body = JSON.generate(colour_body)
-    args = HttpJsonArgs.new(body).for_colour
+    name,args = HttpJsonArgs.new(body).get('colour')
+    assert_equal 'colour', name
     assert_equal colour_body.size, args.size
     assert_equal colour_body[:image_name], args[0]
     assert_equal colour_body[:id        ], args[1]
@@ -67,7 +68,7 @@ class HttpJsonArgsTest < TestBase
     MALFORMED_IMAGE_NAMES.each do |image_name|
       args = colour_args('image_name', image_name)
       assert_http_json_args_error('image_name is malformed') do
-        args.for_colour
+        args.get('colour')
       end
     end
   end
@@ -79,7 +80,7 @@ class HttpJsonArgsTest < TestBase
     MALFORMED_IDS.each do |id|
       args = colour_args('id', id)
       assert_http_json_args_error('id is malformed') do
-        args.for_colour
+        args.get('colour')
       end
     end
   end
@@ -91,7 +92,7 @@ class HttpJsonArgsTest < TestBase
     NOT_STRINGS.each do |stdout|
       args = colour_args('stdout', stdout)
       assert_http_json_args_error('stdout is malformed') do
-        args.for_colour
+        args.get('colour')
       end
     end
   end
@@ -103,7 +104,7 @@ class HttpJsonArgsTest < TestBase
     NOT_STRINGS.each do |stderr|
       args = colour_args('stderr', stderr)
       assert_http_json_args_error('stderr is malformed') do
-        args.for_colour
+        args.get('colour')
       end
     end
   end
@@ -115,7 +116,7 @@ class HttpJsonArgsTest < TestBase
     NOT_STRINGS.each do |status|
       args = colour_args('status', status)
       assert_http_json_args_error('status is malformed') do
-        args.for_colour
+        args.get('colour')
       end
     end
   end

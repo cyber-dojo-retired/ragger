@@ -20,16 +20,16 @@ class HttpJsonArgs
 
   # - - - - - - - - - - - - - - - -
 
-  def for_ready
-    []
-  end
-
-  def for_sha
-    []
-  end
-
-  def for_colour
-    [image_name, id, stdout, stderr, status]
+  def get(path)
+    case path
+      when /^ready$/  then ['ready?']
+      when /^sha/     then ['sha']
+      when /^colour$/ then ['colour',[image_name, id, stdout, stderr, status]]
+      else
+        # use the word path to match RackDispatcher's
+        # exception field 'path' => path
+        raise HttpJsonRequestError, 'unknown path'
+    end
   end
 
   private
