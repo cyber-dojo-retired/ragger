@@ -1,4 +1,3 @@
-require_relative '../src/http_json/hostname_port'
 require_relative '../src/rack_dispatcher'
 require_relative 'data/ids'
 require_relative 'data/image_names'
@@ -113,8 +112,7 @@ class RackDispatcherTest < TestBase
   test 'BB6',
   %w( other errors become 500 server error ) do
     http_stub = Class.new do
-      include HostnamePort
-      def get(_name, _args)
+      def get(_hostname, _port, _path, _args)
         fail 'no key'
       end
     end.new

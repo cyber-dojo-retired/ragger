@@ -42,8 +42,8 @@ class HttpJsonRequesterTest < TestBase
 
   def assert_sha_request_with_http_json_stub_raises(stub)
     external = External.new({ 'http' => HttpStub.new(stub) })
-    target = HttpJson::Requester.new(external, 'runner', '4597')
-    error = assert_raises { target.get('sha', {}) }
+    target = HttpJson::Requester.new(external)
+    error = assert_raises { target.get('runner', 4597, 'sha', {}) }
     yield error
   end
 
