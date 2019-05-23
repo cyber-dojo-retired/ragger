@@ -116,7 +116,7 @@ class RackDispatcherTest < TestBase
         fail 'no key'
       end
     end.new
-    @external = External.new({ 'http' => http_stub })
+    @external = External.new({ 'http_tmp' => http_stub })
     assert_rack_call_error(500, 'no key', 'ready', {}.to_json)
   end
 

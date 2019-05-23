@@ -41,7 +41,7 @@ class HttpJsonResponseUnpackerTest < TestBase
   private
 
   def assert_sha_request_with_http_json_stub_raises(stub)
-    external = External.new({ 'http' => HttpStub.new(stub) })
+    external = External.new({ 'http_tmp' => HttpStub.new(stub) })
     target = HttpJson::ResponseUnpacker.new(external, 'runner', 4597)
     error = assert_raises { target.get('sha', {}) }
     yield error

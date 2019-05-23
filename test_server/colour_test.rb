@@ -100,7 +100,7 @@ class ColourTest < TestBase
       }
     })
     spy = StdoutLogSpy.new
-    @external = External.new({ 'http' => stub, 'log' => spy })
+    @external = External.new({ 'http_tmp' => stub, 'log' => spy })
     colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
     assert_amber
     assert spy.spied?(expected)
