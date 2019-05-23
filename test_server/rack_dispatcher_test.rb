@@ -114,7 +114,7 @@ class RackDispatcherTest < TestBase
   test 'BB6',
   %w( other errors become 500 server error ) do
     @external = External.new({ 'http' => HttpStub })
-    HttpStub.send(:define_method, 'request') do |_req|
+    HttpStub.define_method(:request) do |_req|
       OpenStruct.new(:body => JSON.generate({}))
     end
     expected = "key for 'ready?' is missing"

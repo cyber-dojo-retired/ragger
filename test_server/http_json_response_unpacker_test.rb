@@ -44,7 +44,7 @@ class HttpJsonResponseUnpackerTest < TestBase
 
   def assert_sha_http_json_stub_raises(json)
     @external = External.new({ 'http' => HttpStub })
-    HttpStub.send(:define_method, 'request') do |_req|
+    HttpStub.define_method(:request) do |_req|
       OpenStruct.new(:body => JSON.generate(json))
     end
     requester = HttpJson::RequestPacker.new(external, 'runner', 4597)

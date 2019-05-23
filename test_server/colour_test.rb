@@ -10,8 +10,6 @@ class ColourTest < TestBase
     'C60'
   end
 
-  include Test::Data
-
   # - - - - - - - - - - - - - - - - -
 
   test '6A1', 'red' do
@@ -92,12 +90,14 @@ class ColourTest < TestBase
     )
   end
 
-  # - - - - - - - - - - - - - - - - -
+  private
+
+  include Test::Data
 
   def assert_amber_error(expected, rag_src)
     spy = StdoutLogSpy.new
     @external = External.new({ 'http' => HttpStub, 'log' => spy })
-    HttpStub.send(:define_method, 'request') do |_req|
+    HttpStub.define_method(:request) do |_req|
       OpenStruct.new(:body => JSON.generate({
         'run_cyber_dojo_sh' => {
           'stdout' => {
