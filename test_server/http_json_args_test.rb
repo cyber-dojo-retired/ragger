@@ -19,7 +19,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'AB3', 'for sha' do
     target = HttpJsonArgs.new('{}')
-    name,args = target.get('sha')
+    name,args = target.get('/sha')
     assert_equal 'sha', name
     assert_equal [], args
   end
@@ -28,7 +28,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'AB4', 'for ready' do
     target = HttpJsonArgs.new('{}')
-    name,args = target.get('ready')
+    name,args = target.get('/ready')
     assert_equal 'ready?', name
     assert_equal [], args
   end
@@ -38,7 +38,7 @@ class HttpJsonArgsTest < TestBase
   test 'AB5', 'for colour' do
     body = JSON.generate(colour_body)
     target = HttpJsonArgs.new(body)
-    name,args = target.get('colour')
+    name,args = target.get('/colour')
     assert_equal 'colour', name
     assert_equal colour_body.size, args.size
     assert_equal colour_body[:image_name], args[0]
@@ -66,7 +66,7 @@ class HttpJsonArgsTest < TestBase
   %w( raises when known path with leading or trailing whitespace ) do
     space = ' '
     target =  HttpJsonArgs.new('{}')
-    [ 'sha', 'ready', 'colour' ].each do |name|
+    [ '/sha', '/ready', '/colour' ].each do |name|
       assert_http_json_args_error('unknown path') do
         target.get(space+name)
       end
@@ -101,7 +101,7 @@ class HttpJsonArgsTest < TestBase
     MALFORMED_IMAGE_NAMES.each do |image_name|
       args = colour_args('image_name', image_name)
       assert_http_json_args_error('image_name is malformed') do
-        args.get('colour')
+        args.get('/colour')
       end
     end
   end
@@ -113,7 +113,7 @@ class HttpJsonArgsTest < TestBase
     MALFORMED_IDS.each do |id|
       args = colour_args('id', id)
       assert_http_json_args_error('id is malformed') do
-        args.get('colour')
+        args.get('/colour')
       end
     end
   end
@@ -125,7 +125,7 @@ class HttpJsonArgsTest < TestBase
     NOT_STRINGS.each do |stdout|
       args = colour_args('stdout', stdout)
       assert_http_json_args_error('stdout is malformed') do
-        args.get('colour')
+        args.get('/colour')
       end
     end
   end
@@ -137,7 +137,7 @@ class HttpJsonArgsTest < TestBase
     NOT_STRINGS.each do |stderr|
       args = colour_args('stderr', stderr)
       assert_http_json_args_error('stderr is malformed') do
-        args.get('colour')
+        args.get('/colour')
       end
     end
   end
@@ -149,7 +149,7 @@ class HttpJsonArgsTest < TestBase
     NOT_STRINGS.each do |status|
       args = colour_args('status', status)
       assert_http_json_args_error('status is malformed') do
-        args.get('colour')
+        args.get('/colour')
       end
     end
   end

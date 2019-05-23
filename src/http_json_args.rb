@@ -3,10 +3,9 @@ require_relative 'http_json_request_error'
 require_relative 'image_name'
 require 'json'
 
-# Checks for arguments synactic correctness
-
 class HttpJsonArgs
 
+  # Checks for arguments synactic correctness
   # Exception messages use the words 'body' and 'path'
   # to match RackDispatcher's exception keys.
 
@@ -23,11 +22,11 @@ class HttpJsonArgs
 
   def get(path)
     case path
-    when 'ready'
+    when '/ready'
       ['ready?',[]]
-    when 'sha'
+    when '/sha'
       ['sha',[]]
-    when 'colour'
+    when '/colour'
       ['colour',[image_name, id, stdout, stderr, status]]
     else
       raise HttpJsonRequestError, 'unknown path'

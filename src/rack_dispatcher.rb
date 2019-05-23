@@ -10,7 +10,7 @@ class RackDispatcher
 
   def call(env, request_class = Rack::Request)
     request = request_class.new(env)
-    path = request.path_info[1..-1] # lose leading /
+    path = request.path_info
     body = request.body.read
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
