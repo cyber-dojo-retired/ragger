@@ -7,9 +7,10 @@ require 'json'
 
 class HttpJsonArgs
 
+  # Exception messages use the words 'body' and 'path'
+  # to match RackDispatcher's exception keys.
+
   def initialize(body)
-    # the word body in error.message matches RackDispatcher's
-    # exception field 'body' => body
     @args = JSON.parse(body)
     unless @args.is_a?(Hash)
       fail HttpJsonRequestError, 'body is not JSON Hash'
@@ -22,13 +23,14 @@ class HttpJsonArgs
 
   def get(path)
     case path
-      when /^ready$/  then ['ready?']
-      when /^sha/     then ['sha']
-      when /^colour$/ then ['colour',[image_name, id, stdout, stderr, status]]
-      else
-        # use the word path to match RackDispatcher's
-        # exception field 'path' => path
-        raise HttpJsonRequestError, 'unknown path'
+    when 'ready'
+      ['ready?',[]]
+    when 'sha'
+      ['sha',[]]
+    when 'colour'
+      ['colour',[image_name, id, stdout, stderr, status]]
+    else
+      raise HttpJsonRequestError, 'unknown path'
     end
   end
 

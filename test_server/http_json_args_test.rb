@@ -17,21 +17,28 @@ class HttpJsonArgsTest < TestBase
   # not raising
   # - - - - - - - - - - - - - - - - -
 
-  test 'AB3', 'for_sha' do
-    assert_equal ['sha'], HttpJsonArgs.new('{}').get('sha')
+  test 'AB3', 'for sha' do
+    target = HttpJsonArgs.new('{}')
+    name,args = target.get('sha')
+    assert_equal 'sha', name
+    assert_equal [], args
   end
 
   # - - - - - - - - - - - - - - - - -
 
-  test 'AB4', 'for_ready' do
-    assert_equal ['ready?'], HttpJsonArgs.new('{}').get('ready')
+  test 'AB4', 'for ready' do
+    target = HttpJsonArgs.new('{}')
+    name,args = target.get('ready')
+    assert_equal 'ready?', name
+    assert_equal [], args
   end
 
   # - - - - - - - - - - - - - - - - -
 
-  test 'AB5', 'for_colour' do
+  test 'AB5', 'for colour' do
     body = JSON.generate(colour_body)
-    name,args = HttpJsonArgs.new(body).get('colour')
+    target = HttpJsonArgs.new(body)
+    name,args = target.get('colour')
     assert_equal 'colour', name
     assert_equal colour_body.size, args.size
     assert_equal colour_body[:image_name], args[0]
@@ -43,6 +50,32 @@ class HttpJsonArgsTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
   # raising
+  # - - - - - - - - - - - - - - - - -
+
+  test '21E',
+  %w( raises when unknown path ) do
+    target =  HttpJsonArgs.new('{}')
+    assert_http_json_args_error('unknown path') do
+      target.get('x')
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test '21F',
+  %w( raises when known path with leading or trailing whitespace ) do
+    space = ' '
+    target =  HttpJsonArgs.new('{}')
+    [ 'sha', 'ready', 'colour' ].each do |name|
+      assert_http_json_args_error('unknown path') do
+        target.get(space+name)
+      end
+      assert_http_json_args_error('unknown path') do
+        target.get(name+space)
+      end
+    end
+  end
+
   # - - - - - - - - - - - - - - - - -
 
   test 'CB0',
