@@ -1,4 +1,5 @@
 require 'json'
+require 'net/http'
 require 'uri'
 
 module HttpJson
@@ -12,11 +13,11 @@ module HttpJson
     end
 
     def get(path, args)
-      packed(path, args) { |url| @external.http_get.new(url) }
+      packed(path, args) { |url| Net::HTTP::Get.new(url) }
     end
 
     def post(path, args)
-      packed(path, args) { |url| @external.http_post.new(url) }
+      packed(path, args) { |url| Net::HTTP::Post.new(url) }
     end
 
     private
