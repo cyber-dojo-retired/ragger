@@ -1,7 +1,8 @@
 require_relative 'http_hostname_port'
+require 'uri'
 require 'net/http'
 
-class HttpJsonRequestor
+class HttpJsonAdapter
 
   include HttpHostnamePort
 
