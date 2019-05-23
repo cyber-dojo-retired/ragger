@@ -4,6 +4,7 @@ require_relative 'data/image_names'
 require_relative 'data/json'
 require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
+require_relative 'http_stub'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require 'json'
@@ -109,11 +110,6 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
-
-  class HttpStub
-    def initialize(_host,_port)
-    end
-  end
 
   test 'BB6',
   %w( other errors become 500 server error ) do

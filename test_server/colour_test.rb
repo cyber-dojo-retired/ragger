@@ -1,5 +1,6 @@
 require_relative 'test_base'
 require_relative 'data/python_pytest'
+require_relative 'http_stub'
 require_relative 'stdout_log_spy'
 require 'ostruct'
 
@@ -93,16 +94,9 @@ class ColourTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  class HttpStub
-    def initialize(_host,_port)
-    end
-  end
-
   def assert_amber_error(expected, rag_src)
     spy = StdoutLogSpy.new
-
     @external = External.new({ 'http' => HttpStub, 'log' => spy })
-
     HttpStub.send(:define_method, 'request') do |_req|
       OpenStruct.new(:body => JSON.generate({
         'run_cyber_dojo_sh' => {
@@ -112,7 +106,6 @@ class ColourTest < TestBase
         }
       }))
     end
-
     colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
     assert_amber
     assert spy.spied?(expected)
