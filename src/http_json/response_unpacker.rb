@@ -11,18 +11,19 @@ module HttpJson
     end
 
     def get(path, args)
-      json_response(:get, path.to_s, args)
+      response = http.get(@hostname, @port, path.to_s, args)
+      unpacked(response.body, path.to_s)
     end
 
     def post(path, args)
-      json_response(:post, path.to_s, args)
+      response = http.post(@hostname, @port, path.to_s, args)
+      unpacked(response.body, path.to_s)
     end
 
     private
 
-    def json_response(gp, path, args)
-      response = http.send(gp, @hostname, @port, path, args)
-      json = JSON.parse(response.body)
+    def unpacked(body, path)
+      json = JSON.parse(body)
       unless json.is_a?(Hash)
         fail 'json is not a Hash'
       end
