@@ -1,5 +1,5 @@
 
-module HttpHostnamePort # mixin
+module HostnamePort # mixin
 
   attr_reader :hostname, :port
 
