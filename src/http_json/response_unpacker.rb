@@ -9,12 +9,12 @@ module HttpJson
     end
 
     def get(path, args)
-      response = @requester.get(path.to_s, args)
+      response = @requester.get(path, args)
       unpacked(response.body, path.to_s)
     end
 
     def post(path, args)
-      response = @requester.post(path.to_s, args)
+      response = @requester.post(path, args)
       unpacked(response.body, path.to_s)
     end
 
