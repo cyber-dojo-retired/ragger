@@ -115,7 +115,7 @@ class RackDispatcherTest < TestBase
     http_stub = Class.new do
       include HttpHostnamePort
       def get(_name, _args)
-        fail StandardError, 'no key'
+        fail 'no key'
       end
     end.new
     @external = External.new({ 'http' => http_stub })
