@@ -1,48 +1,33 @@
 require 'json'
-require 'net/http'
 require 'uri'
 
 module HttpJson
 
   class RequestPacker
 
-    def initialize(external)
+    def initialize(external, hostname, port)
       @external = external
+      @hostname = hostname
+      @port = port
     end
 
-    def get(hostname, port, path, args)
-      packed(hostname, port, path, args) do |url|
-        http_get(url)
-      end
+    def get(path, args)
+      packed(path, args) { |url| @external.http_get.new(url) }
     end
 
-    def post(hostname, port, path, args)
-      packed(hostname, port, path, args) do |url|
-        http_post(url)
-      end
+    def post(path, args)
+      packed(path, args) { |url| @external.http_post.new(url) }
     end
 
     private
 
-    def packed(hostname, port, path, args)
-      uri = URI.parse("http://#{hostname}:#{port}/#{path}")
+    def packed(path, args)
+      uri = URI.parse("http://#{@hostname}:#{@port}/#{path}")
       req = yield uri
       req.content_type = 'application/json'
       req.body = JSON.generate(args)
-      service = http(uri.host, uri.port)
+      service = @external.http.new(uri.host, uri.port)
       service.request(req)
-    end
-
-    def http_get(url)
-      @external.http_get.new(url)
-    end
-
-    def http_post(url)
-      @external.http_post.new(url)
-    end
-
-    def http(host, port)
-      @external.http.new(host, port)
     end
 
   end

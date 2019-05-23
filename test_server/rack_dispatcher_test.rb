@@ -109,15 +109,19 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
+  class HttpStub
+    def initialize(_host,_port)
+    end
+  end
+
   test 'BB6',
   %w( other errors become 500 server error ) do
-    http_stub = Class.new do
-      def get(_hostname, _port, _path, _args)
-        fail 'no key'
-      end
-    end.new
-    @external = External.new({ 'http_tmp' => http_stub })
-    assert_rack_call_error(500, 'no key', 'ready', {}.to_json)
+    @external = External.new({ 'http' => HttpStub })
+    HttpStub.send(:define_method, 'request') do |_req|
+      OpenStruct.new(:body => JSON.generate({}))
+    end
+    expected = "key for 'ready?' is missing"
+    assert_rack_call_error(500, expected, 'ready', {}.to_json)
   end
 
   private # = = = = = = = = = = = = =

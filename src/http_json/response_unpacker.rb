@@ -4,19 +4,17 @@ module HttpJson
 
   class ResponseUnpacker
 
-    def initialize(external, hostname, port)
-      @external = external
-      @hostname = hostname
-      @port = port
+    def initialize(requester)
+      @requester = requester
     end
 
     def get(path, args)
-      response = http_tmp.get(@hostname, @port, path.to_s, args)
+      response = @requester.get(path.to_s, args)
       unpacked(response.body, path.to_s)
     end
 
     def post(path, args)
-      response = http_tmp.post(@hostname, @port, path.to_s, args)
+      response = @requester.post(path.to_s, args)
       unpacked(response.body, path.to_s)
     end
 
@@ -34,10 +32,6 @@ module HttpJson
         fail "key for '#{path}' is missing"
       end
       json[path]
-    end
-
-    def http_tmp
-      @external.http_tmp
     end
 
   end
