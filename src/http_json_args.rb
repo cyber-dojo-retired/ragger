@@ -1,6 +1,6 @@
 require_relative 'base58'
+require_relative 'docker/image_name'
 require_relative 'http_json_request_error'
-require_relative 'image_name'
 require 'json'
 
 class HttpJsonArgs
@@ -38,13 +38,11 @@ class HttpJsonArgs
   def image_name
     name = __method__.to_s
     arg = @args[name]
-    unless image_name?(arg)
+    unless Docker::image_name?(arg)
       fail malformed(name)
     end
     arg
   end
-
-  include ImageName
 
   # - - - - - - - - - - - - - - - -
 
