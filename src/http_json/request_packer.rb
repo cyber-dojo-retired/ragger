@@ -7,9 +7,8 @@ module HttpJson
   class RequestPacker
 
     def initialize(external, hostname, port)
-      @external = external
-      @hostname = hostname
-      @port = port
+      @http = external.http.new(hostname, port)
+      @base_url = "http://#{hostname}:#{port}"
     end
 
     def get(path, args)
@@ -27,12 +26,11 @@ module HttpJson
     private
 
     def packed(path, args)
-      uri = URI.parse("http://#{@hostname}:#{@port}/#{path}")
+      uri = URI.parse("#{@base_url}/#{path}")
       req = yield uri
       req.content_type = 'application/json'
       req.body = JSON.generate(args)
-      http = @external.http.new(uri.host, uri.port)
-      http.request(req)
+      @http.request(req)
     end
 
   end
