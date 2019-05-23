@@ -7,11 +7,11 @@ class HttpStub
     @response = OpenStruct.new(body:JSON.generate(response))
   end
 
-  def get(_hostname, _port, _method, _named_args)
+  def get(_hostname, _port, path, _args)
     @response
   end
 
-  def post(_hostname, _port, _method, _named_args)
+  def post(_hostname, _port, _path, _args)
     @response
   end
 
