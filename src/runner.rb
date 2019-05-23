@@ -3,25 +3,20 @@ require_relative 'http_json/requester'
 class Runner
 
   def initialize(external)
-    @http = HttpJson::Requester.new(external)
+    @http = HttpJson::Requester.new(external, 'runner', 4597)
   end
 
   def ready?
-    @http.get(HOSTNAME, PORT, __method__, {})
+    @http.get(__method__, {})
   end
 
   def run_cyber_dojo_sh(image_name, id, files, max_seconds)
-    @http.post(HOSTNAME, PORT, __method__, {
+    @http.post(__method__, {
       image_name:image_name,
       id:id,
       files:files,
       max_seconds:max_seconds
     })
   end
-
-  private
-  
-  HOSTNAME = 'runner'
-  PORT = 4597
 
 end

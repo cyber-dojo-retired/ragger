@@ -4,22 +4,24 @@ module HttpJson
 
   class Requester
 
-    def initialize(external)
+    def initialize(external, hostname, port)
       @external = external
+      @hostname = hostname
+      @port = port
     end
 
-    def get(hostname, port, path, args)
-      json_response(:get, hostname, port, path.to_s, args)
+    def get(path, args)
+      json_response(:get, path.to_s, args)
     end
 
-    def post(hostname, port, path, args)
-      json_response(:post, hostname, port, path.to_s, args)
+    def post(path, args)
+      json_response(:post, path.to_s, args)
     end
 
     private
 
-    def json_response(gp, hostname, port, path, args)
-      response = http.send(gp, hostname, port, path, args)
+    def json_response(gp, path, args)
+      response = http.send(gp, @hostname, @port, path, args)
       json = JSON.parse(response.body)
       unless json.is_a?(Hash)
         fail 'json is not a Hash'
