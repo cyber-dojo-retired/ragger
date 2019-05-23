@@ -1,6 +1,6 @@
 require 'json'
 
-class HttpJson
+class HttpJsonRequester
 
   def initialize(external, hostname, port)
     @external = external

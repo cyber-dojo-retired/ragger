@@ -1,7 +1,7 @@
 require_relative 'http_stub'
 require_relative 'test_base'
 
-class HttpJsonTest < TestBase
+class HttpJsonRequesterTest < TestBase
 
   def self.hex_prefix
     'F90'
@@ -41,7 +41,7 @@ class HttpJsonTest < TestBase
 
   def assert_sha_request_with_http_json_stub_raises(stub)
     external = External.new({ 'http' => HttpStub.new(stub) })
-    target = HttpJson.new(external, 'runner', '4597')
+    target = HttpJsonRequester.new(external, 'runner', '4597')
     error = assert_raises { target.get('sha', {}) }
     yield error
   end
