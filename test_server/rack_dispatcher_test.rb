@@ -7,6 +7,7 @@ require_relative 'data/python_pytest'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
 require 'json'
+require 'ostruct'
 
 class RackDispatcherTest < TestBase
 
