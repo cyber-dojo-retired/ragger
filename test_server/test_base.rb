@@ -31,7 +31,7 @@ class TestBase < HexMiniTest
   def assert_sha(string)
     assert_equal 40, string.size
     string.each_char do |ch|
-      assert "0123456789abcdef".include?(ch)
+      assert '0123456789abcdef'.include?(ch)
     end
   end
 

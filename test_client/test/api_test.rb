@@ -9,8 +9,16 @@ class ApiTest < TestBase
 
   include Test::Data
 
+  test '762', 'sha' do
+    assert_sha(sha)
+  end
+
+  test '763', 'ready?' do
+    assert ready?
+  end
+
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # red, amber, green
+  # colour - red/amber/green
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D1', 'red' do
@@ -33,12 +41,17 @@ class ApiTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
-  # robustness
+  # colour - robustness
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F0',
-  'call to non existent method becomes exception' do
-    assert_exception({}.to_json, 'does_not_exist')
+  test '2F0', 'malformed image-name becomes exception' do
+    error = assert_raises(RuntimeError) {
+      colour(nil, id, PythonPytest::STDOUT_GREEN, '', '0')
+    }
+    json = JSON.parse(error.message)
+    assert_equal '/colour', json['path']
+    assert_equal 'RaggerService', json['class']
+    assert_equal 'image_name is malformed', json['message']
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -81,15 +94,6 @@ class ApiTest < TestBase
       Net::HTTP::Get.new(uri)
     }
     refute_nil json['exception']
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  def ro(content)
-    {
-       'content' => content,
-      'readonly' => false
-    }
   end
 
 end

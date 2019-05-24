@@ -14,8 +14,25 @@ class TestBase < HexMiniTest
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+  def sha
+    ragger.sha
+  end
+
+  def ready?
+    ragger.ready?
+  end
+
   def colour(image_name, id, stdout, stderr, status)
     @colour = ragger.colour(image_name, id, stdout, stderr, status)
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def assert_sha(string)
+    assert_equal 40, string.size
+    string.each_char do |ch|
+      assert '0123456789abcdef'.include?(ch)
+    end
   end
 
   def assert_colour(expected)
