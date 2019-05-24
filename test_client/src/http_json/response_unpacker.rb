@@ -13,11 +13,6 @@ module HttpJson
       unpacked(response.body, path.to_s)
     end
 
-    def post(path, args)
-      response = @requester.post(path, args)
-      unpacked(response.body, path.to_s)
-    end
-
     private
 
     def unpacked(body, path)
