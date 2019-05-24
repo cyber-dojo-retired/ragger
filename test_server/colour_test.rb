@@ -96,7 +96,7 @@ class ColourTest < TestBase
   def assert_amber_error(expected, rag_src)
     spy = StdoutLogSpy.new
     @external = External.new({ 'http' => HttpStub, 'log' => spy })
-    HttpStub.request_returns({
+    HttpStub.stub_request({
       'run_cyber_dojo_sh' => {
         'stdout' => {
           'content' => rag_src
