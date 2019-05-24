@@ -1,32 +1,34 @@
-require_relative '../src/http_json_service'
+require_relative '../src/data/python_pytest'
 require_relative 'test_base'
 
 class ApiTest < TestBase
 
   def self.hex_prefix
-    '3759D'
+    '375'
   end
+
+  include Test::Data
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
   # red, amber, green
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D1', 'red' do
-    colour_rb(python_pytest_colour_rb, python_pytest_stdout_red, '', '0')
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
     assert_colour 'red'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D2', 'amber' do
-    colour_rb(python_pytest_colour_rb, python_pytest_stdout_amber, '', '0')
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
     assert_colour 'amber'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D3', 'green' do
-    colour_rb(python_pytest_colour_rb, python_pytest_stdout_green, '', '0')
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
     assert_colour 'green'
   end
 
@@ -72,17 +74,7 @@ class ApiTest < TestBase
     assert_exception(args.to_json)
   end
 
-  include HttpJsonService
-
-  def hostname
-    ENV['RAGGER_SERVICE_NAME']
-  end
-
-  def port
-    ENV['RAGGER_SERVICE_PORT'].to_i
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
+  private
 
   def assert_exception(jsoned_args, method_name = 'colour_ruby')
     json = http(method_name, jsoned_args) { |uri|
