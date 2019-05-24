@@ -1,21 +1,29 @@
-require_relative 'http_json_service'
+require_relative 'http_json/request_packer'
+require_relative 'http_json/response_unpacker'
 
 class RaggerService
 
-  def initialize
-    @hostname = 'ragger'
-    @port = 5537
+  def initialize(external)
+    requester = HttpJson::RequestPacker.new(external, 'ragger', 5537)
+    @http = HttpJson::ResponseUnpacker.new(requester)
   end
 
-  def colour(id, filename, content, stdout, stderr, status)
-    args  = [id, filename, content, stdout, stderr, status]
-    get(args, __method__)
+  def sha
+    @http.get(__method__, {})
   end
 
-  private
+  def ready?
+    @http.get(__method__, {})
+  end
 
-  include HttpJsonService
-
-  attr_reader :hostname, :port
+  def colour(image_name, id, stdout, stderr, status)
+    @http.get(__method__, {
+      image_name:image_name,
+      id:id,
+      stdout:stdout,
+      stderr:stderr,
+      status:status
+    })
+  end
 
 end
