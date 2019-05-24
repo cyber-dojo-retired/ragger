@@ -56,35 +56,50 @@ class ApiTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F1',
-  'call to existing method with bad json becomes exception' do
-    assert_exception('{x}')
+  test '2F1', 'malformed id becomes exception' do
+    error = assert_raises(RuntimeError) {
+      colour('gcc', 'X'+id, PythonPytest::STDOUT_GREEN, '', '0')
+    }
+    json = JSON.parse(error.message)
+    assert_equal '/colour', json['path']
+    assert_equal 'RaggerService', json['class']
+    assert_equal 'id is malformed', json['message']
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F2',
-  'call to existing method with missing argument becomes exception' do
-    args = {
-      # content:..., # <=====
-      stdout:ro('s'),
-      stderr:ro('s'),
-      status:ro('0')
+  test '2F2', 'malformed stdout becomes exception' do
+    error = assert_raises(RuntimeError) {
+      colour('gcc', id, 999, '', '0')
     }
-    assert_exception(args.to_json)
+    json = JSON.parse(error.message)
+    assert_equal '/colour', json['path']
+    assert_equal 'RaggerService', json['class']
+    assert_equal 'stdout is malformed', json['message']
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F3',
-  'call to existing method with bad argument type becomes exception' do
-    args = {
-      content:ro('s'),
-      stdout:ro('s'),
-      stderr:ro('s'),
-      status:ro(['0']) # <=====
+  test '2F3', 'malformed stderr becomes exception' do
+    error = assert_raises(RuntimeError) {
+      colour('gcc', id, '', 999, '0')
     }
-    assert_exception(args.to_json)
+    json = JSON.parse(error.message)
+    assert_equal '/colour', json['path']
+    assert_equal 'RaggerService', json['class']
+    assert_equal 'stderr is malformed', json['message']
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '2F4', 'malformed status becomes exception' do
+    error = assert_raises(RuntimeError) {
+      colour('gcc', id, '', '', 999)
+    }
+    json = JSON.parse(error.message)
+    assert_equal '/colour', json['path']
+    assert_equal 'RaggerService', json['class']
+    assert_equal 'status is malformed', json['message']
   end
 
   private
