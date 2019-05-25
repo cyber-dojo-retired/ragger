@@ -14,50 +14,39 @@ class RackDispatcher
     body = request.body.read
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
-    json_response(200, json_plain({ name => result }))
+    json_response(200, JSON.generate({ name => result }))
+  rescue HttpJson::Error => error
+    json_response(400, logged(JSON.pretty_generate(diagnostic(path, body, error))))
   rescue => error
-    diagnostic = json_pretty({
-      'exception' => {
+    json_response(500, logged(JSON.pretty_generate(diagnostic(path, body, error))))
+  end
+
+  private
+
+  def diagnostic(path, body, error)
+    { 'exception' => {
         'path' => path,
         'body' => body,
         'class' => 'RaggerService',
         'message' => error.message,
         'backtrace' => error.backtrace
       }
-    })
-    $stderr.puts(diagnostic)
+    }
+  end
+
+  def logged(message)
+    $stderr.puts(message)
     $stderr.flush
-    json_response(code(error), diagnostic)
+    message
   end
 
-  private
-
-  def json_plain(body)
-    JSON.generate(body)
-  end
-
-  def json_pretty(body)
-    JSON.pretty_generate(body)
-  end
+  # - - - - - - - - - - - - - - - -
 
   def json_response(status, body)
     [ status,
       { 'Content-Type' => 'application/json' },
       [ body ]
     ]
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  CLIENT_ERROR_CODE = 400
-  SERVER_ERROR_CODE = 500
-
-  def code(error)
-    if error.is_a?(HttpJson::Error)
-      CLIENT_ERROR_CODE
-    else
-      SERVER_ERROR_CODE
-    end
   end
 
 end
