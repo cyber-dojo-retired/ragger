@@ -93,7 +93,7 @@ class ApiTest < TestBase
   # colour - server-side errors
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F5', 'http body not json is server exception' do
+  test '2F5', 'http-json body is not JSON' do
     assert_server_exception(
       'body is not JSON',
       'xxxx'
@@ -102,7 +102,7 @@ class ApiTest < TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F6', 'http-json body is not a hash' do
+  test '2F6', 'http-json body is not a Hash' do
     assert_server_exception(
       'JSON is not a Hash',
       JSON.generate([])

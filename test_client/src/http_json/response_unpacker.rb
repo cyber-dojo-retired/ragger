@@ -10,12 +10,13 @@ module HttpJson
 
     def get(path, args)
       response = @requester.get(path, args)
-      unpacked(response.body, path.to_s)
+      unpacked(response.code, response.body, path.to_s)
     end
 
     private
 
-    def unpacked(body, path)
+    def unpacked(code, body, path)
+      # code == 200,400,500
       json = JSON.parse(body)
       unless json.is_a?(Hash)
         # TODO: fail HttpJsonServiceError, '...'
