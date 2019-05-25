@@ -58,7 +58,7 @@ class ApiTest < TestBase
   test '2F1', 'malformed id is client exception' do
     assert_client_exception('id is malformed') {
       id = '1234567' # > 6
-      colour('gcc', id, '', '', '0')
+      colour(image_name, id, '', '', '0')
     }
   end
 
@@ -67,7 +67,7 @@ class ApiTest < TestBase
   test '2F2', 'malformed stdout is client exception' do
     assert_client_exception('stdout is malformed') {
       stdout = 999 # !String
-      colour('gcc', id, stdout, '', '0')
+      colour(image_name, id, stdout, '', '0')
     }
   end
 
@@ -76,7 +76,7 @@ class ApiTest < TestBase
   test '2F3', 'malformed stderr is client exception' do
     assert_client_exception('stderr is malformed') {
       stderr = 999 #  !String
-      colour('gcc', id, '', stderr, '0')
+      colour(image_name, id, '', stderr, '0')
     }
   end
 
@@ -85,7 +85,7 @@ class ApiTest < TestBase
   test '2F4', 'malformed status is client exception' do
     assert_client_exception('status is malformed') {
       status = 999 # !String
-      colour('gcc', id, '', '', status)
+      colour(image_name, id, '', '', status)
     }
   end
 
@@ -130,6 +130,10 @@ class ApiTest < TestBase
 
   private
 
+  def image_name
+    PythonPytest::IMAGE_NAME
+  end
+
   def assert_client_exception(expected_message)
     error = assert_raises(RuntimeError) { yield }
     json = JSON.parse(error.message)
@@ -144,7 +148,7 @@ class ApiTest < TestBase
     @external = External.new({ 'http' => HttpStub })
     HttpStub.stub_request(body)
     error = assert_raises(RuntimeError) {
-      colour('gcc', id, '', '', '0')
+      colour(image_name, id, '', '', '0')
     }
     assert_equal expected_message, error.message
   end
