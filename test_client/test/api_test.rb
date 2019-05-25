@@ -90,6 +90,20 @@ class ApiTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+=begin
+    test 'D61', 'wellformed-but non-existent image_name' do
+    error = assert_raises(RuntimeError) {
+      colour('does_not_exist', id, '', '', '0')
+    }
+    json = JSON.parse(error.message)
+    assert_equal '/colour', json['path']
+    assert_equal 'RaggerService', json['class']
+    assert_equal expected_message, json['message']
+  end
+=end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
   # colour - server-side errors
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
