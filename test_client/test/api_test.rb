@@ -1,4 +1,5 @@
 require_relative '../src/data/python_pytest'
+require_relative 'http_stub'
 require_relative 'test_base'
 
 class ApiTest < TestBase
@@ -81,6 +82,18 @@ class ApiTest < TestBase
       colour('gcc', id, '', '', 999)
     }
   end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  test '2F5', 'http body not json becomes exception' do
+    @external = External.new({ 'http' => HttpStub })
+    HttpStub.stub_request('xxxxx')
+    error = assert_raises {
+      colour('gcc', id, '', '', '0')
+    }
+    #...
+  end
+
 
   private
 

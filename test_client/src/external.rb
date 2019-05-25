@@ -3,8 +3,8 @@ require 'net/http'
 
 class External
 
-  def initialize
-    @http = Net::HTTP
+  def initialize(options = {})
+    @http = options['http'] || Net::HTTP
     @ragger = RaggerService.new(self)
   end
 
