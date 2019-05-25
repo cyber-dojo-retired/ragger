@@ -23,7 +23,7 @@ module HttpJson
     def unpacked(body, path)
       json = JSON.parse(body)
       unless json.is_a?(Hash)
-        fail 'json is not a Hash'
+        fail 'JSON is not a Hash'
       end
       if json.key?('exception')
         fail JSON.pretty_generate(json['exception'])

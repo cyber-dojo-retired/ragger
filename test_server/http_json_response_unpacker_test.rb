@@ -15,7 +15,7 @@ class HttpJsonResponseUnpackerTest < TestBase
   %w( URL must return a JSON Hash ) do
     json = [] # not a {} Hash
     assert_sha_http_json_stub_raises(json) { |error|
-      assert_equal 'json is not a Hash', error.message
+      assert_equal 'JSON is not a Hash', error.message
     }
   end
 
