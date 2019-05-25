@@ -1,7 +1,7 @@
 
 module HttpJson
 
-  class Error < RuntimeError
+  class RequestError < RuntimeError
 
     def initialize(message)
       super

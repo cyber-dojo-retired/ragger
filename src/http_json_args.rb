@@ -1,6 +1,6 @@
 require_relative 'base58'
 require_relative 'docker/image_name'
-require_relative 'http_json/error'
+require_relative 'http_json/request_error'
 require 'json'
 
 class HttpJsonArgs
@@ -12,10 +12,10 @@ class HttpJsonArgs
   def initialize(body)
     @args = JSON.parse(body)
     unless @args.is_a?(Hash)
-      fail HttpJson::Error, 'body is not JSON Hash'
+      fail HttpJson::RequestError, 'body is not JSON Hash'
     end
   rescue JSON::ParserError
-    fail HttpJson::Error, 'body is not JSON'
+    fail HttpJson::RequestError, 'body is not JSON'
   end
 
   # - - - - - - - - - - - - - - - -
@@ -26,7 +26,7 @@ class HttpJsonArgs
     when '/sha'    then ['sha',[]]
     when '/colour' then ['colour',[image_name, id, stdout, stderr, status]]
     else
-      raise HttpJson::Error, 'unknown path'
+      raise HttpJson::RequestError, 'unknown path'
     end
   end
 
@@ -87,7 +87,7 @@ class HttpJsonArgs
   # - - - - - - - - - - - - - - - -
 
   def malformed(arg_name)
-    HttpJson::Error.new("#{arg_name} is malformed")
+    HttpJson::RequestError.new("#{arg_name} is malformed")
   end
 
 end

@@ -1,3 +1,4 @@
+require_relative '../src/http_json/request_error'
 require_relative '../src/http_json_args'
 require_relative 'data/ids'
 require_relative 'data/image_names'
@@ -159,7 +160,7 @@ class HttpJsonArgsTest < TestBase
   include Test::Data
 
   def assert_http_json_args_error(expected, body = nil)
-    error = assert_raises(HttpJson::Error) do
+    error = assert_raises(HttpJson::RequestError) do
       if block_given?
         yield
       else

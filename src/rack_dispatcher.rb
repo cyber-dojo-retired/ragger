@@ -1,3 +1,4 @@
+require_relative 'http_json/request_error'
 require_relative 'http_json_args'
 require 'rack'
 require 'json'
@@ -15,7 +16,7 @@ class RackDispatcher
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
     json_response(200, { name => result })
-  rescue HttpJson::Error => error
+  rescue HttpJson::RequestError => error
     json_response(400, diagnostic(path, body, error))
   rescue => error
     json_response(500, diagnostic(path, body, error))
