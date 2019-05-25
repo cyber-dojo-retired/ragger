@@ -48,7 +48,8 @@ class ApiTest < TestBase
 
   test '2F0', 'malformed image-name is client exception' do
     assert_client_exception('image_name is malformed') {
-      colour(nil, id, '', '', '0')
+      image_name = nil
+      colour(image_name, id, '', '', '0')
     }
   end
 
@@ -56,7 +57,8 @@ class ApiTest < TestBase
 
   test '2F1', 'malformed id is client exception' do
     assert_client_exception('id is malformed') {
-      colour('gcc', 'X'+id, '', '', '0')
+      id = '1234567' # > 6
+      colour('gcc', id, '', '', '0')
     }
   end
 
@@ -64,7 +66,8 @@ class ApiTest < TestBase
 
   test '2F2', 'malformed stdout is client exception' do
     assert_client_exception('stdout is malformed') {
-      colour('gcc', id, 999, '', '0')
+      stdout = 999 # !String
+      colour('gcc', id, stdout, '', '0')
     }
   end
 
@@ -72,7 +75,8 @@ class ApiTest < TestBase
 
   test '2F3', 'malformed stderr is client exception' do
     assert_client_exception('stderr is malformed') {
-      colour('gcc', id, '', 999, '0')
+      stderr = 999 #  !String
+      colour('gcc', id, '', stderr, '0')
     }
   end
 
@@ -80,7 +84,8 @@ class ApiTest < TestBase
 
   test '2F4', 'malformed status is client exception' do
     assert_client_exception('status is malformed') {
-      colour('gcc', id, '', '', 999)
+      status = 999 # !String
+      colour('gcc', id, '', '', status)
     }
   end
 
@@ -107,9 +112,10 @@ class ApiTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '2F7', 'http-json body contains exception key' do
+    json = { 'inner-key' => 'inner-value' }
     assert_server_exception(
-      '"inner-field"',
-      JSON.generate({"exception" => "inner-field"})
+      JSON.pretty_generate(json),
+      JSON.generate({ 'exception' => json })
     )
   end
 
@@ -118,7 +124,7 @@ class ApiTest < TestBase
   test '2F8', 'http-json body is missing method-name key' do
     assert_server_exception(
       "key for 'colour' is missing",
-      JSON.generate({"xcolour" => []})
+      JSON.generate({ 'xcolour' => [] })
     )
   end
 
