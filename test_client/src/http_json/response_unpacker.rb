@@ -19,7 +19,7 @@ module HttpJson
       json = JSON.parse(body)
       unless json.is_a?(Hash)
         # TODO: fail HttpJsonServiceError, '...'
-        fail 'json is not a Hash'
+        fail 'JSON is not a Hash'
       end
       if json.key?('exception')
         # TODO: fail HttpJsonServiceError, '...'
@@ -30,8 +30,9 @@ module HttpJson
         fail "key for '#{path}' is missing"
       end
       json[path]
-    #rescue JSON::ParserError
-    #  fail HttpJsonServiceError, '...'
+    rescue JSON::ParserError
+      #  fail HttpJsonServiceError, '...'
+      fail 'body is not JSON'
     end
 
   end
