@@ -10,11 +10,7 @@ module HttpJson
 
     def get(path, args)
       response = @requester.get(path, args)
-      unpacked(response.body, path.to_s)
-    end
-
-    def post(path, args)
-      response = @requester.post(path, args)
+      # response.code == 200,400,500
       unpacked(response.body, path.to_s)
     end
 

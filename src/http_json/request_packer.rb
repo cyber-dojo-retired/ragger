@@ -17,12 +17,6 @@ module HttpJson
       end
     end
 
-    def post(path, args)
-      packed(path, args) do |url|
-        Net::HTTP::Post.new(url)
-      end
-    end
-
     private
 
     def packed(path, args)
