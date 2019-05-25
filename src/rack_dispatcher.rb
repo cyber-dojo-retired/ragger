@@ -14,14 +14,30 @@ class RackDispatcher
     body = request.body.read
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
-    json_response(200, JSON.generate({ name => result }))
+    json_response(200, { name => result })
   rescue HttpJson::Error => error
-    json_response(400, logged(JSON.pretty_generate(diagnostic(path, body, error))))
+    json_response(400, diagnostic(path, body, error))
   rescue => error
-    json_response(500, logged(JSON.pretty_generate(diagnostic(path, body, error))))
+    json_response(500, diagnostic(path, body, error))
   end
 
   private
+
+  def json_response(status, json)
+    if status == 200
+      body = JSON.generate(json)
+    else
+      body = JSON.pretty_generate(json)
+      $stderr.puts(body)
+      $stderr.flush
+    end
+    [ status,
+      { 'Content-Type' => 'application/json' },
+      [ body ]
+    ]
+  end
+
+  # - - - - - - - - - - - - - - - -
 
   def diagnostic(path, body, error)
     { 'exception' => {
@@ -32,21 +48,6 @@ class RackDispatcher
         'backtrace' => error.backtrace
       }
     }
-  end
-
-  def logged(message)
-    $stderr.puts(message)
-    $stderr.flush
-    message
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  def json_response(status, body)
-    [ status,
-      { 'Content-Type' => 'application/json' },
-      [ body ]
-    ]
   end
 
 end
