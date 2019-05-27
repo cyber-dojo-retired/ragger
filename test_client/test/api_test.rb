@@ -24,21 +24,21 @@ class ApiTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D1', 'red' do
-    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', 0)
     assert_colour 'red'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D2', 'amber' do
-    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', 0)
     assert_colour 'amber'
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '3D3', 'green' do
-    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
+    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', 0)
     assert_colour 'green'
   end
 
@@ -49,7 +49,7 @@ class ApiTest < TestBase
   test '2F0', 'malformed image-name is client exception' do
     assert_client_exception('image_name is malformed') {
       image_name = nil
-      colour(image_name, id, '', '', '0')
+      colour(image_name, id, '', '', 0)
     }
   end
 
@@ -58,7 +58,7 @@ class ApiTest < TestBase
   test '2F1', 'malformed id is client exception' do
     assert_client_exception('id is malformed') {
       id = '1234567' # > 6
-      colour(image_name, id, '', '', '0')
+      colour(image_name, id, '', '', 0)
     }
   end
 
@@ -67,7 +67,7 @@ class ApiTest < TestBase
   test '2F2', 'malformed stdout is client exception' do
     assert_client_exception('stdout is malformed') {
       stdout = 999 # !String
-      colour(image_name, id, stdout, '', '0')
+      colour(image_name, id, stdout, '', 0)
     }
   end
 
@@ -76,7 +76,7 @@ class ApiTest < TestBase
   test '2F3', 'malformed stderr is client exception' do
     assert_client_exception('stderr is malformed') {
       stderr = 999 #  !String
-      colour(image_name, id, '', stderr, '0')
+      colour(image_name, id, '', stderr, 0)
     }
   end
 
@@ -84,7 +84,7 @@ class ApiTest < TestBase
 
   test '2F4', 'malformed status is client exception' do
     assert_client_exception('status is malformed') {
-      status = 999 # !String
+      status = '9' # !Integer
       colour(image_name, id, '', '', status)
     }
   end
@@ -162,7 +162,7 @@ class ApiTest < TestBase
     @external = External.new({ 'http' => HttpStub })
     HttpStub.stub_request(body)
     error = assert_raises(RuntimeError) {
-      colour(image_name, id, '', '', '0')
+      colour(image_name, id, '', '', 0)
     }
     assert_equal expected_message, error.message
   end

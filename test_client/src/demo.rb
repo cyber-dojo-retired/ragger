@@ -40,7 +40,7 @@ class Demo
   # - - - - - - - - - - - - - - - - - - - - -
 
   def colour(css_colour, stdout)
-    args  = [ PythonPytest::IMAGE_NAME, '729z65', stdout, '', '0' ]
+    args  = [ PythonPytest::IMAGE_NAME, '729z65', stdout, '', 0 ]
     duration = timed { @result = ragger.colour(*args) }
     @html += pre('colour', duration, css_colour, @result)
   end

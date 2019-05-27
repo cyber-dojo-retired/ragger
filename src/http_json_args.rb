@@ -78,7 +78,7 @@ class HttpJsonArgs
 
   def status
     arg = @args[name = __method__.to_s]
-    unless arg.is_a?(String)
+    unless arg.is_a?(Integer)
       fail malformed(name)
     end
     arg

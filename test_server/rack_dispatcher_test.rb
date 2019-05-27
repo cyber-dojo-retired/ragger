@@ -2,6 +2,7 @@ require_relative '../src/rack_dispatcher'
 require_relative 'data/ids'
 require_relative 'data/image_names'
 require_relative 'data/json'
+require_relative 'data/not_integers'
 require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'http_stub'
@@ -102,7 +103,7 @@ class RackDispatcherTest < TestBase
 
   test 'BB5',
   %w( malformed status becomes 400 client error ) do
-    NOT_STRINGS.each do |status|
+    NOT_INTEGERS.each do |status|
       payload = colour_args('status', status)
       assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
     end
@@ -212,7 +213,7 @@ class RackDispatcherTest < TestBase
       id: id,
       stdout: PythonPytest::STDOUT_RED,
       stderr: '',
-      status: '0'
+      status: 0
     }
   end
 

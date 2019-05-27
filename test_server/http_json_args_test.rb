@@ -3,6 +3,7 @@ require_relative '../src/http_json_args'
 require_relative 'data/ids'
 require_relative 'data/image_names'
 require_relative 'data/json'
+require_relative 'data/not_integers'
 require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'test_base'
@@ -147,7 +148,7 @@ class HttpJsonArgsTest < TestBase
 
   test 'CB6',
   %w( raises when colour-status is malformed ) do
-    NOT_STRINGS.each do |status|
+    NOT_INTEGERS.each do |status|
       args = colour_args('status', status)
       assert_http_json_args_error('status is malformed') do
         args.get('/colour')
@@ -178,7 +179,7 @@ class HttpJsonArgsTest < TestBase
       id: id,
       stdout: PythonPytest::STDOUT_RED,
       stderr: '',
-      status: '0'
+      status: 0
     }
   end
 
