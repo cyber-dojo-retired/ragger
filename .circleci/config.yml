@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - checkout
-      - run
+      - run:
           name: Prepull images to avoid pulls affecting durations
           command: |
             set -e
