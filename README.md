@@ -1,6 +1,5 @@
-[![CircleCI](https://circleci.com/gh/cyber-dojo/ragger.svg?style=svg)](https://circleci.com/gh/cyber-dojo/ragger)
 
-# cyberdojo/ragger docker image
+[![CircleCI](https://circleci.com/gh/cyber-dojo/ragger.svg?style=svg)](https://circleci.com/gh/cyber-dojo/ragger)
 
 - The source for the [cyberdojo/ragger](https://hub.docker.com/r/cyberdojo/ragger/tags) Docker image.
 - A docker-containerized micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
@@ -9,10 +8,13 @@
 [runner.run_cyber_dojo_sh(...)](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
 
 - - - -
-API:
+# API:
   * [GET colour(image_name,id,stdout,stderr,status)](#get-colourimage_nameidstdoutstderrstatus)
   * [GET ready?()](#get-ready)
   * [GET sha()](#get-sha)
+
+- - - -
+# JSON in, JSON out  
   * All methods receive a json hash.
     * The hash contains any method arguments as key-value pairs.
   * All methods return a json hash.
