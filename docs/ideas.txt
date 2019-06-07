@@ -1,4 +1,33 @@
 
+Add API method
+ragger.started(image_name, id)
+  this is called when a kata is created (group and individual)
+  and will populate the cache. It will do
+    cache[image_name] ||= ragger_for(image_name)
+    def ragger_for(image_name)
+      rag_rb = runner.run(... image_name, ...)
+      {
+        source: rag_rb
+        lambda: eval(rag_rb)
+      }
+    end
+
+ Very important that start-point image has its rag-lambda checked (by hiker)
+   o) it is present in the image
+   o) eval'it is sane
+
+This will prepare the way for putting red_amber_green.rb into the
+manifest.json of a start-point (and not the image) and to
+expose it in the browser.
+  o) if red_amber_green.rb from browser matches :source from cache
+     we can use the cache
+  o) if red_amber_green.rb from browser does NOT match :source from the cache
+     we cannot use the cache
+     we have to delegate to runner.run(...)
+     this will be slower
+
+====================================================
+
 The rag-lambda source would come from the start-point image at first,
 (later from the browser as an editable? file), and not from the
 test-framework image.
