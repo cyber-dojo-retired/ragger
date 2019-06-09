@@ -5,7 +5,8 @@ ragger.started(image_name, id)
   and will populate the cache. It will do
     cache[image_name] ||= ragger_for(image_name)
     def ragger_for(image_name)
-      rag_rb = runner.run(... image_name, ...)
+      result = runner.run(... image_name, ...)
+      rag_rb = result['stdout']
       {
         source: rag_rb
         lambda: eval(rag_rb)
@@ -14,17 +15,27 @@ ragger.started(image_name, id)
 
  Very important that start-point image has its rag-lambda checked (by hiker)
    o) it is present in the image
-   o) eval'it is sane
+   o) eval'ing is sane
 
 This will prepare the way for putting red_amber_green.rb into the
-manifest.json of a start-point (and not the image) and to
-expose it in the browser.
+manifest.json of a start-point and to expose it in the browser.
   o) if red_amber_green.rb from browser matches :source from cache
      we can use the cache
   o) if red_amber_green.rb from browser does NOT match :source from the cache
      we cannot use the cache
      we have to delegate to runner.run(...)
      this will be slower
+  o) however, this is only for a non-custom session
+     If the rag lambda source is exposed, then a custom session
+     could have edited the initial rag lambda and so it
+     cannot be trusted and always has to delegate to the runner.
+     Should be possible to check if the initial rag lambda in a
+     custom session has been altered from the base LTF version...
+     for a custom session, get the image_name, and find the
+     non-custom kata with that image_name (eg java-junit).
+     Then get the rag lambda for that. If the custom session's
+     rag lambda matches that then it is safe.
+
 
 ====================================================
 
