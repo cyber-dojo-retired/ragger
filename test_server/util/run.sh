@@ -19,7 +19,7 @@ ruby-prof \
    /tmp/test_run.rb \
    ${TEST_ARGS[@]} | tee ${TEST_LOG}
 
-sleep 0.5 # needed, maybe TEST_LOG needs flushing?
+echo 'flush...' >> ${TEST_LOG}
 
 ruby ${MY_DIR}/check_test_results.rb \
   ${TEST_LOG} \
