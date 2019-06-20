@@ -54,3 +54,5 @@ module Docker # mix-in
   REMOTE_NAME = /^(#{NAME})(:(#{TAG}))?(@#{DIGEST})?$/
 
 end
+
+Docker.freeze
