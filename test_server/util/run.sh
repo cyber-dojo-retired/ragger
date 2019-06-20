@@ -7,12 +7,19 @@ readonly TEST_LOG=${COVERAGE_ROOT}/test.log
 
 mkdir -p ${COVERAGE_ROOT}
 
-ruby \
-  -e "([ '${MY_DIR}/coverage.rb' ] + \
-         %w(${TEST_FILES[*]})        \
-      ).each{ |file| require file }" \
-  -- ${TEST_ARGS[@]}                 \
-  | tee ${TEST_LOG}
+readonly SCRIPT="([ '${MY_DIR}/coverage.rb' ] + %w(${TEST_FILES[*]})).each{ |file| require file }"
+
+#ruby -e "${SCRIPT}" -- ${TEST_ARGS[@]} | tee ${TEST_LOG}
+
+echo "${SCRIPT}" > /tmp/test_run.rb
+ruby-prof \
+   --min_percent=0.05 \
+   --printer=flat \
+   --file=${COVERAGE_ROOT}/profiled.test_run.dump \
+   /tmp/test_run.rb \
+   ${TEST_ARGS[@]} | tee ${TEST_LOG}
+
+sleep 0.5 # needed, maybe TEST_LOG needs flushing?
 
 ruby ${MY_DIR}/check_test_results.rb \
   ${TEST_LOG} \
