@@ -9,7 +9,7 @@ mkdir -p ${COVERAGE_ROOT}
 
 readonly SCRIPT="([ '${MY_DIR}/coverage.rb' ] + %w(${TEST_FILES[*]})).each{ |file| require file }"
 
-#ruby -e "${SCRIPT}" -- ${TEST_ARGS[@]} | tee ${TEST_LOG}
+#export RUBYOPT=-w
 
 echo "${SCRIPT}" > /tmp/test_run.rb
 ruby-prof \
@@ -19,6 +19,7 @@ ruby-prof \
    /tmp/test_run.rb \
    ${TEST_ARGS[@]} | tee ${TEST_LOG}
 
+sleep 1
 echo 'flush...' >> ${TEST_LOG}
 
 ruby ${MY_DIR}/check_test_results.rb \
