@@ -110,6 +110,7 @@ class ColourTest < TestBase
       }
     })
     colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
+    HttpStub.unstub_request
     assert_amber
     assert spy.spied?(expected)
   end

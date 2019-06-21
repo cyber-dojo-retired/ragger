@@ -47,6 +47,7 @@ class HttpJsonResponseUnpackerTest < TestBase
     requester = HttpJson::RequestPacker.new(external, 'runner', 4597)
     target = HttpJson::ResponseUnpacker.new(requester)
     error = assert_raises { target.get('sha', {}) }
+    HttpStub.unstub_request
     yield error
   end
 

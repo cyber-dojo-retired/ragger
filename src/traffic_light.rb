@@ -14,9 +14,9 @@ class TrafficLight
     runner.ready?
   end
 
-  def colour(image_name, id, stdout, stderr, status)
+  def colour(image_name, id, local_stdout, local_stderr, local_status)
     @cache[image_name] ||= eval(get_rag_lambda_src(image_name, id))
-    rag = @cache[image_name].call(stdout, stderr, status)
+    rag = @cache[image_name].call(local_stdout, local_stderr, local_status)
     unless [:red,:amber,:green].include?(rag)
       log << rag_message(rag.to_s)
       rag = :amber

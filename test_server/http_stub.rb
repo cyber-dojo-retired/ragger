@@ -11,4 +11,8 @@ class HttpStub
     end
   end
 
+  def self.unstub_request
+    remove_method(:request)
+  end
+
 end
