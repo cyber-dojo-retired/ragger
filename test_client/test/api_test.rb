@@ -164,6 +164,7 @@ class ApiTest < TestBase
     error = assert_raises(RuntimeError) {
       colour(image_name, id, '', '', 0)
     }
+    HttpStub.unstub_request
     assert_equal expected_message, error.message
   end
 

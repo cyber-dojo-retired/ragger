@@ -117,7 +117,7 @@ class RackDispatcherTest < TestBase
     HttpStub.stub_request({})
     expected = "key for 'ready?' is missing"
     assert_rack_call_error(500, expected, 'ready', {}.to_json)
-    HttpStub.unstub_request    
+    HttpStub.unstub_request
   end
 
   private # = = = = = = = = = = = = =

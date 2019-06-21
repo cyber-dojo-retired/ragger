@@ -14,7 +14,7 @@ class HexMiniTest < MiniTest::Test
       execute_around = lambda {
         _hex_setup_caller(hex_id, hex_name)
         begin
-          self.instance_eval &test_block
+          self.instance_eval(&test_block)
         ensure
           _hex_teardown_caller
         end
@@ -45,7 +45,7 @@ class HexMiniTest < MiniTest::Test
     raise "#{pointer}empty#{pointee}" if hex_suffix === ''
     raise "#{pointer}not hex#{pointee}" unless hex_suffix =~ /^[0-9A-F]+$/
     raise "#{pointer}duplicate#{pointee}" if @@seen_hex_ids.include?(hex_id)
-    raise "#{pointer}overlap#{pointee}" if hex_prefix[-2..-1] === hex_suffix[0..1]    
+    raise "#{pointer}overlap#{pointee}" if hex_prefix[-2..-1] === hex_suffix[0..1]
     @@seen_hex_ids << hex_id
     hex_id
   end
