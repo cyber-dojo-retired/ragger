@@ -9,6 +9,7 @@
 # So I added redirecting stderr to stdout 2>&1
 # This only works sometimes :-{
 
+echo "${SCRIPT}" > /tmp/test_run.rb
 ruby-prof \
    --min_percent=0.05 \
    --printer=flat \
