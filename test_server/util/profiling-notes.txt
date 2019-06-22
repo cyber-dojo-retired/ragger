@@ -1,0 +1,17 @@
+
+# Having problems getting ruby-prof to work.
+# -----------------------------------------
+# Note that cyberdojo/rack-base installs ruby-prof gem.
+# The tee to TEST_LOG is being buffered so is not fully written
+# when the check_test_results.rb script runs.
+# I think the problem is that libc full-buffers when stdout'ing to a file.
+# But it does no-buffering for stderr.
+# So I added redirecting stderr to stdout 2>&1
+# This only works sometimes :-{
+
+ruby-prof \
+   --min_percent=0.05 \
+   --printer=flat \
+   --file=${COVERAGE_ROOT}/profiled.test_run.dump \
+   2>&1 /tmp/test_run.rb \
+   ${TEST_ARGS[@]} | tee ${TEST_LOG}
