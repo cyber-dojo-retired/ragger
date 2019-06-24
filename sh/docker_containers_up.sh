@@ -1,18 +1,37 @@
 #!/bin/bash
 set -e
 
+ip_address()
+{
+  if [ -n "${DOCKER_MACHINE_NAME}" ]; then
+    docker-machine ip ${DOCKER_MACHINE_NAME}
+  else
+    echo localhost
+  fi
+}
+
+readonly IP_ADDRESS=$(ip_address)
+
+curl_cmd()
+{
+  local -r port="${1}"
+  local -r path="${2}"
+  local -r cmd="curl --output /dev/null --silent --fail --data {} -X GET http://${IP_ADDRESS}:${port}/${path}"
+  echo "${cmd}"
+}
+
+# - - - - - - - - - - - - - - - - - - - -
+
 wait_until_ready()
 {
   local -r name="${1}"
   local -r port="${2}"
-  local -r cmd="curl --output /dev/null --silent --fail --data {} -X GET http://$(ip_address):${port}/ready?"
   local -r max_tries=10
-
   echo -n "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries})
   do
     echo -n '.'
-    if ${cmd}; then
+    if $(curl_cmd ${port} ready?) ; then
       echo 'OK'
       return
     else
@@ -23,17 +42,6 @@ wait_until_ready()
   echo "${name} not ready after ${max_tries} tries"
   docker logs ${name}
   exit 1
-}
-
-# - - - - - - - - - - - - - - - - - - - -
-
-ip_address()
-{
-  if [ -n "${DOCKER_MACHINE_NAME}" ]; then
-    docker-machine ip ${DOCKER_MACHINE_NAME}
-  else
-    echo localhost
-  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - -
@@ -66,22 +74,21 @@ exit_unless_clean()
     echo 'OK'
   else
     echo 'FAIL'
-    show_unclean_docker_log "${name}" "${docker_log}"
+    echo_docker_log "${name}" "${docker_log}"
     exit 1
   fi
 }
 
 # - - - - - - - - - - - - - - - - - - - -
 
-show_unclean_docker_log()
+echo_docker_log()
 {
   local -r name="${1}"
   local -r docker_log="${2}"
-  echo "[docker logs ${name}] not empty on startup"
+  echo "[docker logs ${name}]"
   echo "<docker_log>"
   echo "${docker_log}"
   echo "</docker_log>"
-  exit 1
 }
 
 # - - - - - - - - - - - - - - - - - - - -
