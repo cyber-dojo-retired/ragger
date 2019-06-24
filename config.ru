@@ -1,3 +1,6 @@
+$stdout.sync = true
+$stderr.sync = true
+
 require 'prometheus/middleware/collector'
 require 'prometheus/middleware/exporter'
 require 'rack'
