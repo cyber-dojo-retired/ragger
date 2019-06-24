@@ -3,20 +3,16 @@ set -e
 
 wait_until_ready()
 {
-  local name="${1}"
-  local port="${2}"
-  local max_tries=10
-  local cmd="curl --silent --fail --data '{}' -X GET http://localhost:${port}/ready?"
-  cmd+=" > /dev/null 2>&1"
+  local -r name="${1}"
+  local -r port="${2}"
+  local -r cmd="curl --output /dev/null --silent --fail --data {} -X GET http://$(ip_address):${port}/ready?"
+  local -r max_tries=10
 
-  if [ -n "${DOCKER_MACHINE_NAME}" ]; then
-    cmd="docker-machine ssh ${DOCKER_MACHINE_NAME} ${cmd}"
-  fi
   echo -n "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries})
   do
     echo -n '.'
-    if eval ${cmd} ; then
+    if ${cmd}; then
       echo 'OK'
       return
     else
@@ -27,6 +23,17 @@ wait_until_ready()
   echo "${name} not ready after ${max_tries} tries"
   docker logs ${name}
   exit 1
+}
+
+# - - - - - - - - - - - - - - - - - - - -
+
+ip_address()
+{
+  if [ -n "${DOCKER_MACHINE_NAME}" ]; then
+    docker-machine ip ${DOCKER_MACHINE_NAME}
+  else
+    echo localhost
+  fi
 }
 
 # - - - - - - - - - - - - - - - - - - - -
