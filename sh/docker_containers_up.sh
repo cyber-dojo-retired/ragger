@@ -51,19 +51,30 @@ wait_till_up()
 
 exit_unless_clean()
 {
-  local name="${1}"
-  local docker_logs=$(docker logs "${name}")
+  local -r name="${1}"
+  local -r docker_log=$(docker logs "${name}")
+  local -r line_count=$(echo -n "${docker_log}" | grep -c '^')
   echo -n "Checking ${name} started cleanly..."
-  if [[ -z "${docker_logs}" ]]; then
+  if [ "${line_count}" == '3' ]; then
     echo 'OK'
   else
     echo 'FAIL'
-    echo "[docker logs] not empty on startup"
-    echo "<docker_log>"
-    echo "${docker_logs}"
-    echo "</docker_log>"
+    show_unclean_docker_log "${name}" "${docker_log}"
     exit 1
   fi
+}
+
+# - - - - - - - - - - - - - - - - - - - -
+
+show_unclean_docker_log()
+{
+  local -r name="${1}"
+  local -r docker_log="${2}"
+  echo "[docker logs ${name}] not empty on startup"
+  echo "<docker_log>"
+  echo "${docker_log}"
+  echo "</docker_log>"
+  exit 1
 }
 
 # - - - - - - - - - - - - - - - - - - - -
