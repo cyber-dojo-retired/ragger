@@ -29,8 +29,6 @@ services:
     image: cyberdojo/ragger
     init: true
     container_name: test-ragger-server
-    stdin_open: true
-    tty: true
     ports:
       - 5537:5537
     read_only: true
@@ -48,8 +46,6 @@ services:
     image: cyberdojo/runner
     init: true
     container_name: test-ragger-runner-server
-    stdin_open: true
-    tty: true    
     ports:
       - 4597:4597
     read_only: true
