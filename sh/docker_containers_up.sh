@@ -76,12 +76,10 @@ docker-compose \
   -d \
   --force-recreate
 
-readonly MY_NAME=ragger
+wait_until_ready  "test-ragger-server" 5537
+exit_unless_clean "test-ragger-server"
 
-wait_until_ready  "test-${MY_NAME}-server" 5537
-exit_unless_clean "test-${MY_NAME}-server"
+wait_until_ready  "test-ragger-runner-server" 4597
+exit_unless_clean "test-ragger-runner-server"
 
-wait_until_ready  "test-${MY_NAME}-runner-server" 4597
-exit_unless_clean "test-${MY_NAME}-runner-server"
-
-wait_till_up "test-${MY_NAME}-client"
+wait_till_up "test-ragger-client"
