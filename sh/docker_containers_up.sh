@@ -12,6 +12,8 @@ ip_address()
 
 readonly IP_ADDRESS=$(ip_address)
 
+# - - - - - - - - - - - - - - - - - - - -
+
 curl_cmd()
 {
   local -r port="${1}"
