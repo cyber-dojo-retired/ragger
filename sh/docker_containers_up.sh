@@ -32,7 +32,7 @@ wait_until_ready()
 {
   local -r name="${1}"
   local -r port="${2}"
-  local -r max_tries=10
+  local -r max_tries=20
   echo -n "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries})
   do
