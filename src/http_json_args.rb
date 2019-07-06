@@ -26,7 +26,7 @@ class HttpJsonArgs
     when '/sha'    then ['sha',[]]
     when '/colour' then ['colour',[image_name, id, stdout, stderr, status]]
     else
-      raise HttpJson::RequestError, 'unknown path'
+      fail HttpJson::RequestError, 'unknown path'
     end
   end
 
