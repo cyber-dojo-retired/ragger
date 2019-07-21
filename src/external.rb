@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'runner'
 require_relative 'stdout_log'
 require 'net/http'

@@ -1,0 +1,8 @@
+
+At the moment if a rag-lambda does not return one of :red,:amber,:green
+then it is mapped to :amber
+
+Change this so it is mapped to :faulty
+
+This will help when the rag-lambda is exposed as
+an actual source file in kata/edit.

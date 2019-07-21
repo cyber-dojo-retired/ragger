@@ -49,7 +49,7 @@ services:
     init: true
     container_name: test-ragger-runner-server
     environment:
-      - NO_PROMETHEUS    
+      - NO_PROMETHEUS
     ports:
       - 4597:4597
     read_only: true

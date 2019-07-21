@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 # Alphabet of [0-9] [a-z] [A-Z] excluding ioIO
@@ -25,15 +27,15 @@ class Base58
   private
 
   def self.letter
-    alphabet[index]
+    ALPHABET[index]
   end
 
   def self.index
-    SecureRandom.random_number(alphabet.size)
+    SecureRandom.random_number(ALPHABET.size)
   end
 
   def self.letter?(char)
-    alphabet.include?(char)
+    ALPHABET.include?(char)
   end
 
   ALPHABET = %w{

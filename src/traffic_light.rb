@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 class TrafficLight
 
@@ -23,7 +24,7 @@ class TrafficLight
     end
     rag.to_s
   rescue => error
-    # See NOTES
+    # See doc/ notes
     log << rag_message(error.message)
     'amber'
   end
