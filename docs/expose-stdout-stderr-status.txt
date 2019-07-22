@@ -7,7 +7,8 @@ colour() returned more than just eg 'red'.
 It's tricky because there are several levels here...
 Level 0: the 'red' colour from the lambda eval/call with the original [s,s,s]
          if this does _not_ return red/amber/green then I'm thinking
-         about returning the string 'broken' to indicate a broken traffic-light.
+         about returning the string 'faulty' to indicate a faulty traffic-light.
+         Then simply have a traffic-light image for faulty.
 Level 1: the [s,s,s] triple returned by the call to runner to get the lambda (in stdout)
 
 If the colour(image_name,...) is non-existent then runner
@@ -20,10 +21,10 @@ will raise an exception. Eg
   "backtrace": [...
 
 So...
-json = JSON.parse(error.message)
-stdout = json['message']['stdout']  # ''
-stdout = json['message']['stderr']  # "Unable to find image 'does_not_exist:latest' locally"
-status = json['message']['status']  # '125'
+msg = JSON.parse(error.message)['message']
+stdout = msg['stdout']  # ''
+stdout = msg['stderr']  # "Unable to find image 'does_not_exist:latest' locally"
+status = msg['status']  # '125'
 
 ================================================================================
 
@@ -47,10 +48,10 @@ ruby = 'cyberdojofoundation/ruby'
 files = {
   "cyber-dojo.sh" => intact("ruby ./traffic_light.rb"),
   "lambda.rb" => intact(@cache[image_name]),
-  "stdout" => intact(stdout),
-  "stderr" => intact(stderr),
-  "status" => intact(status),
-  "traffic_light.rb" => intact(
+  "stdout" => stdout,
+  "stderr" => stderr,
+  "status" => status,
+  "traffic_light.rb" =>
     <<~RUBY
     rag = eval(IO.read('lambda.rb'))
     stdout = IO.read('stdout')
@@ -58,7 +59,6 @@ files = {
     status = IO.read('status')
     print rag.call(stdout, stderr, status)
     RUBY
-  )
 }
 max_seconds = 5
 result = runner.run_cyber_dojo_sh(ruby, id, files, max_seconds)
@@ -67,7 +67,7 @@ rgb =~ /^red|amber|green$/ ? rgb : 'amber'
 
 
 def get_rag_lambda_src(image_name, id)
-  files = { 'cyber-dojo.sh' => intact('cat /usr/local/bin/red_amber_green.rb') }
+  files = { 'cyber-dojo.sh' => 'cat /usr/local/bin/red_amber_green.rb' }
   max_seconds = 5
   result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
   result['stdout']['content']
