@@ -17,7 +17,7 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
-  # not raising
+  # 200
   # - - - - - - - - - - - - - - - - -
 
   test 'AB3', 'sha' do
@@ -43,7 +43,7 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
-  # raising
+  # 400
   # - - - - - - - - - - - - - - - - -
 
   test 'B00',
@@ -110,12 +110,14 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
+  # 500
+  # - - - - - - - - - - - - - - - - -
 
   test 'BB6',
   %w( other errors become 500 server error ) do
     @external = External.new({ 'http' => HttpStub })
     HttpStub.stub_request({})
-    expected = "key for 'ready?' is missing"
+    expected = "http response.body has no key for 'ready?':{}"
     assert_rack_call_error(500, expected, 'ready', {}.to_json)
     HttpStub.unstub_request
   end

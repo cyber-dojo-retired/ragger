@@ -2,12 +2,13 @@
 
 require_relative 'http_json/request_packer'
 require_relative 'http_json/response_unpacker'
+require_relative 'runner_exception'
 
-class Runner
+class RunnerService
 
   def initialize(external)
     requester = HttpJson::RequestPacker.new(external, 'runner', 4597)
-    @http = HttpJson::ResponseUnpacker.new(requester)
+    @http = HttpJson::ResponseUnpacker.new(requester, RunnerException)
   end
 
   def ready?
