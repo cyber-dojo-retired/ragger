@@ -20,28 +20,25 @@ ragger.started(image_name, id)
 This will prepare the way for putting red_amber_green.rb into the
 manifest.json of a start-point and to expose it in the browser.
   o) if red_amber_green.rb from browser matches :source from cache
+     (where :source in cache comes from the image)
      we can use the cache
   o) if red_amber_green.rb from browser does NOT match :source from the cache
+     (where :source in cache comes from the image)
      we cannot use the cache
      we have to delegate to runner.run(...)
      this will be slower
-  o) however, this is only for a non-custom session
-     If the rag lambda source is exposed, then a custom session
-     could have edited the initial rag lambda and so it
-     cannot be trusted and always has to delegate to the runner.
-     Should be possible to check if the initial rag lambda in a
-     custom session has been altered from the base LTF version...
-     for a custom session, get the image_name, and find the
-     non-custom kata with that image_name (eg java-junit).
-     Then get the rag lambda for that. If the custom session's
-     rag lambda matches that then it is safe.
+Note it is important to check the source against the master in the image
+because custom sessions could edit their copy of the source.
 
 
 ====================================================
 
 The rag-lambda source would come from the start-point image at first,
 (later from the browser as an editable? file), and not from the
-test-framework image.
+test-framework image. This creates a possible security issue
+so it may be that the image has to retain a master copy of the rag-lambda
+so ragger knows whether it can use its cache or delegate to the runner.
+
 
 
 Possible names: lighter?, trafficker?, ragger? colourer?

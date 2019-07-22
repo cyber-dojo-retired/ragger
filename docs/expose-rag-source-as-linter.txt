@@ -5,25 +5,28 @@ Once ragger is a working think about the customizations like James does, eg
   - a lot of ambers in a row
   - that was a big change!
 
-A generalization of the progress_regex from manifest.json
+This could be bundled into the ragger. Viz the ragger is
+generalized and is passed a hash containing lots of data
+not just stdout,stderr,status.
 
-This suggests the idea of yet another service, an "advisor"
-A SEPARATE service.
-Similarly it would expose a function, maybe a lambda.
+However, I think it might be simpler as a SEPARATE service.
+An linter/advister service.
+It would expose a function, maybe a lambda in the browser.
 Initially in Ruby, later in any language? eg Python
 It would be passed much more information than the ragger,
 probably in a hash, eg, stdin ==> hash[:stdin]
 
   - stdout,stderr,status
   - timed_out (true/false)
+  - traffic-light-colour  :red,:amber,:green,:faulty
+  - previous traffic-light sequence
   - duration  (secs.msecs)
-  - all visible files
-  - all previous files
-  - created files
-  - changed files
-  - deleted files
+  - all new_files
+  - all old_files
+  - created filenames
+  - changed filenames
+  - deleted filenames
   - diff from previous files
-  - the full traffic-light sequence info (till this point)
 
 Possible names like linter...
   advisor    >>> yes I like this. least "formal" <<<
