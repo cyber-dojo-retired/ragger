@@ -45,7 +45,7 @@ services:
 
   runner:
     user: root
-    image: cyberdojo/runner
+    image: cyberdojo/runner:${CYBER_DOJO_RUNNER_TAG}
     init: true
     container_name: test-ragger-runner-server
     environment:
