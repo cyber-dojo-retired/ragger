@@ -4,7 +4,6 @@ class TrafficLight
 
   def initialize(external)
     @external = external
-    @cache = {}
   end
 
   def sha
@@ -16,15 +15,14 @@ class TrafficLight
   end
 
   def colour(image_name, id, stdout, stderr, status)
-    @cache[image_name] ||= eval(get_rag_lambda_src(image_name, id), empty_binding)
-    rag = @cache[image_name].call(stdout, stderr, status)
+    rag_lambda = eval(get_rag_lambda_src(image_name, id), empty_binding)
+    rag = rag_lambda.call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)
       log << rag_message(rag.to_s)
       rag = :amber
     end
     rag.to_s
   rescue => error
-    # See doc/ notes
     log << rag_message(error.message)
     'amber'
   end
