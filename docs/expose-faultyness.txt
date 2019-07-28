@@ -7,3 +7,6 @@ and have a traffic-light image for :faulty
 
 This will help when the rag-lambda is exposed as
 an actual source file in kata/edit.
+
+Would be nice if the traffic-light images
+where held in ragger too, and redirected from nginx
