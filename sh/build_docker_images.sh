@@ -4,16 +4,17 @@ set -e
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 export SHA=$(cd "${ROOT_DIR}" && git rev-parse HEAD)
 
-docker-compose \
-  --file "${ROOT_DIR}/docker-compose.yml" \
-    build \
-      ragger
+build_service_image()
+{
+  echo
+  docker-compose \
+    --file "${ROOT_DIR}/docker-compose.yml" \
+      build \
+        "${1}"
+}
 
-echo
-docker-compose \
-  --file "${ROOT_DIR}/docker-compose.yml" \
-    build \
-      ragger-client
+build_service_image ragger
+build_service_image ragger-client
 
 # Assuming we do not have any new ragger commits, ragger's latest commit
 # sha will match the image tag inside versioner's .env file.
