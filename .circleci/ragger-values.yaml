@@ -18,7 +18,7 @@ service:
 containers:
   - name: ragger
     image: cyberdojo/ragger
-    tag: "84aef8e"
+    tag: ""
     securityContext:
       readOnlyRootFilesystem: true
     volumeMounts:

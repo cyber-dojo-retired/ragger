@@ -20,6 +20,16 @@ class RackDispatcherTest < TestBase
   # 200
   # - - - - - - - - - - - - - - - - -
 
+  test 'AB2', %w(
+  allow empty body instead of {} to facilitate
+  kubernetes liveness/readyness http probes ) do
+    rack_call('sha', '')
+    sha = assert_200('sha')
+    assert_sha(sha)
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
   test 'AB3', 'sha' do
     rack_call('sha', {}.to_json)
     sha = assert_200('sha')
