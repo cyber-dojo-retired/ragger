@@ -29,12 +29,12 @@ containers:
         memory: 32Mi
       requests:
         memory: 32Mi
-      livenessProbe:
-        path: /alive?
-        port: 5537
-      readinessProbe:
-        path: /ready?
-        port: 5537
+    livenessProbe:
+      path: /alive?
+      port: 5537
+    readinessProbe:
+      path: /ready?
+      port: 5537
 
 envFromSecret: {}
 
