@@ -10,6 +10,10 @@ class TrafficLight
     ENV['SHA']
   end
 
+  def alive?
+    true
+  end
+
   def ready?
     runner.ready?
   end

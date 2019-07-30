@@ -19,7 +19,7 @@ class HttpJsonArgsTest < TestBase
   # not raising
   # - - - - - - - - - - - - - - - - -
 
-  test 'AB2', %w(
+  test 'AB1', %w(
   allow empty body instead of {} to facilitate
   kubernetes liveness/readyness http probes ) do
     target = HttpJsonArgs.new('')
@@ -30,10 +30,19 @@ class HttpJsonArgsTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  test 'AB3', 'for sha' do
+  test 'AB2', 'for sha' do
     target = HttpJsonArgs.new('{}')
     name,args = target.get('/sha')
     assert_equal 'sha', name
+    assert_equal [], args
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test 'AB3', 'for alive' do
+    target = HttpJsonArgs.new('{}')
+    name,args = target.get('/alive')
+    assert_equal 'alive?', name
     assert_equal [], args
   end
 

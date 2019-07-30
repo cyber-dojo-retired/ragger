@@ -18,6 +18,10 @@ class TestBase < HexMiniTest
     ragger.sha
   end
 
+  def alive?
+    ragger.alive?
+  end
+
   def ready?
     ragger.ready?
   end

@@ -11,8 +11,12 @@ class ApiTest < TestBase
 
   include Test::Data
 
-  test '762', 'sha' do
+  test '761', 'sha' do
     assert_sha(sha)
+  end
+
+  test '762', 'alive?' do
+    assert alive?
   end
 
   test '763', 'ready?' do

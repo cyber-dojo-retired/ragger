@@ -14,12 +14,16 @@ class TestBase < HexMiniTest
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
+  def sha
+    traffic_light.sha
+  end
+
   def ready?
     traffic_light.ready?
   end
 
-  def sha
-    traffic_light.sha
+  def alive?
+    traffic_light.alive?
   end
 
   def colour(image_name, id, stdout, stderr, status)

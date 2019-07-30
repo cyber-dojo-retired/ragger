@@ -12,6 +12,10 @@ class RaggerService
     @http.get(__method__, {})
   end
 
+  def alive?
+    @http.get(__method__, {})
+  end
+
   def ready?
     @http.get(__method__, {})
   end

@@ -24,8 +24,9 @@ class HttpJsonArgs
 
   def get(path)
     case path
-    when '/ready'  then ['ready?',[]]
     when '/sha'    then ['sha',[]]
+    when '/alive'  then ['alive?',[]]
+    when '/ready'  then ['ready?',[]]
     when '/colour' then ['colour',[image_name, id, stdout, stderr, status]]
     else
       fail HttpJson::RequestError, 'unknown path'
