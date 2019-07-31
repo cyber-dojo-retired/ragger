@@ -9,8 +9,9 @@
 
 - - - -
 # API:
-  * [GET colour(image_name,id,stdout,stderr,status)](#get-colourimage_nameidstdoutstderrstatus)
+  * [GET colour(image_name,id,stdout,stderr,status)](#get-colourimage_nameidstdoutstderrstatus)  
   * [GET ready?()](#get-ready)
+  * [GET alive?](#alive)  
   * [GET sha()](#get-sha)
 
 - - - -
@@ -55,13 +56,33 @@ strings to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_
 ```
 
 - - - -
-## GET ready?
-- returns true if the service is ready, otherwise false, eg
+# GET ready?
+Useful as a kubernetes readiness probe.
+- returns
+  * **true** if the service is ready
+  * **false** if the service is not ready
+  * eg
   ```json
   { "ready?": true }
   { "ready?": false }
   ```
-- parameters, none
+- parameters
+  * none
+  ```json
+  {}
+  ```
+
+- - - -
+# GET alive?
+Useful as a kubernetes liveness probe.
+- returns
+  * **true**
+  * eg
+  ```json
+  { "alive?": true }
+  ```
+- parameters
+  * none
   ```json
   {}
   ```
