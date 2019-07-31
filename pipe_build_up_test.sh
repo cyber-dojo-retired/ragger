@@ -3,10 +3,7 @@ set -e
 
 readonly SH_DIR="$( cd "$( dirname "${0}" )" && pwd )/sh"
 
-docker run --rm \
-  cyberdojo/versioner:${CYBER_DOJO_VERSIONER_TAG:-latest} \
-    sh -c 'cat /app/.env' \
-      > /tmp/versioner.web.env
+"${SH_DIR}/set_tag_env_vars.sh"
 set -a
 . /tmp/versioner.web.env
 set +a

@@ -9,13 +9,14 @@ class Demo
   # - - - - - - - - - - - - - - - - - - - - -
 
   def call(_env)
-    @html = ''
-    sha
-    ready?
-    colour('Red'   , PythonPytest::STDOUT_RED)
-    colour('Yellow', PythonPytest::STDOUT_AMBER)
-    colour('Green' , PythonPytest::STDOUT_GREEN)
-    [ 200, { 'Content-Type' => 'text/html' }, [ @html ] ]
+    html = ''
+    html += sha
+    html += alive?
+    html += ready?
+    html += colour(PythonPytest::STDOUT_RED)
+    html += colour(PythonPytest::STDOUT_AMBER)
+    html += colour(PythonPytest::STDOUT_GREEN)
+    [ 200, { 'Content-Type' => 'text/html' }, [ html ] ]
   rescue => error
     body = [ [error.message] + [error.backtrace] ]
     [ 200, { 'Content-Type' => 'text/html' }, body ]
@@ -26,32 +27,40 @@ class Demo
   include Test::Data
 
   def sha
-    duration = timed { @result = ragger.sha }
-    @html += pre('sha', duration, 'Gray', @result)
+    duration,result = timed { ragger.sha }
+    pre('sha', duration, 'LightGreen', result)
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - -
+
+  def alive?
+    duration,result = timed { ragger.alive? }
+    pre('alive?', duration, 'LightGreen', result)
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
 
   def ready?
-    duration = timed { @result = ragger.ready? }
-    @html += pre('ready?', duration, 'Gray', @result)
+    duration,result = timed { ragger.ready? }
+    pre('ready?', duration, 'LightGreen', result)
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
 
-  def colour(css_colour, stdout)
+  def colour(stdout)
     args  = [ PythonPytest::IMAGE_NAME, '729z65', stdout, '', 0 ]
-    duration = timed { @result = ragger.colour(*args) }
-    @html += pre('colour', duration, css_colour, @result)
+    duration,result = timed { ragger.colour(*args) }
+    pre('colour', duration, 'LightGreen', result)
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
 
   def timed
     started = Time.now
-    yield
+    result = yield
     finished = Time.now
-    '%.4f' % (finished - started)
+    duration = '%.4f' % (finished - started)
+    [duration,result]
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
