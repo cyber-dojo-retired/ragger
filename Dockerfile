@@ -1,6 +1,8 @@
 FROM cyberdojo/rack-base
 LABEL maintainer=jon@jaggersoft.com
 
+RUN gem install 'concurrent-ruby'
+
 WORKDIR /app
 COPY . .
 RUN chown -R nobody:nogroup .

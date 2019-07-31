@@ -16,21 +16,45 @@ However, is a half-way house?
 
 The problem with this is that puller could pull a new
 LTF image with a new /usr/local/bin/red_amber_green.rb file...
-and ragger will not see this and so it won't know to flushes its cache.
-This means resuming an old kata may be slow.
+and ragger will not see this and so it won't know to flush its cache.
+This means resuming an old kata, with an old red_amber_green.rb,
+may be slow, since it might never use a local eval and always
+use the runner.
 But cyber-dojo is not designed for long-lived katas...
 Except that you can fork a new kata from a specific traffic-light...
 
-Is there a way the ragger can be redeployed when a new LTF image appears?
+We need ragger to know when puller pulls a new image.
 Suppose each LTF image had its SHA inside it, eg as an env-var.
-This could then be held as part of the key to the cache.
-This would allow cron to poke the ragger with a certain frequency...
-Or, better still, it could happen as part of puller.pull_image
-puller.pull_image(image_name)
+Now: puller.pull_image(image_name)
 - get the old image's SHA
 - docker pull image_name
 - get the new image's SHA
 - if the SHA changed, call ragger.new_image(image_name)
+
+Now we have a potential multi-threading issue.
+The cache could be accessed from one thread, and refreshed in another thread.
+So... [gem install 'concurrent-ruby']
+require 'concurrent'
+class TrafficLight
+  def initialize(external)
+    @external = external
+    @cache = Concurrent::Map.new
+  end
+  def colour(...)
+    cached = @cache.compute_if_absent(image_name) {
+      eval(get_rag_lambda_src(image_name, id), empty_binding)
+    }
+    rag = cached.call(stdout, stderr, status)
+    ...
+  end
+  def new_image(image_name)
+    @cache.delete(image_name)
+  end
+end
+...
+Later we will need to keep the source and the lambda
+so we can compare the source against the visible_files version...
+
 
 
 Initial design thoughts...
