@@ -55,6 +55,13 @@ end
 Later we will need to keep the source and the lambda
 so we can compare the source against the visible_files version...
 
+There is another problem...
+cron,puller,runner are all daemonsets.
+But ragger is currently a replicaCount:3
+This will only work if puller can call ragger.new_image(image_name)
+on all the replicas...
+If it can't ragger will need to become a daemonset too.
+
 
 
 Initial design thoughts...
