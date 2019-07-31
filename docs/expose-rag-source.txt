@@ -1,0 +1,42 @@
+
+Exposing the red_amber_green.rb as a visible_file...
+----------------------------------------------------
+This would be good for people wanting to create their own LTF images.
+However, it creates a tension because
+- it can no longer be trusted to do an eval and call
+- so it needs to be eval'd and called by the runner
+- a runner call is much slower than a local eval.
+However, is a half-way house?
+- if the red_amber_green.rb file in the visible-files
+  is the same as the one from the image's /usr/local/bin dir
+  then it can be trusted.
+- which means it can be eval'd and called locally.
+- if it is NOT the same
+  then eval and call it using the runner.
+
+The problem with this is that puller could pull a new
+LTF image with a new /usr/local/bin/red_amber_green.rb file...
+and ragger will not see this and so it won't know to flushes its cache.
+This means resuming an old kata may be slow.
+But cyber-dojo is not designed for long-lived katas...
+Except that you can fork a new kata from a specific traffic-light...
+
+Is there a way the ragger can be redeployed when a new LTF image appears?
+Suppose each LTF image had its SHA inside it, eg as an env-var.
+This could then be held as part of the key to the cache.
+This would allow cron to poke the ragger with a certain frequency...
+Or, better still, it could happen as part of puller.pull_image
+puller.pull_image(image_name)
+- get the old image's SHA
+- docker pull image_name
+- get the new image's SHA
+- if the SHA changed, call ragger.new_image(image_name)
+
+
+Initial design thoughts...
+--------------------------
+When a kata is created, if there is no red_amber_green.rb file,
+get the red_amber_green.rb file from the image and add that as a visible_file.
+Either way, red_amber_green.rb becomes a special file, like
+cyber-dojo.sh and it cannot be deleted.
+And it always appears in the lower filenames section.
