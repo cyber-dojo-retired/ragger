@@ -11,7 +11,7 @@
 # API:
   * [GET colour(image_name,id,stdout,stderr,status)](#get-colourimage_nameidstdoutstderrstatus)  
   * [GET ready?()](#get-ready)
-  * [GET alive?](#alive)  
+  * [GET alive?](#get-alive)  
   * [GET sha()](#get-sha)
 
 - - - -
@@ -41,24 +41,25 @@ to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb
   * **stderr:String**
   * **status:Integer**
   * eg
-```json
-  {        "image_name": "cyberdojofoundation/gcc_assert",
-                   "id": "15B9zD",
-               "stdout": "...",
-               "stderr": "...",
-               "status": 3,
-  }
-```
+  ```json
+    {        "image_name": "cyberdojofoundation/gcc_assert",
+                     "id": "15B9zD",
+                 "stdout": "...",
+                 "stderr": "...",
+                 "status": 3,
+    }
+  ```
 
 - - - -
 # GET ready?
 Useful as a readiness probe.
 - returns
   * **true** if the service is ready
-  * **false** if the service is not ready
-  * eg
   ```json
   { "ready?": true }
+  ```
+  * **false** if the service is not ready
+  ```json
   { "ready?": false }
   ```
 - parameters
@@ -72,7 +73,6 @@ Useful as a readiness probe.
 Useful as a liveness probe.
 - returns
   * **true**
-  * eg
   ```json
   { "alive?": true }
   ```
@@ -86,10 +86,13 @@ Useful as a liveness probe.
 ## GET sha
 The git commit sha used to create the Docker image.
 - returns
+  * The 40 character sha string.
+  * eg
   ```json
   { "sha": "b28b3e13c0778fe409a50d23628f631f87920ce5" }
   ```
-- parameters, none
+- parameters
+  * none
   ```json
   {}
   ```
