@@ -21,6 +21,9 @@ class TrafficLight
   end
 
   def colour(image_name, id, stdout, stderr, status)
+    # I'd like to cache the rag-lambda here...
+    # The problem is the cache would be stale as
+    # soon as the puller service pulled a new image
     rag_lambda = eval(get_rag_lambda_src(image_name, id), empty_binding)
     rag = rag_lambda.call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)

@@ -26,10 +26,8 @@ Except that you can fork a new kata from a specific traffic-light...
 We need ragger to know when puller pulls a new image.
 Suppose each LTF image had its SHA inside it, eg as an env-var.
 Now: puller.pull_image(image_name)
-- get the old image's SHA
 - docker pull image_name
-- get the new image's SHA
-- if the SHA changed, call ragger.new_image(image_name)
+- if new image pulled (see stdout), call ragger.new_image(image_name)
 
 Now we have a potential multi-threading issue.
 The cache could be accessed from one thread, and refreshed in another thread.
@@ -52,8 +50,11 @@ class TrafficLight
   end
 end
 ...
-Later we will need to keep the source and the lambda
+Now we will need to keep the source and the lambda in the cache
 so we can compare the source against the visible_files version...
+If there is a change, we must use the runner.
+Otherwise, suppose there is an accidental infinite loop.
+The eval would just spin till the invoking http-get timed out.
 
 There is another problem...
 cron,puller,runner are all daemonsets.
@@ -61,6 +62,24 @@ But ragger is currently a replicaCount:3
 This will only work if puller can call ragger.new_image(image_name)
 on all the replicas...
 If it can't ragger will need to become a daemonset too.
+That won't work either.
+You can't rely on ragger being on the same node as puller.
+Viz, the pullers on the 3 nodes could all end up notifying
+the same ragger on one specific node. So two ragger's would
+not get their cache notification.
+puller and ragger need to be side-car'd together.
+
+Another idea is if ragger could get a notification of a change to
+an LTF image (done by puller) from dockerhub itself.
+Is there such a notification?
+
+However, there is still another potential problem.
+Suppose there is a fault in the rag lambda and it results
+in an infinite loop? This is only protected if the lambda
+is run inside the runner.
+But this would be handled by the lambda src being detected
+as different to the master in the LTF image.
+
 
 
 
