@@ -69,7 +69,7 @@ puller and ragger could be side-car'd together.
 Or, perhaps simpler, ragger contains the cron that does the puller.
 Now, when puller detects a new image, it can notify ragger.
 The cache would have enough complexity to warrant its own class I think.
-The TrafficLight class does not want a new_image() method.
+The TrafficLight class does not want a new_image() method. The cache does.
 Putting ragger and puller together means it will need to volume mount
 /var/run/docker.sock
 Cache::new_image(image_name) could now do one more thing...
@@ -87,6 +87,63 @@ be deployed to both beta and prod. This makes the cron trickier.
 It would be best if, eg, an env-var could be passed into the
 pod so on beta, the pull script new it was on beta and became a no-op.
 
+require 'concurrent'
+class RagLambdaCache
+  def initialize(external)
+    @external = external
+    @cache = Concurrent::Map.new
+  end
+  def get(image_name, id)
+    runner = @external.runner
+    empty = empty_binding
+    @cache.compute_if_absent(image_name) {
+      files = { 'cyber-dojo.sh' => 'cat /usr/local/bin/red_amber_green.rb' }
+      max_seconds = 1
+      result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
+      src = result['stdout']['content']
+      eval(src, empty)
+    }
+  end
+  def new_image(image_name)
+    @cache.delete(image_name)
+  end
+  private
+  def empty_binding
+    binding
+  end
+end
+
+class Ragger
+  def initialize(external, cache)
+    @external = external
+    @cache = cache
+  end
+  def sha
+    ENV['SHA']
+  end
+  def alive?
+    true
+  end
+  def ready?
+    runner.ready?
+  end
+  def colour(image_name, id, stdout, stderr, status)
+    rag = @cache.get(image_name, id).call(stdout, stderr, status)
+    ...
+  end
+  def new_image(image_name)
+    @cache.new_image(image_name)
+  end
+end
+
+external = External.new
+cache = RagLambdaCache.new(external)
+ragger = Ragger.new(cache)
+
+Now, the puller has to issue an http new_image() call to localhost.
+So ragger needs to expose new_image(image_name)
+
+- - - - - - - - - - - - - - - - - - - - - - - - - -
 Another idea is if ragger could get a notification of a change to
 an LTF image (done by puller) from dockerhub itself.
 Is there such a notification?
