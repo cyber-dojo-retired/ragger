@@ -94,22 +94,22 @@ class RagLambdaCache
     @cache = Concurrent::Map.new
   end
   def get(image_name, id)
-    runner = @external.runner
-    empty = empty_binding
-    @cache.compute_if_absent(image_name) {
-      files = { 'cyber-dojo.sh' => 'cat /usr/local/bin/red_amber_green.rb' }
-      max_seconds = 1
-      result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
-      src = result['stdout']['content']
-      eval(src, empty)
-    }
+    @cache[image_name] || new_image(image_name)
   end
   def new_image(image_name)
-    @cache.delete(image_name)
+    files = { 'cyber-dojo.sh' => 'cat /usr/local/bin/red_amber_green.rb' }
+    max_seconds = 1
+    result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
+    src = result['stdout']['content']
+    rag = eval(src, empty_binding)
+    @cache.compute(image_name, rag)
   end
   private
   def empty_binding
     binding
+  end
+  def runner
+    @external.runner
   end
 end
 
