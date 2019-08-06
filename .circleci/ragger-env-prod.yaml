@@ -2,5 +2,4 @@
 containers:
   - name: ragger
     env:
-    - name: CYBER_DOJO_K8S_DEPLOYMENT_NAMESPACE
-      value: "prod"
+      K8S_DEPLOYMENT_NAMESPACE: "prod"
