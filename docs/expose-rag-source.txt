@@ -84,8 +84,17 @@ At the moment puller is only deployed to beta.
 This is because beta and prod share the same 3 nodes.
 A puller+ragger service will need to
 be deployed to both beta and prod. This makes the cron trickier.
-It would be best if, eg, an env-var could be passed into the
-pod so on beta, the pull script new it was on beta and became a no-op.
+It would be best if, eg, an env-var could be passed in
+so on beta, the pull script new it was on beta and became a no-op.
+k8s yaml... has env-vars for deployment.yaml
+spec:
+  containers:
+  - name: ragger
+    env:
+    - name: CYBER_DOJO_K8S_DEPOLYMENT_NAMESPACE
+      value: "beta"
+
+
 
 require 'concurrent'
 class RagLambdaCache
