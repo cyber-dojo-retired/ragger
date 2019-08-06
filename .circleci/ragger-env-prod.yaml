@@ -1,5 +1,6 @@
 
 containers:
   - name: ragger
+    image: cyberdojo/ragger  
     env:
       K8S_DEPLOYMENT_NAMESPACE: "prod"
