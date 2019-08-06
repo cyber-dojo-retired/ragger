@@ -18,6 +18,9 @@ service:
 containers:
   - name: ragger
     image: cyberdojo/ragger
+    env:
+    - name: CYBER_DOJO_K8S_DEPLOYMENT_NAMESPACE
+      value: "cyber-dojo-k8s-deployment-namespace"    
     securityContext:
       readOnlyRootFilesystem: true
     volumeMounts:

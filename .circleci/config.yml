@@ -55,7 +55,6 @@ jobs:
               --namespace=beta \
               --set-string containers[0].tag=${CIRCLE_SHA1:0:7} \
               --values .circleci/ragger-values.yaml \
-              --values .circleci/ragger-env-beta.yaml \
               beta-ragger \
               praqma/cyber-dojo-service \
               --version 0.2.3
@@ -79,7 +78,6 @@ jobs:
               --namespace=prod \
               --set-string containers[0].tag=${CIRCLE_SHA1:0:7} \
               --values .circleci/ragger-values.yaml \
-              --values .circleci/ragger-env-prod.yaml \
               prod-ragger \
               praqma/cyber-dojo-service \
               --version 0.2.3
