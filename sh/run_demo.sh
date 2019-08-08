@@ -17,5 +17,3 @@ else
 fi
 
 open "http://${ip}:5538"
-
-"${SH_DIR}/docker_containers_down.sh"
