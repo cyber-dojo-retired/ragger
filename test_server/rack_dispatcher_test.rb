@@ -179,6 +179,8 @@ class RackDispatcherTest < TestBase
     response = with_captured_stdout_stderr {
       rack.call(env, RackRequestStub)
     }
+#puts "stderr:#{@stderr}"
+#puts "stdout:#{@stdout}"    
     @status = response[0]
     @type = response[1]
     @body = response[2][0]
@@ -195,11 +197,14 @@ class RackDispatcherTest < TestBase
       old_stderr = $stderr
       $stdout = StringIO.new('', 'w')
       $stderr = StringIO.new('', 'w')
-      response = yield
+      yield
+      #response = yield
+      #@stderr = $stderr.string
+      #@stdout = $stdout.string
+      #response
+    ensure
       @stderr = $stderr.string
       @stdout = $stdout.string
-      response
-    ensure
       $stderr = old_stderr
       $stdout = old_stdout
     end

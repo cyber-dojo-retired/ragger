@@ -90,9 +90,9 @@ k8s yaml... has env-vars for deployment.yaml
 spec:
   containers:
   - name: ragger
+    image: cyberdojo/ragger
     env:
-    - name: CYBER_DOJO_K8S_DEPOLYMENT_NAMESPACE
-      value: "beta"
+      NAME: "value"
 
 
 
@@ -111,7 +111,7 @@ class RagLambdaCache
     result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
     src = result['stdout']['content']
     rag = eval(src, empty_binding)
-    @cache.compute(image_name, rag)
+    @cache.compute(image_name) { rag }
   end
   private
   def empty_binding
@@ -123,9 +123,9 @@ class RagLambdaCache
 end
 
 class Ragger
-  def initialize(external, cache)
+  def initialize(external)
     @external = external
-    @cache = cache
+    @cache = RagLambdaCache.new(external)
   end
   def sha
     ENV['SHA']
@@ -151,6 +151,7 @@ ragger = Ragger.new(cache)
 
 Now, the puller has to issue an http new_image() call to localhost.
 So ragger needs to expose new_image(image_name)
+But the http wget/curl call must be LOCAL. In the same container.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - -
 Another idea is if ragger could get a notification of a change to

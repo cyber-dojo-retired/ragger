@@ -10,3 +10,4 @@ an actual source file in kata/edit.
 
 Would be nice if the traffic-light images
 where held in ragger too, and redirected from nginx
+(Like avatar images are now redirected from nginx to avatars)
