@@ -179,8 +179,6 @@ class RackDispatcherTest < TestBase
     response = with_captured_stdout_stderr {
       rack.call(env, RackRequestStub)
     }
-#puts "stderr:#{@stderr}"
-#puts "stdout:#{@stdout}"    
     @status = response[0]
     @type = response[1]
     @body = response[2][0]
