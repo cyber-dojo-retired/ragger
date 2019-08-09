@@ -189,27 +189,6 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def with_captured_stdout_stderr
-    begin
-      old_stdout = $stdout
-      old_stderr = $stderr
-      $stdout = StringIO.new('', 'w')
-      $stderr = StringIO.new('', 'w')
-      yield
-      #response = yield
-      #@stderr = $stderr.string
-      #@stdout = $stdout.string
-      #response
-    ensure
-      @stderr = $stderr.string
-      @stdout = $stdout.string
-      $stderr = old_stderr
-      $stdout = old_stdout
-    end
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
   def assert_body_contains(key)
     refute_nil @body
     json = JSON.parse(@body)

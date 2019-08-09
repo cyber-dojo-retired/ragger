@@ -61,4 +61,21 @@ class TestBase < HexMiniTest
     hex_test_id[0..5]
   end
 
+  # - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def with_captured_stdout_stderr
+    begin
+      old_stdout = $stdout
+      old_stderr = $stderr
+      $stdout = StringIO.new('', 'w')
+      $stderr = StringIO.new('', 'w')
+      yield
+    ensure
+      @stderr = $stderr.string
+      @stdout = $stdout.string
+      $stderr = old_stderr
+      $stdout = old_stdout
+    end
+  end
+
 end

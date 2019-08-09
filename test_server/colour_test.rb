@@ -26,11 +26,12 @@ class ColourTest < TestBase
     assert_green
   end
 
-=begin
   test '6A4', 'well-formed but non-existent image_name' do
-    colour('does_not_exist', id, '', '', '0')
+    with_captured_stdout_stderr {
+      colour('does_not_exist', id, '', '', '0')
+    }
+    assert_amber
   end
-=end
 
   # - - - - - - - - - - - - - - - - -
 
