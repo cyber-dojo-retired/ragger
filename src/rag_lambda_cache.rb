@@ -17,9 +17,11 @@ class RagLambdaCache
     files = { 'cyber-dojo.sh' => 'cat /usr/local/bin/red_amber_green.rb' }
     max_seconds = 1
     result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
-    src = result['stdout']['content']
-    rag = eval(src, empty_binding)
-    @cache.compute(image_name) { rag }
+    source = result['stdout']['content']
+    fn = eval(source, empty_binding)
+    @cache.compute(image_name) {
+      { source:source, fn:fn }
+    }
   end
 
   private

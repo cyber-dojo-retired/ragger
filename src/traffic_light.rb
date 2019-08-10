@@ -22,7 +22,7 @@ class TrafficLight
   end
 
   def colour(image_name, id, stdout, stderr, status)
-    rag = @cache.get(image_name, id).call(stdout, stderr, status)
+    rag = @cache.get(image_name, id)[:fn].call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)
       log << rag_message(rag.to_s)
       rag = :amber
