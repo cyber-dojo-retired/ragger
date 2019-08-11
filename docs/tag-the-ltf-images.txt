@@ -5,31 +5,53 @@ I think a better approach is to start tagging the LTF images.
 Possible design...
 
 $ cyber-dojo start-point create pp --languages \
-      https://github.com/cyber-dojo-languages/python-unittest.git
+      https://github.com/cyber-dojo-languages/python-unittest.git?tag=TAG
 
-would be implicitly using a "tag"-default of 'latest'
+would be implicitly using a default of "?tag=master"
 (for initial backward compatibility)
-Viz the above command would become...
+Viz the command
 
 $ cyber-dojo start-point create pp --languages \
-      https://github.com/cyber-dojo-languages/python-unittest.git?tag=head
+      https://github.com/cyber-dojo-languages/python-unittest.git
 
-But you would actually use a named tag, eg, 3.7.4
+would become...
+
+$ cyber-dojo start-point create pp --languages \
+      https://github.com/cyber-dojo-languages/python-unittest.git?tag=master
+
+Which would result in...
+
+$ git clone \
+   --single-branch \
+   --depth 1 \
+   --branch master \
+   https://github.com/cyber-dojo-languages/python-unittest.git \
+
+But you would then progress to using explicit tags, eg, 3.7.4
 
 $ cyber-dojo start-point create pp --languages \
       https://github.com/cyber-dojo-languages/python-unittest.git?tag=3.7.4
 
-This would check that tag exists via...
-$ git ls-remote --tags https://github.com/cyber-dojo-languages/python-unittest.git 3.7.4
+You can check if a tag exists via...
+
+$ git ls-remote \
+    --tags \
+    https://github.com/cyber-dojo-languages/python-unittest.git \
+    3.7.4
 
 Note that this works for local repos too. Eg if the current dir is a git repo
+
 $ git ls-remote --tags $PWD 3.7.4
 
-Then it would get just that tag
-$ git clone https://github.com/cyber-dojo-languages/python-unittest.git \
-    --branch 3.7.4 --depth 1 --single-branch
+Then it would get just that tag (git clone's --branch can take tags as well as 'master')
 
-And the start-point create would check its correctness as usual.
+$ git clone \
+   --single-branch \
+   --depth 1 \
+   --branch 3.7.4 \
+   https://github.com/cyber-dojo-languages/python-unittest.git \
+
+And the [start-point create] would check its correctness as usual.
 
 The cloned tag would contain manifest.json looking like this...
 {
@@ -41,9 +63,9 @@ The cloned tag would contain manifest.json looking like this...
 
 The idea is to apply immutability to LTFs just as for the services.
 If and when python 3.7.5 is released you simply
-o) make sure 3.7.5 is inside the docker image
-o) edit the manifest's display_name to 3.7.5
-o) edit the manifest's image_name to 3.7.5
+o) make sure python 3.7.5 is actually inside the docker image
+o) edit the manifest's display_name to (3.7.5)
+o) edit the manifest's image_name tag to :3.7.5
 
 Now you can update the master list of URLs in languages to...
 https://github.com/cyber-dojo-languages/python-unittest.git?tag=3.7.4
@@ -60,18 +82,17 @@ And new sessions will be using their image, eg :3.7.5
 
 This means you don't need a puller so urgently.
 It becomes more likely that languages will, eg, only show a display-name
-once its image is ready...
-Still the issue of Daemonsets though...
-Perhaps it is best to just ignore that for now.
+once its image is ready...(still the issue of Daemonsets on k8s though).
+Perhaps it is best to just ignore puller for now.
 Do pull on demand inside the runner when its the first time for the image...
 
-Now, this goes a long way, but the versioning issues go further...
+Versioning issues go further...
 1) what about when you update just the test-framework?
 2) what about when you update just the starting files?
 
 I think the key issue is
-1) already existing sessions have their image_name:tag saved and use that
-2) new sessions will use their image_name:tag
+o) already existing sessions have their image_name:tag saved and use that
+o) new sessions will use their image_name:tag
 
 I think a good approach is
 
