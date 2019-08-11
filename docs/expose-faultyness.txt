@@ -1,12 +1,20 @@
 
 At the moment if a rag-lambda does not return one of :red,:amber,:green
-then it is mapped to :amber
+then it is mapped to :amber by ragger.
 
 Change this so it is mapped to :faulty
 and have a traffic-light image for :faulty
 
 This will help when the rag-lambda is exposed as
 an actual source file in kata/edit.
+
+Until saver can accept a colour of faulty,
+in web, map faulty back to amber when doing saver.kata_ran_tests()
+but allow faulty to get to browser.
+
+Also in web, if ragger raises an exception, then trap
+that and map that to faulty too. This makes cyber-dojo more
+fault tolerant.
 
 Would be nice if the traffic-light images
 where held in ragger too, and redirected from nginx
