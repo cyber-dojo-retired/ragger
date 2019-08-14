@@ -51,6 +51,10 @@ class TestBase < HexMiniTest
     assert_colour('green')
   end
 
+  def assert_faulty
+    assert_colour('faulty')
+  end
+
   def assert_colour(expected)
     assert_equal expected, @result
   end

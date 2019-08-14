@@ -25,12 +25,12 @@ class TrafficLight
     rag = @cache.get(image_name, id)[:fn].call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)
       log << rag_message(rag.to_s)
-      rag = :amber
+      rag = :faulty
     end
     rag.to_s
   rescue => error
     log << rag_message(error.message)
-    'amber'
+    'faulty'
   end
 
   #def new_image(image_name)

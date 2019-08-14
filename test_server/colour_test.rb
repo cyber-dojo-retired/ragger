@@ -30,14 +30,14 @@ class ColourTest < TestBase
     with_captured_stdout_stderr {
       colour('does_not_exist', id, '', '', '0')
     }
-    assert_amber
+    assert_faulty
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test '5A3',
-  %w( amber for syntax-error ) do
-    assert_amber_error("undefined local variable or method `sdf'",
+  %w( faulty for syntax-error ) do
+    assert_faulty_error("undefined local variable or method `sdf'",
       <<~RUBY
       sdf
       RUBY
@@ -47,8 +47,8 @@ class ColourTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A4',
-  %w( amber for explicit raise ) do
-    assert_amber_error('wibble',
+  %w( faulty for explicit raise ) do
+    assert_faulty_error('wibble',
       <<~RUBY
       lambda { |stdout, stderr, status|
         raise ArgumentError.new('wibble')
@@ -60,8 +60,8 @@ class ColourTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A5',
-  %w( amber for non red/amber/green ) do
-    assert_amber_error('orange',
+  %w( faulty for non red/amber/green ) do
+    assert_faulty_error('orange',
       <<~RUBY
       lambda { |stdout, stderr, status|
         return :orange
@@ -73,8 +73,8 @@ class ColourTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A6',
-  %w( amber for too few parameters ) do
-    assert_amber_error('wrong number of arguments (given 3, expected 2)',
+  %w( faulty for too few parameters ) do
+    assert_faulty_error('wrong number of arguments (given 3, expected 2)',
       <<~RUBY
       lambda { |stdout, stderr|
         return :red
@@ -86,8 +86,8 @@ class ColourTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '5A7',
-  %w( amber for too many parameters ) do
-    assert_amber_error('wrong number of arguments (given 3, expected 4)',
+  %w( faulty for too many parameters ) do
+    assert_faulty_error('wrong number of arguments (given 3, expected 4)',
       <<~RUBY
       lambda { |stdout, stderr, status, extra|
         return :red
@@ -100,7 +100,7 @@ class ColourTest < TestBase
 
   include Test::Data
 
-  def assert_amber_error(expected, rag_src)
+  def assert_faulty_error(expected, rag_src)
     spy = StdoutLogSpy.new
     @external = External.new({ 'http' => HttpStub, 'log' => spy })
     HttpStub.stub_request({
@@ -112,7 +112,7 @@ class ColourTest < TestBase
     })
     colour(PythonPytest::IMAGE_NAME, id, '', '', '0')
     HttpStub.unstub_request
-    assert_amber
+    assert_faulty
     assert spy.spied?(expected)
   end
 
