@@ -20,4 +20,6 @@ build_service_image ragger-client
 # sha will match the image tag inside versioner's .env file.
 # This means we can tag to it and a [cyber-dojo up] call
 # will use the tagged image.
-docker tag cyberdojo/ragger:latest cyberdojo/ragger:${SHA:0:7}
+readonly IMAGE=cyberdojo/ragger
+docker tag ${IMAGE}:latest ${IMAGE}:${SHA:0:7}
+docker run --rm ${IMAGE}:latest sh -c 'echo ${SHA}'
