@@ -7,6 +7,10 @@ class TrafficLight
   def initialize(external)
     @external = external
     @cache = RagLambdaCache.new(external)
+    @png_responses = Dir['/app/image/*.png'].map{ |pathname|
+      filename = File.basename(pathname, '.jpg')
+      [filename, png_response(pathname)]
+    }.to_h
   end
 
   def sha
@@ -19,6 +23,10 @@ class TrafficLight
 
   def ready?
     json_response({'ready?' => runner.ready?})
+  end
+
+  def image(name)
+    @png_responses[name]
   end
 
   def colour(image_name, id, stdout, stderr, status)
@@ -41,6 +49,10 @@ class TrafficLight
 
   def json_response(json)
     response_200('application/json', JSON.fast_generate(json))
+  end
+
+  def png_response(filename)
+    response_200('image/png', IO.binread(filename))
   end
 
   def response_200(type, body)

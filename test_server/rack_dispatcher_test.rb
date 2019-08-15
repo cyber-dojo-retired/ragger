@@ -22,7 +22,7 @@ class RackDispatcherTest < TestBase
 
   test 'AB1', %w(
   allow empty body instead of {} to facilitate
-  kubernetes liveness/readyness http probes ) do
+  kubernetes liveness/readiness http probes ) do
     rack_call('sha', '')
     sha = assert_200('sha')
     assert_sha(sha)
@@ -54,10 +54,25 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  test 'AB5', 'red' do
+  test 'AB5', 'colour red' do
     rack_call('colour', colour_payload.to_json)
     colour = assert_200('colour')
     assert_equal 'red', colour
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test 'AB6', 'image' do
+    images = {
+      '/image/bulb_red_bar.png'   => 3257,
+      '/image/bulb_amber_gap.png' => 3405,
+      '/image/bulb_green.png'     => 3183
+    }
+    images.each do |path,size|
+      assert_200_png(path) do |response|
+        assert_equal size, response.bytesize
+      end
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -155,6 +170,20 @@ class RackDispatcherTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
+  def assert_200_png(path)
+    rack = RackDispatcher.new(traffic_light)
+    env = { path_info:path, body:'' }
+    response = rack.call(env, RackRequestStub)
+    assert_equal 200, response[0], path
+    assert_equal({ 'Content-Type' => 'image/png' }, response[1], path)
+    body = response[2][0]
+    assert body.is_a?(String), path
+    assert_equal 'ASCII-8BIT', body.encoding.to_s, path
+    yield body
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
   def assert_rack_call_error(status, expected, path_info, body)
     rack_call(path_info, body)
     assert_equal @status, status
@@ -173,7 +202,6 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   def rack_call(path_info, body)
-    traffic_light = TrafficLight.new(external)
     rack = RackDispatcher.new(traffic_light)
     env = { path_info:path_info, body:body }
     response = with_captured_stdout_stderr {
@@ -182,9 +210,9 @@ class RackDispatcherTest < TestBase
     @status = response[0]
     @type = response[1]
     @body = response[2][0]
-
     expected_type = { 'Content-Type' => 'application/json' }
     assert_equal expected_type, @type
+    response
   end
 
   # - - - - - - - - - - - - - - - - -

@@ -9,7 +9,7 @@ class TestBase < HexMiniTest
   end
 
   def traffic_light
-    TrafficLight.new(external)
+    @traffic_light ||= TrafficLight.new(external)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
