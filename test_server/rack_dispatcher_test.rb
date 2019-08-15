@@ -64,9 +64,9 @@ class RackDispatcherTest < TestBase
 
   test 'AB6', 'image' do
     images = {
-      '/image/bulb_red_bar.png'   => 3257,
-      '/image/bulb_amber_gap.png' => 3405,
-      '/image/bulb_green.png'     => 3183
+      '/image/red_bar.png'   => 3257,
+      '/image/amber_gap.png' => 3405,
+      '/image/green.png'     => 3183
     }
     images.each do |path,size|
       assert_200_png(path) do |response|
