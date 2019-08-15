@@ -7,16 +7,14 @@ class TrafficLight
   def initialize(external)
     @external = external
     @cache = RagLambdaCache.new(external)
-    @sha_response = json_response({'sha' => ENV['SHA']})
-    @alive_response = json_response({'alive?' => true})
   end
 
   def sha
-    @sha_response
+    json_response({'sha' => ENV['SHA']})
   end
 
   def alive?
-    @alive_response
+    json_response({'alive?' => true})
   end
 
   def ready?
