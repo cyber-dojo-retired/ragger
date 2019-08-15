@@ -13,4 +13,10 @@ class ReadyTest < TestBase
     assert ready?
   end
 
+  private
+
+  def ready?
+    JSON.parse(traffic_light.ready?[2][0])['ready?']
+  end
+
 end

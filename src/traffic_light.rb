@@ -7,18 +7,20 @@ class TrafficLight
   def initialize(external)
     @external = external
     @cache = RagLambdaCache.new(external)
+    @sha_response = json_response({'sha' => ENV['SHA']})
+    @alive_response = json_response({'alive?' => true})
   end
 
   def sha
-    ENV['SHA']
+    @sha_response
   end
 
   def alive?
-    true
+    @alive_response
   end
 
   def ready?
-    runner.ready?
+    json_response({'ready?' => runner.ready?})
   end
 
   def colour(image_name, id, stdout, stderr, status)
@@ -27,10 +29,10 @@ class TrafficLight
       log << rag_message(rag.to_s)
       rag = :faulty
     end
-    rag.to_s
+    json_response({'colour' => rag.to_s})
   rescue => error
     log << rag_message(error.message)
-    'faulty'
+    json_response({'colour' => 'faulty'})
   end
 
   #def new_image(image_name)
@@ -38,6 +40,19 @@ class TrafficLight
   #end
 
   private
+
+  def json_response(json)
+    response_200('application/json', JSON.fast_generate(json))
+  end
+
+  def response_200(type, body)
+    [ 200,
+      { 'Content-Type' => type },
+      [ body ]
+    ]
+  end
+
+  # - - - - - - - - - - - - - - - -
 
   def rag_message(message)
     "red_amber_green lambda error mapped to :faulty\n#{message}"

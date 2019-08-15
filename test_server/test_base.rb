@@ -14,30 +14,20 @@ class TestBase < HexMiniTest
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def sha
-    traffic_light.sha
-  end
-
-  def ready?
-    traffic_light.ready?
-  end
-
-  def alive?
-    traffic_light.alive?
-  end
-
-  def colour(image_name, id, stdout, stderr, status)
-    @result = traffic_light.colour(image_name, id, stdout, stderr, status)
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - -
-
   def assert_sha(string)
     assert_equal 40, string.size
     string.each_char do |ch|
       assert '0123456789abcdef'.include?(ch)
     end
   end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def colour(image_name, id, stdout, stderr, status)
+    @json = traffic_light.colour(image_name, id, stdout, stderr, status)
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - -
 
   def assert_red
     assert_colour('red')
@@ -56,7 +46,7 @@ class TestBase < HexMiniTest
   end
 
   def assert_colour(expected)
-    assert_equal expected, @result
+    assert_equal expected, JSON.parse(@json[2][0])['colour']
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

@@ -12,4 +12,10 @@ class ShaTest < TestBase
     assert_sha(sha)
   end
 
+  private
+
+  def sha
+    JSON.parse(traffic_light.sha[2][0])['sha']
+  end
+
 end

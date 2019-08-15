@@ -13,4 +13,10 @@ class AliveTest < TestBase
     assert alive?
   end
 
+  private
+
+  def alive?
+    JSON.parse(traffic_light.alive?[2][0])['alive?']
+  end
+
 end
