@@ -26,7 +26,7 @@
 # GET colour(image_name,id,stdout,stderr,status)
 - returns the [traffic-light colour](http://blog.cyber-dojo.org/2014/10/cyber-dojo-traffic-lights.html) "red", "amber", or "green", by passing the **stdout**, **stderr**, **status**
 to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb.
-  * If /usr/local/bin/red_amber_green.rb does not exist in **image_name**, the colour is "amber".
+  * If /usr/local/bin/red_amber_green.rb does not exist in **image_name**, the colour is "faulty".
   * If eval'ing its lambda raises an exception, the colour is "faulty".
   * If calling its lambda raises an exception, the colour is "faulty".
   * If calling its lambda returns anything other than :red, :amber, or :green, the colour is "faulty".
