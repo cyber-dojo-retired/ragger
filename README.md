@@ -34,12 +34,12 @@ to a Ruby lambda, read from **image_name**, at /usr/local/bin/red_amber_green.rb
     ```json
     { "colour": "green" }
     ```
-- parameters, eg
+- parameters
   * **image_name:String** names a Docker image.
-  * **id:String** for tracing, must be in [base58](https://github.com/cyber-dojo/ragger/blob/master/src/base58.rb)
-  * **stdout:String**
-  * **stderr:String**
-  * **status:Integer**
+  * **id:String** for tracing, must be in [base58](https://github.com/cyber-dojo/ragger/blob/master/src/base58.rb).
+  * **stdout:String** from a [runner](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
+  * **stderr:String** from a [runner](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
+  * **status:Integer** from a [runner](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
   * eg
   ```json
     {        "image_name": "cyberdojofoundation/gcc_assert",
