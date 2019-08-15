@@ -16,6 +16,9 @@ class Demo
     html += colour(PythonPytest::STDOUT_RED)
     html += colour(PythonPytest::STDOUT_AMBER)
     html += colour(PythonPytest::STDOUT_GREEN)
+    # for faulty use an image that does not have a
+    # /usr/local/bin/red_amber_green.rb file
+    html += colour('faulty', 'cyberdojo/ragger:latest')
     [ 200, { 'Content-Type' => 'text/html' }, [ html ] ]
   rescue => error
     body = [ [error.message] + [error.backtrace] ]
@@ -47,8 +50,8 @@ class Demo
 
   # - - - - - - - - - - - - - - - - - - - - -
 
-  def colour(stdout)
-    args  = [ PythonPytest::IMAGE_NAME, '729z65', stdout, '', 0 ]
+  def colour(stdout, image_name = PythonPytest::IMAGE_NAME)
+    args  = [ image_name, '729z65', stdout, '', 0 ]
     duration,result = timed { ragger.colour(*args) }
     pre('colour', duration, 'LightGreen', result)
   end
