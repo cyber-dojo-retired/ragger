@@ -8,6 +8,7 @@ require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'test_base'
 require 'json'
+require 'oj'
 
 class HttpJsonArgsTest < TestBase
 
@@ -58,16 +59,16 @@ class HttpJsonArgsTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'for colour' do
-    body = JSON.generate(colour_body)
+    body = Oj.dump(colour_body, {mode: :strict})
     target = HttpJsonArgs.new(body)
     name,args = target.get('/colour')
     assert_equal 'colour', name
     assert_equal colour_body.size, args.size
-    assert_equal colour_body[:image_name], args[0]
-    assert_equal colour_body[:id        ], args[1]
-    assert_equal colour_body[:stdout    ], args[2]
-    assert_equal colour_body[:stderr    ], args[3]
-    assert_equal colour_body[:status    ], args[4]
+    assert_equal colour_body['image_name'], args[0]
+    assert_equal colour_body['id'        ], args[1]
+    assert_equal colour_body['stdout'    ], args[2]
+    assert_equal colour_body['stderr'    ], args[3]
+    assert_equal colour_body['status'    ], args[4]
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -193,20 +194,23 @@ class HttpJsonArgsTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def colour_body
-    {
-      image_name: PythonPytest::IMAGE_NAME,
-      id: id,
-      stdout: PythonPytest::STDOUT_RED,
-      stderr: '',
-      status: 0
-    }
-  end
-
   def colour_args(key, value)
     body = colour_body
     body[key] = value
     HttpJsonArgs.new(JSON.generate(body))
+    #HttpJsonArgs.new(Oj.dump(body, {mode: :strict}))
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def colour_body
+    {
+      'image_name' => PythonPytest::IMAGE_NAME,
+      'id' => id,
+      'stdout' => PythonPytest::STDOUT_RED,
+      'stderr' => '',
+      'status' => 0
+    }
   end
 
 end
