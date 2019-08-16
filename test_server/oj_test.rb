@@ -65,8 +65,20 @@ class OjTest < TestBase
   %w( Oj generation requires strict mode for symbols ) do
     symbol = :image_name
     o = { symbol => 'cyberdojofoundation/python_pytest' }
+    Oj.default_options = { mode: :object }
     refute_equal JSON.generate(o), Oj.dump(o)
     assert_equal JSON.generate(o), Oj.dump(o, {mode: :strict})
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test 'CB6',
+  %w( Oj setting strict mode as default to simplify dump calls ) do
+    symbol = :image_name
+    o = { symbol => 'cyberdojofoundation/python_pytest' }
+    refute_equal JSON.generate(o), Oj.dump(o)
+    Oj.default_options = { mode: :strict }
+    assert_equal JSON.generate(o), Oj.dump(o)
   end
 
   private
