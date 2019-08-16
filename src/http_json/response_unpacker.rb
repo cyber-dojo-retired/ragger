@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'json'
 require 'oj'
 
 module HttpJson
@@ -29,7 +28,7 @@ module HttpJson
         fail error_msg(body, 'is not JSON Hash')
       end
       if json.has_key?('exception')
-        fail JSON.pretty_generate(json['exception'])
+        fail Oj.dump(json['exception'])
       end
       unless json.has_key?(path)
         fail error_msg(body, "has no key for '#{path}'")
