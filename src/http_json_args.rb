@@ -3,7 +3,7 @@
 require_relative 'base58'
 require_relative 'docker/image_name'
 require_relative 'http_json/request_error'
-require 'json'
+require 'oj'
 
 class HttpJsonArgs
 
@@ -16,7 +16,7 @@ class HttpJsonArgs
     unless @args.is_a?(Hash)
       fail HttpJson::RequestError, 'body is not JSON Hash'
     end
-  rescue JSON::ParserError
+  rescue Oj::ParseError
     fail HttpJson::RequestError, 'body is not JSON'
   end
 
@@ -41,7 +41,7 @@ class HttpJsonArgs
     if body === ''
       {}
     else
-      JSON.parse(body)
+      Oj.strict_load(body)
     end
   end
 

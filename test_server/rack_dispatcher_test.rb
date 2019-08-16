@@ -240,11 +240,11 @@ class RackDispatcherTest < TestBase
 
   def colour_payload
     {
-      image_name: PythonPytest::IMAGE_NAME,
-      id: id,
-      stdout: PythonPytest::STDOUT_RED,
-      stderr: '',
-      status: 0
+      'image_name' => PythonPytest::IMAGE_NAME,
+      'id' => id,
+      'stdout' => PythonPytest::STDOUT_RED,
+      'stderr' => '',
+      'status' => 0
     }
   end
 
