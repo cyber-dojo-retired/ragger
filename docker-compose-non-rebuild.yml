@@ -1,0 +1,60 @@
+
+version: '2.2'
+
+services:
+
+  ragger-client:
+    build:
+      context: test_client
+    user: nobody
+    image: cyberdojo/ragger-client
+    init: true
+    container_name: test-ragger-client
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    depends_on:
+      - ragger
+    ports:
+      - 5538:5538
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  ragger:
+    build:
+      context: .
+      args:
+        - SHA
+    user: nobody
+    image: cyberdojo/ragger
+    init: true
+    container_name: test-ragger-server
+    environment:
+      - NO_PROMETHEUS
+    ports:
+      - 5537:5537
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    volumes:
+      - ./test_server:/app/test:ro
+      - ./src:/app/src:ro
+    depends_on:
+      - runner
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  runner:
+    user: root
+    image: cyberdojo/runner:${CYBER_DOJO_RUNNER_TAG}
+    init: true
+    container_name: test-ragger-runner-server
+    environment:
+      - NO_PROMETHEUS
+    ports:
+      - 4597:4597
+    read_only: true
+    tmpfs: /tmp
+    restart: 'no'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
