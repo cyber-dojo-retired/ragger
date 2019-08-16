@@ -41,8 +41,6 @@ module HttpJson
 
     def json_parse(body)
       Oj.strict_load(body)
-      #JSON.parse(body)
-    #rescue JSON::ParserError
     rescue Oj::ParseError
       fail error_msg(body, 'is not JSON')
     end
