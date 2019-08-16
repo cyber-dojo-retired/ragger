@@ -27,9 +27,12 @@ class ColourTest < TestBase
   end
 
   test '6A4', 'well-formed but non-existent image_name' do
+    external.instance_exec { @runner = Object.new }
+    image_name = 'anything-not-cached'
     with_captured_stdout_stderr {
-      colour('does_not_exist', id, '', '', '0')
+      colour(image_name, id, '', '', '0')
     }
+    assert @stdout.start_with?('red_amber_green lambda error mapped to :faulty')
     assert_faulty
   end
 
