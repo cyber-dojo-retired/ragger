@@ -11,9 +11,8 @@ class OjTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'CB1',
-  %w( oj is faster than standard json at generating ) do
+  %w( oj is faster than standard json fast generation ) do
     o = any_hash
-    assert o.is_a?(Hash)
     slower,_ = timed {
       1000.times { JSON.fast_generate(o) }
     }
