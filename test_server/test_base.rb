@@ -1,6 +1,7 @@
 require_relative 'hex_mini_test'
 require_relative '../src/external'
 require_relative '../src/traffic_light'
+require 'oj'
 
 class TestBase < HexMiniTest
 
@@ -46,7 +47,7 @@ class TestBase < HexMiniTest
   end
 
   def assert_colour(expected)
-    assert_equal expected, JSON.parse(@json[2][0])['colour']
+    assert_equal expected, Oj.strict_load(@json[2][0])['colour']
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

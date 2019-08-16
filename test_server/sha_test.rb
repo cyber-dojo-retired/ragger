@@ -1,4 +1,5 @@
 require_relative 'test_base'
+require 'oj'
 
 class ShaTest < TestBase
 
@@ -15,7 +16,7 @@ class ShaTest < TestBase
   private
 
   def sha
-    JSON.parse(traffic_light.sha[2][0])['sha']
+    Oj.strict_load(traffic_light.sha[2][0])['sha']
   end
 
 end

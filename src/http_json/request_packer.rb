@@ -30,6 +30,7 @@ module HttpJson
     end
 
     STRICT_MODE = { mode: :strict }
+
   end
 
 end

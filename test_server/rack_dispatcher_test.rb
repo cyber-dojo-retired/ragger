@@ -8,7 +8,6 @@ require_relative 'data/python_pytest'
 require_relative 'http_stub'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
-require 'json'
 
 class RackDispatcherTest < TestBase
 
@@ -165,7 +164,7 @@ class RackDispatcherTest < TestBase
     refute_body_contains('exception')
     refute_body_contains('trace')
     assert_nothing_logged
-    JSON.parse(@body)[name]
+    Oj.strict_load(@body)[name]
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -190,7 +189,7 @@ class RackDispatcherTest < TestBase
 
     [@body, @stderr].each do |s|
       refute_nil s
-      json = JSON.parse(s)
+      json = Oj.strict_load(s)
       ex = json['exception']
       refute_nil ex
       assert_equal 'RaggerService', ex['class']
@@ -219,13 +218,13 @@ class RackDispatcherTest < TestBase
 
   def assert_body_contains(key)
     refute_nil @body
-    json = JSON.parse(@body)
+    json = Oj.strict_load(@body)
     assert json.has_key?(key)
   end
 
   def refute_body_contains(key)
     refute_nil @body
-    json = JSON.parse(@body)
+    json = Oj.strict_load(@body)
     refute json.has_key?(key)
   end
 

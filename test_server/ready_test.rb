@@ -1,4 +1,5 @@
 require_relative 'test_base'
+require 'oj'
 
 class ReadyTest < TestBase
 
@@ -16,7 +17,7 @@ class ReadyTest < TestBase
   private
 
   def ready?
-    JSON.parse(traffic_light.ready?[2][0])['ready?']
+    Oj.strict_load(traffic_light.ready?[2][0])['ready?']
   end
 
 end
