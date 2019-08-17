@@ -6,8 +6,8 @@ declare client_status=0
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly MY_NAME=ragger
 
-readonly SERVER_CID=$(docker ps --all --quiet --filter "name=test-${MY_NAME}-server")
-readonly CLIENT_CID=$(docker ps --all --quiet --filter "name=test-${MY_NAME}-client")
+readonly SERVER_NAME="test-${MY_NAME}-server"
+readonly CLIENT_NAME="test-${MY_NAME}-client"
 
 readonly COVERAGE_ROOT=/tmp/coverage
 
@@ -18,13 +18,13 @@ run_server_tests()
   docker exec \
     --user nobody \
     --env COVERAGE_ROOT=${COVERAGE_ROOT} \
-    "${SERVER_CID}" \
+    "${SERVER_NAME}" \
       sh -c "/app/test/util/run.sh ${*}"
 
   server_status=$?
 
   # You can't [docker cp] from a tmpfs, you have to tar-pipe out.
-  docker exec "${SERVER_CID}" \
+  docker exec "${SERVER_NAME}" \
     tar Ccf \
       "$(dirname "${COVERAGE_ROOT}")" \
       - "$(basename "${COVERAGE_ROOT}")" \
@@ -41,13 +41,13 @@ run_client_tests()
   docker exec \
     --user nobody \
     --env COVERAGE_ROOT=${COVERAGE_ROOT} \
-    "${CLIENT_CID}" \
+    "${CLIENT_NAME}" \
       sh -c "/app/test/util/run.sh ${*}"
 
   client_status=$?
 
   # You can't [docker cp] from a tmpfs, you have to tar-pipe out.
-  docker exec "${CLIENT_CID}" \
+  docker exec "${CLIENT_NAME}" \
     tar Ccf \
       "$(dirname "${COVERAGE_ROOT}")" \
       - "$(basename "${COVERAGE_ROOT}")" \
@@ -76,8 +76,8 @@ if [[ ( ${server_status} == 0 && ${client_status} == 0 ) ]];  then
   exit 0
 else
   echo
-  echo "server: cid = ${SERVER_CID}, status = ${server_status}"
-  echo "client: cid = ${CLIENT_CID}, status = ${client_status}"
+  echo "server: ${SERVER_NAME}, status = ${server_status}"
+  echo "client: ${CLIENT_NAME}, status = ${client_status}"
   echo
   exit 1
 fi
