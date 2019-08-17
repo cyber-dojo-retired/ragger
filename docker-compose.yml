@@ -37,7 +37,7 @@ services:
     tmpfs: /tmp
     restart: 'no'
     volumes:
-      - ./test_server:/app/test:ro
+      - ./test_server:/app/test/:ro    
     depends_on:
       - runner
 
