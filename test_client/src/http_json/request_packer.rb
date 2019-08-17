@@ -6,8 +6,8 @@ module HttpJson
 
   class RequestPacker
 
-    def initialize(external, hostname, port)
-      @http = external.http.new(hostname, port)
+    def initialize(http, hostname, port)
+      @http = http.new(hostname, port)
       @base_url = "http://#{hostname}:#{port}"
     end
 

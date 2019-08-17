@@ -1,4 +1,5 @@
 require_relative '../src/data/python_pytest'
+require_relative '../src/ragger_exception'
 require_relative 'http_stub'
 require_relative 'test_base'
 require 'json'
@@ -94,35 +95,21 @@ class ApiTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-=begin
-    test 'D61', 'wellformed-but non-existent image_name' do
-    error = assert_raises(RuntimeError) {
-      colour('does_not_exist', id, '', '', '0')
-    }
-    json = JSON.parse(error.message)
-    assert_equal '/colour', json['path']
-    assert_equal 'RaggerService', json['class']
-    assert_equal expected_message, json['message']
-  end
-=end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - -
   # colour - server-side errors
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   test '2F5', 'http-json body is not JSON' do
     assert_server_exception(
-      'body is not JSON',
+      'http response.body is not JSON:xxxx',
       'xxxx'
     )
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F6', 'http-json body is not a Hash' do
+  test '2F6', 'http-json body is not a JSON Hash' do
     assert_server_exception(
-      'JSON is not a Hash',
+      'http response.body is not JSON Hash:[]',
       JSON.generate([])
     )
   end
@@ -141,7 +128,7 @@ class ApiTest < TestBase
 
   test '2F8', 'http-json body is missing method-name key' do
     assert_server_exception(
-      "key for 'colour' is missing",
+      "http response.body has no key for 'colour':{\"xcolour\":[]}",
       JSON.generate({ 'xcolour' => [] })
     )
   end
@@ -153,7 +140,7 @@ class ApiTest < TestBase
   end
 
   def assert_client_exception(expected_message)
-    error = assert_raises(RuntimeError) { yield }
+    error = assert_raises(RaggerException) { yield }
     json = JSON.parse(error.message)
     assert_equal '/colour', json['path']
     assert_equal 'RaggerService', json['class']
@@ -165,7 +152,7 @@ class ApiTest < TestBase
   def assert_server_exception(expected_message, body)
     @external = External.new({ 'http' => HttpStub })
     HttpStub.stub_request(body)
-    error = assert_raises(RuntimeError) {
+    error = assert_raises(RaggerException) {
       colour(image_name, id, '', '', 0)
     }
     HttpStub.unstub_request

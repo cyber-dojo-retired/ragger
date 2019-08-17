@@ -1,11 +1,12 @@
 require_relative 'http_json/request_packer'
 require_relative 'http_json/response_unpacker'
+require_relative 'ragger_exception'
 
 class RaggerService
 
   def initialize(external)
-    requester = HttpJson::RequestPacker.new(external, 'ragger', 5537)
-    @http = HttpJson::ResponseUnpacker.new(requester)
+    requester = HttpJson::RequestPacker.new(external.http, 'ragger', 5537)
+    @http = HttpJson::ResponseUnpacker.new(requester, RaggerException)
   end
 
   def sha

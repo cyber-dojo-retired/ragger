@@ -145,7 +145,7 @@ class RackDispatcherTest < TestBase
   # 500
   # - - - - - - - - - - - - - - - - -
 
-  test 'BB6',
+  test 'BB7',
   %w( other errors become 500 server error ) do
     @external = External.new({ 'http' => HttpStub })
     HttpStub.stub_request({})
