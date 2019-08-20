@@ -22,4 +22,4 @@ build_service_image ragger-client
 # will use the tagged image.
 readonly IMAGE=cyberdojo/ragger
 docker tag ${IMAGE}:latest ${IMAGE}:${SHA:0:7}
-echo "SHA=${SHA}"
+echo "${SHA}"

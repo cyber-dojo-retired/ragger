@@ -198,6 +198,7 @@ class HttpJsonArgsTest < TestBase
     body = colour_body
     body[key] = value
     HttpJsonArgs.new(JSON.generate(body))
+    # TODO...
     #HttpJsonArgs.new(Oj.dump(body, {mode: :strict}))
   end
 

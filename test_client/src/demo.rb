@@ -16,8 +16,10 @@ class Demo
     html += colour(PythonPytest::STDOUT_RED)
     html += colour(PythonPytest::STDOUT_AMBER)
     html += colour(PythonPytest::STDOUT_GREEN)
-    # for faulty use an image that does not have a
+    # for faulty use an image that exists but does not have a
     # /usr/local/bin/red_amber_green.rb file
+    # Using an image that does not exist will cause docker to
+    # try and pull the image for several seconds.
     html += colour('faulty', 'cyberdojo/ragger:latest')
     [ 200, { 'Content-Type' => 'text/html' }, [ html ] ]
   rescue => error

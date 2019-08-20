@@ -60,21 +60,6 @@ class RackDispatcherTest < TestBase
   end
 
   # - - - - - - - - - - - - - - - - -
-
-  test 'AB6', 'image' do
-    images = {
-      '/image/red_bar.png'   => 3257,
-      '/image/amber_gap.png' => 3405,
-      '/image/green.png'     => 3183
-    }
-    images.each do |path,size|
-      assert_200_png(path) do |response|
-        assert_equal size, response.bytesize
-      end
-    end
-  end
-
-  # - - - - - - - - - - - - - - - - -
   # 400
   # - - - - - - - - - - - - - - - - -
 
@@ -165,20 +150,6 @@ class RackDispatcherTest < TestBase
     refute_body_contains('trace')
     assert_nothing_logged
     Oj.strict_load(@body)[name]
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def assert_200_png(path)
-    rack = RackDispatcher.new(traffic_light)
-    env = { path_info:path, body:'' }
-    response = rack.call(env, RackRequestStub)
-    assert_equal 200, response[0], path
-    assert_equal({ 'Content-Type' => 'image/png' }, response[1], path)
-    body = response[2][0]
-    assert body.is_a?(String), path
-    assert_equal 'ASCII-8BIT', body.encoding.to_s, path
-    yield body
   end
 
   # - - - - - - - - - - - - - - - - -

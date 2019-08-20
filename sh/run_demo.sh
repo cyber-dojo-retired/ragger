@@ -4,7 +4,7 @@ readonly SH_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 
 "${SH_DIR}/set_tag_env_vars.sh"
 set -a
-. /tmp/versioner.web.env
+source /tmp/versioner.ragger.env
 set +a
 
 "${SH_DIR}/build_docker_images.sh"
