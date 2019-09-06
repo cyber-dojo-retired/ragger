@@ -1,0 +1,28 @@
+
+Recent update to Java-Junit5 breaks backward compatibility
+for old sessions. How to fix this issue?
+
+Make an image-name include its version number(s).
+Eg the repo cyberdojofoundation/java12-junit5 holds a manifest.json
+file which includes:
+{
+  "display_name": "Java 12, JUnit 5",
+  "image_name": "cyberdojofoundation/java12_junit5", // always :latest
+  ...
+}
+
+Keeping the :latest tag means the puller can repull every
+24 hours to get security updates.
+It becomes important for the languages and custom images
+to return all image_names that exist in sessions. Viz even
+if an start-point is removed, its image-name must still be
+served to puller so updates are pulled. The simplest is maybe
+to have a list of retired image-names that are included
+in the list served to the puller.
+
+Adding the commit SHA inside the image as an env-var means
+when you restart a session you can be notified if the target
+image has changed.
+
+With separate repos, the Dockerfile needs its commands to be
+more carefully written to install specific versions.
