@@ -1,5 +1,5 @@
 
-version: '2.2'
+version: '3'
 
 services:
 
@@ -8,7 +8,6 @@ services:
       context: test_client
     user: nobody
     image: cyberdojo/ragger-client
-    init: true
     container_name: test-ragger-client
     read_only: true
     tmpfs: /tmp
@@ -27,7 +26,6 @@ services:
         - SHA
     user: nobody
     image: cyberdojo/ragger
-    init: true
     container_name: test-ragger-server
     environment:
       - NO_PROMETHEUS
@@ -37,7 +35,7 @@ services:
     tmpfs: /tmp
     restart: 'no'
     volumes:
-      - ./test_server:/app/test/:ro    
+      - ./test_server:/app/test/:ro
     depends_on:
       - runner
 
@@ -46,7 +44,6 @@ services:
   runner:
     user: root
     image: cyberdojo/runner:${CYBER_DOJO_RUNNER_TAG}
-    init: true
     container_name: test-ragger-runner-server
     environment:
       - NO_PROMETHEUS
