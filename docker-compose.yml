@@ -10,7 +10,8 @@ services:
     image: cyberdojo/ragger-client
     init: true
     container_name: test-ragger-client
-    ports: [5538:5538]
+    ports:
+      - 5538:5538
     read_only: true
     tmpfs: /tmp
     restart: 'no'
@@ -29,7 +30,8 @@ services:
     init: true
     container_name: test-ragger-server
     environment: [NO_PROMETHEUS]
-    ports: [5537:5537]
+    ports:
+      - 5537:5537
     read_only: true
     tmpfs: /tmp
     restart: 'no'
@@ -46,7 +48,8 @@ services:
     init: true
     container_name: test-ragger-runner-server
     environment: [NO_PROMETHEUS]
-    ports: [4597:4597]
+    ports:
+      - 4597:4597
     read_only: true
     tmpfs: /tmp
     restart: 'no'
