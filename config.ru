@@ -16,4 +16,8 @@ require_relative './src/rack_dispatcher'
 require_relative './src/traffic_light'
 external = External.new
 traffic_light = TrafficLight.new(external)
-run RackDispatcher.new(traffic_light)
+dispatcher = RackDispatcher.new(traffic_light)
+options = { :Host => '0.0.0.0', :Port => 5537 }
+Rack::Handler::Thin.run(dispatcher,options) do |server|
+  server.threaded = true
+end
