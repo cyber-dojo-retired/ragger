@@ -1,16 +1,16 @@
 require_relative 'hex_mini_test'
-require_relative '../src/external'
+require_relative '../src/externals'
 require_relative '../src/traffic_light'
 require 'oj'
 
 class TestBase < HexMiniTest
 
-  def external
-    @external ||= External.new
+  def externals
+    @externals ||= Externals.new
   end
 
   def traffic_light
-    @traffic_light ||= TrafficLight.new(external)
+    @traffic_light ||= TrafficLight.new(externals)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

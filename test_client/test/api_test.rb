@@ -150,7 +150,7 @@ class ApiTest < TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def assert_server_exception(expected_message, body)
-    @external = External.new({ 'http' => HttpStub })
+    @externals = Externals.new({ 'http' => HttpStub })
     HttpStub.stub_request(body)
     error = assert_raises(RaggerException) {
       colour(image_name, id, '', '', 0)

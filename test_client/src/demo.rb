@@ -2,8 +2,8 @@ require_relative 'data/python_pytest'
 
 class Demo
 
-  def initialize(external)
-    @external = external
+  def initialize(externals)
+    @externals = externals
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
@@ -88,7 +88,7 @@ class Demo
   # - - - - - - - - - - - - - - - - - - - - -
 
   def ragger
-    @external.ragger
+    @externals.ragger
   end
 
 end

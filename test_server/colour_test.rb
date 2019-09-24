@@ -27,7 +27,7 @@ class ColourTest < TestBase
   end
 
   test '6A4', 'well-formed but non-existent image_name' do
-    external.instance_exec { @runner = Object.new }
+    externals.instance_exec { @runner = Object.new }
     image_name = 'anything-not-cached'
     with_captured_stdout_stderr {
       colour(image_name, id, '', '', '0')
@@ -105,7 +105,7 @@ class ColourTest < TestBase
 
   def assert_faulty_error(expected, rag_src)
     spy = StdoutLogSpy.new
-    @external = External.new({ 'http' => HttpStub, 'log' => spy })
+    @externals = Externals.new({ 'http' => HttpStub, 'log' => spy })
     HttpStub.stub_request({
       'run_cyber_dojo_sh' => {
         'stdout' => {

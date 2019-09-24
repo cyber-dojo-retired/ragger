@@ -1,7 +1,7 @@
 require_relative 'ragger_service'
 require 'net/http'
 
-class External
+class Externals
 
   def initialize(options = {})
     @http = options['http'] || Net::HTTP

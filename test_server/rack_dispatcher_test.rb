@@ -132,7 +132,7 @@ class RackDispatcherTest < TestBase
 
   test 'BB7',
   %w( other errors become 500 server error ) do
-    @external = External.new({ 'http' => HttpStub })
+    @externals = Externals.new({ 'http' => HttpStub })
     HttpStub.stub_request({})
     expected = "http response.body has no key for 'ready?':{}"
     assert_rack_call_error(500, expected, 'ready', {}.to_json)

@@ -1,15 +1,15 @@
 require_relative 'hex_mini_test'
-require_relative '../src/external'
+require_relative '../src/externals'
 require_relative '../src/ragger_service'
 
 class TestBase < HexMiniTest
 
-  def external
-    @external ||= External.new
+  def externals
+    @externals ||= Externals.new
   end
 
   def ragger
-    RaggerService.new(external)
+    RaggerService.new(externals)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -4,7 +4,7 @@ require_relative 'runner_service'
 require_relative 'stdout_log'
 require 'net/http'
 
-class External
+class Externals
 
   def initialize(options = {})
     @http = options['http'] || Net::HTTP
