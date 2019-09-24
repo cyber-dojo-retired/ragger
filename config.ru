@@ -17,7 +17,6 @@ require_relative 'src/traffic_light'
 externals = Externals.new
 traffic_light = TrafficLight.new(externals)
 dispatcher = RackDispatcher.new(traffic_light)
-options = { Port:5537 }
-Rack::Handler::Thin.run(dispatcher,options) do |server|
+Rack::Handler::Thin.run(dispatcher,{ Port:5537 }) do |server|
   server.threaded = true
 end
