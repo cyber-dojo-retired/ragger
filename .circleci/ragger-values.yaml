@@ -15,8 +15,8 @@ volumes:
 service:
   port: 5537
   annotations:
-    - prometheus.io/scrape: "true"
-    - prometheus.io/port: "5537"
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "5537"
 
 containers:
   - name: ragger
