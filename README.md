@@ -226,7 +226,6 @@ Removing network ragger_default
 # build the demo and run it
 - Runs inside the ragger-client's container.
 - Calls the ragger-server's methods and displays their json results and how long they took.
-- If the ragger-client's IP address is 192.168.99.100 then put 192.168.99.100:5538 into your browser to see the output.
 
 ```bash
 $ ./sh/run_demo.sh
