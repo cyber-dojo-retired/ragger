@@ -1,11 +1,10 @@
 #!/bin/bash
 
 readonly SH_DIR="$( cd "$( dirname "${0}" )" && pwd )"
+source ${SH_DIR}/cat_env_vars.sh
 
-"${SH_DIR}/set_tag_env_vars.sh"
-set -a
-source /tmp/versioner.ragger.env
-set +a
+readonly TAG=${1:-latest}
+export $(cat_env_vars ${TAG})
 
 "${SH_DIR}/build_docker_images.sh"
 "${SH_DIR}/docker_containers_up.sh"
