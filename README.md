@@ -10,9 +10,9 @@
 - - - -
 # API:
   * [GET colour(image_name,id,stdout,stderr,status)](#get-colourimage_nameidstdoutstderrstatus)  
-  * [GET ready?()](#get-ready)
+  * [GET ready?](#get-ready)
   * [GET alive?](#get-alive)  
-  * [GET sha()](#get-sha)
+  * [GET sha](#get-sha)
 
 - - - -
 # JSON in, JSON out  
