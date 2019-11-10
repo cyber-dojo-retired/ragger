@@ -50,7 +50,7 @@ class TrafficLight
   # - - - - - - - - - - - - - - - -
 
   def rag_message(message)
-    "red_amber_green lambda error mapped to :faulty\n#{message}"
+    "red_amber_green lambda error mapped to :faulty\n#{message}\n"
   end
 
   # - - - - - - - - - - - - - - - -
