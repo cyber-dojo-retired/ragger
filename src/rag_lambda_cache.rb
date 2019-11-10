@@ -41,4 +41,4 @@ end
 # and when it pulls a new image, it will inform ragger, which
 # will run TrafficLight.new_image(...)
 # So '111111' will indicate a runner.run_cyber_dojo_sh() call
-# coming from ragger via a prod from puller.
+# coming from ragger via a poke from puller.
