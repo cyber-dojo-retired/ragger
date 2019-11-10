@@ -1,5 +1,5 @@
 
-version: '2.2'
+version: '3.7'
 # This could be bumped to 3.7 except that
 # CircleCI currently only supports up to 3.2
 # and 3.2 does not support the init option
