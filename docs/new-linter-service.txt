@@ -10,7 +10,7 @@ generalized and is passed a hash containing lots of data
 not just stdout,stderr,status.
 
 However, I think it might be simpler as a SEPARATE service.
-An linter/advister service.
+An linter/adviser service.
 It would expose a function, maybe a lambda in the browser.
 Initially in Ruby, later in any language? eg Python
 It would be passed much more information than the ragger,
@@ -29,9 +29,9 @@ probably in a hash, eg, stdin ==> hash[:stdin]
   - diff from previous files
 
 Possible names like linter...
-  advisor    >>> yes I like this. least "formal" <<<
-  helper
-  mentor - like this too
+  advisor
+  helper - simple. Could output to a new std file, eg stdhlp
+  mentor
   marker
   evaluator
   grader
@@ -39,5 +39,3 @@ Possible names like linter...
   appraiser,
   feedbacker
   signaller
-
-Other words related to traffic... cop, to direct traffic,

@@ -1,0 +1,11 @@
+
+Currently RagLambdaCache.new_image() gets the lambda from the
+image using a custom cyber-dojo.sh inside runner.
+This is overkill. Simpler to have a dedicated traffic_light_src()
+method in runner that uses docker directly. Viz it does
+  docker run --rm --entrypoint cat ${image_name} /usr/local/bin/red_amber_green.rb
+
+
+When creating a new LTF image there could initially be no
+red_amber_green.rb file. Perhaps the docker run command above
+could be a bit more resilient in this case?

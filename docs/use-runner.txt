@@ -1,11 +1,13 @@
 
+image_name = 'cyberdojofoundation/ruby_test_unit'
+id = '111111'
 files = {
-  "cyber-dojo.sh" => 'ruby ./cyber-dojo-traffic-light.rb',
-  "traffic-light.rb" => get_rag_lambda_src(image_name, id),
+  "cyber-dojo.sh" => 'ruby ./run-traffic-light.rb',
+  "traffic-light.rb" => SOURCE_EXPOSED_IN_BROWSER,
   "stdout" => stdout,
   "stderr" => stderr,
   "status" => status,
-  "cyber-dojo-traffic-light.rb" =>
+  "run-traffic-light.rb" =>
     <<~RUBY
     rag = eval(IO.read('traffic-light.rb'))
     stdout = IO.read('stdout')
@@ -15,9 +17,8 @@ files = {
     RUBY
 }
 max_seconds = 5
-result = runner.run_cyber_dojo_sh('cyberdojofoundation/ruby', id, files, max_seconds)
+result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
 rgb = result['stdout']['content'].strip
-rgb =~ /^red|amber|green$/ ? rgb : 'amber'  # drop later
 
 
 def get_rag_lambda_src(image_name, id)
