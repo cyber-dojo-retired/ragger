@@ -2,9 +2,9 @@
 set -e
 
 readonly SH_DIR="$( cd "$( dirname "${0}" )" && pwd )/sh"
-source ${SH_DIR}/cat_env_vars.sh
+readonly TAG=${CYBER_DOJO_VERSIONER_TAG:-latest}
 
-readonly TAG=${1:-latest}
+source ${SH_DIR}/cat_env_vars.sh
 export $(cat_env_vars ${TAG})
 
 ${SH_DIR}/build_docker_images.sh
