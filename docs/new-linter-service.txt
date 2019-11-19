@@ -1,5 +1,5 @@
 
-Once ragger is a working think about the customizations like James does, eg
+Once ragger is working think about the customizations like James does, eg
   - detecting printf's in the source
   - detecting lack of coverage
   - a lot of ambers in a row
@@ -10,11 +10,11 @@ generalized and is passed a hash containing lots of data
 not just stdout,stderr,status.
 
 However, I think it might be simpler as a SEPARATE service.
-An linter/adviser service.
+A linter/adviser/helper service.
 It would expose a function, maybe a lambda in the browser.
 Initially in Ruby, later in any language? eg Python
 It would be passed much more information than the ragger,
-probably in a hash, eg, stdin ==> hash[:stdin]
+probably in a hash, eg, stdin ==> hash['stdin']
 
   - stdout,stderr,status
   - timed_out (true/false)
