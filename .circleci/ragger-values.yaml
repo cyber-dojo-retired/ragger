@@ -3,23 +3,28 @@ fullnameOverride: "ragger"
 
 replicaCount: 3
 
-volumes:
-  - name: ragger-tmp-dir
-    emptyDir:
-      medium: Memory
-      sizeLimit: "64Mi"
-
 service:
   port: 5537
   annotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "5537"
 
+volumes:
+  - name: ragger-tmp-dir
+    emptyDir:
+      medium: Memory
+      sizeLimit: "64Mi"
+
+podSecurityContext:
+  runAsUser: 65534 # nobody
+  fsGroup: 65534 # nobody
+
 containers:
   - name: ragger
     image: cyberdojo/ragger
     securityContext:
       readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false      
     volumeMounts:
       - name: ragger-tmp-dir
         mountPath: /tmp
