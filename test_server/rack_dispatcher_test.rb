@@ -142,15 +142,10 @@ class RackDispatcherTest < TestBase
   then it is mapped to colour=faulty
   and the details are logged to stdout
   ) do
-    @externals = Externals.new({
-      'http' => HttpServiceDoesNotReturnJson
-    })
-    rack_call('colour', colour_payload.to_json)
-    assert_equal 200, @status
-    assert_equal( {'colour':'faulty'}.to_json, @body)
-    assert_equal '', @stderr
-    assert @stdout.include?('red_amber_green lambda error mapped to :faulty')
-    assert @stdout.include?('http response.body is not JSON:XXX')
+    assert_service_error_is_mapped_to_faulty(
+      HttpServiceDoesNotReturnJson,
+      'http response.body is not JSON:XXX'
+    )
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -169,15 +164,10 @@ class RackDispatcherTest < TestBase
   then it is mapped to colour=faulty
   and the details are logged to stdout
   ) do
-    @externals = Externals.new({
-      'http' => HttpServiceDoesNotReturnJsonHash
-    })
-    rack_call('colour', colour_payload.to_json)
-    assert_equal 200, @status
-    assert_equal( {'colour':'faulty'}.to_json, @body)
-    assert_equal '', @stderr
-    assert @stdout.include?('red_amber_green lambda error mapped to :faulty')
-    assert @stdout.include?('http response.body is not JSON Hash')
+    assert_service_error_is_mapped_to_faulty(
+      HttpServiceDoesNotReturnJsonHash,
+      'http response.body is not JSON Hash'
+    )
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -196,15 +186,10 @@ class RackDispatcherTest < TestBase
   then it is mapped to colour=faulty
   and the details are logged to stdout
   ) do
-    @externals = Externals.new({
-      'http' => HttpServiceReturnsJsonWithEmbeddedException
-    })
-    rack_call('colour', colour_payload.to_json)
-    assert_equal 200, @status
-    assert_equal( {'colour':'faulty'}.to_json, @body)
-    assert_equal '', @stderr
-    assert @stdout.include?('red_amber_green lambda error mapped to :faulty')
-    assert @stdout.include?({"message":"summat"}.to_json)
+    assert_service_error_is_mapped_to_faulty(
+      HttpServiceReturnsJsonWithEmbeddedException,
+      {"message":"summat"}.to_json
+    )
   end
 
   private # = = = = = = = = = = = = =
@@ -218,6 +203,18 @@ class RackDispatcherTest < TestBase
     refute_body_contains('trace')
     assert_nothing_logged
     Oj.strict_load(@body)[name]
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def assert_service_error_is_mapped_to_faulty(klass, expected_msg)
+    @externals = Externals.new({ 'http' => klass })
+    rack_call('colour', colour_payload.to_json)
+    assert_equal 200, @status
+    assert_equal( {'colour':'faulty'}.to_json, @body)
+    assert_equal '', @stderr
+    assert @stdout.include?('red_amber_green lambda error mapped to :faulty'), @stdout
+    assert @stdout.include?(expected_msg), @stdout
   end
 
   # - - - - - - - - - - - - - - - - -
