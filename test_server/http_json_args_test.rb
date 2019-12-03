@@ -1,10 +1,6 @@
 require_relative '../src/http_json/request_error'
 require_relative '../src/http_json_args'
-require_relative 'data/ids'
-require_relative 'data/image_names'
 require_relative 'data/json'
-require_relative 'data/not_integers'
-require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'test_base'
 require 'json'
@@ -120,60 +116,50 @@ class HttpJsonArgsTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'CB2',
-  %w( raises when color-image_name malformed ) do
-    MALFORMED_IMAGE_NAMES.each do |image_name|
-      args = colour_args('image_name', image_name)
-      assert_http_json_args_error('image_name is malformed') do
-        args.get('/colour')
-      end
+  %w( raises when color-image_name is missing ) do
+    args = missing_args('image_name')
+    assert_http_json_args_error('image_name is missing') do
+      args.get('/colour')
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'CB3',
-  %w( raises when colour-id is malformed ) do
-    MALFORMED_IDS.each do |id|
-      args = colour_args('id', id)
-      assert_http_json_args_error('id is malformed') do
-        args.get('/colour')
-      end
+  %w( raises when colour-id is missing ) do
+    args = missing_args('id')
+    assert_http_json_args_error('id is missing') do
+      args.get('/colour')
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'CB4',
-  %w( raises when colour-stdout is malformed ) do
-    NOT_STRINGS.each do |stdout|
-      args = colour_args('stdout', stdout)
-      assert_http_json_args_error('stdout is malformed') do
-        args.get('/colour')
-      end
+  %w( raises when colour-stdout is missing ) do
+    args = missing_args('stdout')
+    assert_http_json_args_error('stdout is missing') do
+      args.get('/colour')
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'CB5',
-  %w( raises when colour-stderr is malformed ) do
-    NOT_STRINGS.each do |stderr|
-      args = colour_args('stderr', stderr)
-      assert_http_json_args_error('stderr is malformed') do
-        args.get('/colour')
-      end
+  %w( raises when colour-stderr is missing ) do
+    args = missing_args('stderr')
+    assert_http_json_args_error('stderr is missing') do
+      args.get('/colour')
     end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'CB6',
-  %w( raises when colour-status is malformed ) do
-    NOT_INTEGERS.each do |status|
-      args = colour_args('status', status)
-      assert_http_json_args_error('status is malformed') do
-        args.get('/colour')
-      end
+  %w( raises when colour-status is missing ) do
+    args = missing_args('status')
+    assert_http_json_args_error('status is missing') do
+      args.get('/colour')
     end
   end
 
@@ -194,9 +180,9 @@ class HttpJsonArgsTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def colour_args(key, value)
+  def missing_args(key)
     body = colour_body
-    body[key] = value
+    body.delete(key)
     HttpJsonArgs.new(JSON.generate(body))
     # TODO...
     #HttpJsonArgs.new(Oj.dump(body, {mode: :strict}))

@@ -51,46 +51,41 @@ class ApiTest < TestBase
   # colour - client-side errors
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F0', 'malformed image-name is client exception' do
-    assert_client_exception('image_name is malformed') {
-      image_name = nil
-      colour(image_name, id, '', '', 0)
+  test '2F0', 'missing image-name is client exception' do
+    assert_client_exception('image_name is missing') {
+      colour_missing_arg(:image_name)
     }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F1', 'malformed id is client exception' do
-    assert_client_exception('id is malformed') {
-      id = '1234567' # > 6
-      colour(image_name, id, '', '', 0)
+  test '2F1', 'missing id is client exception' do
+    assert_client_exception('id is missing') {
+      colour_missing_arg(:id)
     }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F2', 'malformed stdout is client exception' do
-    assert_client_exception('stdout is malformed') {
-      stdout = 999 # !String
-      colour(image_name, id, stdout, '', 0)
+  test '2F2', 'missing stdout is client exception' do
+    assert_client_exception('stdout is missing') {
+      colour_missing_arg(:stdout)
     }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F3', 'malformed stderr is client exception' do
-    assert_client_exception('stderr is malformed') {
-      stderr = 999 #  !String
-      colour(image_name, id, '', stderr, 0)
+  test '2F3', 'missing stderr is client exception' do
+    assert_client_exception('stderr is missing') {
+      colour_missing_arg(:stderr)
     }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-  test '2F4', 'malformed status is client exception' do
-    assert_client_exception('status is malformed') {
-      status = '9' # !Integer
-      colour(image_name, id, '', '', status)
+  test '2F4', 'missing status is client exception' do
+    assert_client_exception('status is missing') {
+      colour_missing_arg(:status)
     }
   end
 
@@ -157,6 +152,22 @@ class ApiTest < TestBase
     }
     HttpStub.unstub_request
     assert_equal expected_message, error.message
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+  def colour_missing_arg(arg_symbol)
+    args = {
+      image_name:image_name,
+      id:id,
+      stdout:'',
+      stderr:'',
+      status:2
+    }
+    args.delete(arg_symbol)
+    requester = HttpJson::RequestPacker.new(externals.http, 'ragger', 5537)
+    http = HttpJson::ResponseUnpacker.new(requester, RaggerException)
+    http.get(:colour, args)
   end
 
 end

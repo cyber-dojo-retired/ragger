@@ -1,23 +1,17 @@
 # frozen_string_literal: true
 
-require_relative 'base58'
-require_relative 'docker/image_name'
 require_relative 'http_json/request_error'
 require 'oj'
 
 class HttpJsonArgs
 
-  # Checks for arguments synactic correctness
-  # Exception messages use the words 'body' and 'path'
-  # to match RackDispatcher's exception keys.
-
   def initialize(body)
     @args = json_parse(body)
     unless @args.is_a?(Hash)
-      fail HttpJson::RequestError, 'body is not JSON Hash'
+      raise request_error('body is not JSON Hash')
     end
   rescue Oj::ParseError
-    fail HttpJson::RequestError, 'body is not JSON'
+    raise request_error('body is not JSON')
   end
 
   # - - - - - - - - - - - - - - - -
@@ -45,61 +39,47 @@ class HttpJsonArgs
   end
 
   def image_name
-    arg = @args[name = __method__.to_s]
-    unless Docker::image_name?(arg)
-      fail malformed(name)
-    end
-    arg
+    exists_arg('image_name')
   end
-
-  # - - - - - - - - - - - - - - - -
 
   def id
-    arg = @args[name = __method__.to_s]
-    unless well_formed_id?(arg)
-      fail malformed(name)
-    end
-    arg
+    exists_arg('id')
   end
-
-  def well_formed_id?(arg)
-    Base58.string?(arg) && arg.size === 6
-  end
-
-  # - - - - - - - - - - - - - - - -
 
   def stdout
-    arg = @args[name = __method__.to_s]
-    unless arg.is_a?(String)
-      fail malformed(name)
-    end
-    arg
+    exists_arg('stdout')
   end
-
-  # - - - - - - - - - - - - - - - -
 
   def stderr
-    arg = @args[name = __method__.to_s]
-    unless arg.is_a?(String)
-      fail malformed(name)
-    end
-    arg
+    exists_arg('stderr')
   end
-
-  # - - - - - - - - - - - - - - - -
 
   def status
-    arg = @args[name = __method__.to_s]
-    unless arg.is_a?(Integer)
-      fail malformed(name)
+    exists_arg('status')
+  end
+
+  # - - - - - - - - - - - - - - - -
+
+  def exists_arg(name)
+    unless @args.has_key?(name)
+      raise missing(name)
     end
+    arg = @args[name]
     arg
   end
 
   # - - - - - - - - - - - - - - - -
 
-  def malformed(arg_name)
-    HttpJson::RequestError.new("#{arg_name} is malformed")
+  def missing(arg_name)
+    request_error("#{arg_name} is missing")
+  end
+
+  # - - - - - - - - - - - - - - - -
+
+  def request_error(text)
+    # Exception messages use the words 'body' and 'path'
+    # to match RackDispatcher's exception keys.
+    HttpJson::RequestError.new(text)
   end
 
 end

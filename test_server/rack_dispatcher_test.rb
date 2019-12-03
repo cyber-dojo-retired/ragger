@@ -1,13 +1,10 @@
 require_relative '../src/rack_dispatcher'
-require_relative 'data/ids'
-require_relative 'data/image_names'
 require_relative 'data/json'
-require_relative 'data/not_integers'
-require_relative 'data/not_strings'
 require_relative 'data/python_pytest'
 require_relative 'http_stub'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
+require 'ostruct'
 
 class RackDispatcherTest < TestBase
 
@@ -87,43 +84,33 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'BB1',
-  %w( malformed image_name becomes 400 client error ) do
-    MALFORMED_IMAGE_NAMES.each do |image_name|
-      payload = colour_args('image_name', image_name)
-      assert_rack_call_error(400, 'image_name is malformed', 'colour', payload.to_json)
-    end
+  %w( missing image_name becomes 400 client error ) do
+    payload = missing_args('image_name')
+    assert_rack_call_error(400, 'image_name is missing', 'colour', payload.to_json)
   end
 
   test 'BB2',
-  %w( malformed id becomes 400 client error ) do
-    MALFORMED_IDS.each do |id|
-      payload = colour_args('id', id)
-      assert_rack_call_error(400, 'id is malformed', 'colour', payload.to_json)
-    end
+  %w( missing id becomes 400 client error ) do
+    payload = missing_args('id')
+    assert_rack_call_error(400, 'id is missing', 'colour', payload.to_json)
   end
 
   test 'BB3',
-  %w( malformed stdout becomes 400 client error ) do
-    NOT_STRINGS.each do |stdout|
-      payload = colour_args('stdout', stdout)
-      assert_rack_call_error(400, 'stdout is malformed', 'colour', payload.to_json)
-    end
+  %w( missing stdout becomes 400 client error ) do
+    payload = missing_args('stdout')
+    assert_rack_call_error(400, 'stdout is missing', 'colour', payload.to_json)
   end
 
   test 'BB4',
-  %w( malformed stderr becomes 400 client error ) do
-    NOT_STRINGS.each do |stderr|
-      payload = colour_args('stderr', stderr)
-      assert_rack_call_error(400, 'stderr is malformed', 'colour', payload.to_json)
-    end
+  %w( missing stderr becomes 400 client error ) do
+    payload = missing_args('stderr')
+    assert_rack_call_error(400, 'stderr is missing', 'colour', payload.to_json)
   end
 
   test 'BB5',
-  %w( malformed status becomes 400 client error ) do
-    NOT_INTEGERS.each do |status|
-      payload = colour_args('status', status)
-      assert_rack_call_error(400, 'status is malformed', 'colour', payload.to_json)
-    end
+  %w( missing status becomes 400 client error ) do
+    payload = missing_args('status')
+    assert_rack_call_error(400, 'status is missing', 'colour', payload.to_json)
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -137,6 +124,87 @@ class RackDispatcherTest < TestBase
     expected = "http response.body has no key for 'ready?':{}"
     assert_rack_call_error(500, expected, 'ready', {}.to_json)
     HttpStub.unstub_request
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  class HttpServiceDoesNotReturnJson
+    def initialize(_hostname, _port)
+    end
+    def request(_req)
+      not_json = 'XXX'
+      OpenStruct.new(body:not_json)
+    end
+  end
+
+  test 'D75', %w(
+  when runner_service does not return json
+  then it is mapped to colour=faulty
+  and the details are logged to stdout
+  ) do
+    @externals = Externals.new({
+      'http' => HttpServiceDoesNotReturnJson
+    })
+    rack_call('colour', colour_payload.to_json)
+    assert_equal 200, @status
+    assert_equal( {'colour':'faulty'}.to_json, @body)
+    assert_equal '', @stderr
+    assert @stdout.include?('red_amber_green lambda error mapped to :faulty')
+    assert @stdout.include?('http response.body is not JSON:XXX')
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  class HttpServiceDoesNotReturnJsonHash
+    def initialize(_hostname, _port)
+    end
+    def request(_req)
+      json_but_not_hash = '[]'
+      OpenStruct.new(body:json_but_not_hash)
+    end
+  end
+
+  test 'D76', %w(
+  when runner_service does not return json Hash
+  then it is mapped to colour=faulty
+  and the details are logged to stdout
+  ) do
+    @externals = Externals.new({
+      'http' => HttpServiceDoesNotReturnJsonHash
+    })
+    rack_call('colour', colour_payload.to_json)
+    assert_equal 200, @status
+    assert_equal( {'colour':'faulty'}.to_json, @body)
+    assert_equal '', @stderr
+    assert @stdout.include?('red_amber_green lambda error mapped to :faulty')
+    assert @stdout.include?('http response.body is not JSON Hash')
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  class HttpServiceReturnsJsonWithEmbeddedException
+    def initialize(_hostname, _port)
+    end
+    def request(_req)
+      embedded_exception = {'exception'=>{'message'=>'summat'}}
+      OpenStruct.new(body:embedded_exception.to_json)
+    end
+  end
+
+  test 'D77', %w(
+  when runner_service return Json with embedded exception
+  then it is mapped to colour=faulty
+  and the details are logged to stdout
+  ) do
+    @externals = Externals.new({
+      'http' => HttpServiceReturnsJsonWithEmbeddedException
+    })
+    rack_call('colour', colour_payload.to_json)
+    assert_equal 200, @status
+    assert_equal( {'colour':'faulty'}.to_json, @body)
+    assert_equal '', @stderr
+    assert @stdout.include?('red_amber_green lambda error mapped to :faulty')
+    assert @stdout.include?({"message":"summat"}.to_json)
   end
 
   private # = = = = = = = = = = = = =
@@ -155,18 +223,19 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   def assert_rack_call_error(status, expected, path_info, body)
-    rack_call(path_info, body)
-    assert_equal @status, status
+    response = rack_call(path_info, body)
+    assert_equal status, @status
 
     [@body, @stderr].each do |s|
       refute_nil s
       json = Oj.strict_load(s)
       ex = json['exception']
-      refute_nil ex
+      refute_nil ex, 'there was no exception'
       assert_equal 'RaggerService', ex['class']
       assert_equal expected, ex['message']
       assert_equal 'Array', ex['backtrace'].class.name
     end
+    response
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -218,9 +287,9 @@ class RackDispatcherTest < TestBase
     }
   end
 
-  def colour_args(arg_name, value)
+  def missing_args(arg_name)
     args = colour_payload.dup
-    args[arg_name] = value
+    args.delete(arg_name)
     args
   end
 
