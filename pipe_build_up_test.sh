@@ -13,5 +13,5 @@ if ${SH_DIR}/run_tests_in_containers.sh "$@" ; then
   ${SH_DIR}/docker_containers_down.sh
   exit 0
 else
-  exit 3
+  exit 42
 fi

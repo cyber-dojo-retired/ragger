@@ -6,8 +6,8 @@ RUN gem install 'concurrent-ruby'
 WORKDIR /app
 COPY --chown=nobody:nogroup . .
 
-ARG SHA
-ENV SHA=${SHA}
+ARG COMMIT_SHA
+ENV SHA=${COMMIT_SHA}
 
 EXPOSE 5537
 USER nobody

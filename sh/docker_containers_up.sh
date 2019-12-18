@@ -1,7 +1,8 @@
 #!/bin/bash
 set -e
 
-ip_address()
+# - - - - - - - - - - - - - - - - - - - -
+ip_address_slow()
 {
   if [ -n "${DOCKER_MACHINE_NAME}" ]; then
     docker-machine ip ${DOCKER_MACHINE_NAME}
@@ -9,55 +10,54 @@ ip_address()
     echo localhost
   fi
 }
-
-readonly IP_ADDRESS=$(ip_address)
+readonly IP_ADDRESS=$(ip_address_slow)
 
 # - - - - - - - - - - - - - - - - - - - -
-
-readonly READY_FILENAME='/tmp/curl-ready-output'
-
 wait_until_ready()
 {
   local -r name="${1}"
   local -r port="${2}"
-  local -r max_tries=20
-  echo -n "Waiting until ${name} is ready"
+  local -r max_tries=10
+  printf "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries})
   do
-    echo -n '.'
+    printf '.'
     if ready ${port}; then
-      echo 'OK'
+      printf 'OK\n'
       return
     else
       sleep 0.1
     fi
   done
-  echo 'FAIL'
-  echo "${name} not ready after ${max_tries} tries"
-  if [ -f "${READY_FILENAME}" ]; then
-    echo "$(cat "${READY_FILENAME}")"
+  printf 'FAIL\n'
+  printf "${name} not ready after ${max_tries} tries\n"
+  if [ -f "$(ready_filename)" ]; then
+    printf "$(cat "$(ready_filename)")\n"
   fi
   docker logs ${name}
-  exit 1
+  exit 42
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-
 ready()
 {
   local -r port="${1}"
   local -r path=ready?
-  local -r curl_cmd="curl --output ${READY_FILENAME} --silent --fail -X GET http://${IP_ADDRESS}:${port}/${path}"
-  rm -f "${READY_FILENAME}"
-  if ${curl_cmd} && [ "$(cat "${READY_FILENAME}")" = '{"ready?":true}' ]; then
+  local -r curl_cmd="curl --fail --output $(ready_filename) --silent -X GET http://${IP_ADDRESS}:${port}/${path}"
+  rm -f "$(ready_filename)"
+  if ${curl_cmd} && [ "$(cat "$(ready_filename)")" = '{"ready?":true}' ]; then
     true
   else
     false
   fi
 }
 
-# - - - - - - - - - - - - - - - - - - - -
+ready_filename()
+{
+  printf /tmp/curl-ready-output
+}
 
+# - - - - - - - - - - - - - - - - - - - -
 wait_till_up()
 {
   local n=10
@@ -69,50 +69,46 @@ wait_till_up()
       sleep 0.5
     fi
   done
-  echo "${1} not up after 5 seconds"
+  printf "${1} not up after 5 seconds\n"
   docker logs "${1}"
-  exit 1
+  exit 42
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-
 exit_unless_clean()
 {
   local -r name="${1}"
   local -r docker_log=$(docker logs "${name}" 2>&1)
   local -r line_count=$(echo -n "${docker_log}" | grep -c '^')
-  echo -n "Checking ${name} started cleanly..."
+  printf "Checking ${name} started cleanly..."
   if [ "${line_count}" == '3' ]; then
-    echo 'OK'
+    printf 'OK\n'
   else
-    echo 'FAIL'
-    echo_docker_log "${name}" "${docker_log}"
-    exit 1
+    printf 'FAIL\n'
+    print_docker_log "${name}" "${docker_log}"
+    exit 42
   fi
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-
-echo_docker_log()
+print_docker_log()
 {
   local -r name="${1}"
   local -r docker_log="${2}"
-  echo "[docker logs ${name}]"
-  echo "<docker_log>"
-  echo "${docker_log}"
-  echo "</docker_log>"
+  printf "[docker logs ${name}]\n"
+  printf '<docker_log>\n'
+  printf "${docker_log}\n"
+  printf '</docker_log>\n'
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-
 readonly ROOT_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
-
 export NO_PROMETHEUS=true
 
 docker-compose \
   --file "${ROOT_DIR}/docker-compose.yml" \
   up \
-  -d \
+  --detach \
   --force-recreate
 
 wait_until_ready  test-ragger-server 5537
