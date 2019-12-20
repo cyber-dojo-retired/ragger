@@ -24,7 +24,7 @@ jobs:
           name: Authenticate with gcloud, deploy to beta with helm
           command: |
             set -e
-            ./sh/deploy_to_beta.sh
+            ./sh/deploy_to_namespace.sh beta
 
   deploy-to-prod:
     docker:
@@ -35,7 +35,7 @@ jobs:
           name: Authenticate with gcloud, deploy to prod with helm
           command: |
             set -e
-            ./sh/deploy_to_prod.sh
+            ./sh/deploy_to_namespace.sh prod
 
 workflows:
   version: 2

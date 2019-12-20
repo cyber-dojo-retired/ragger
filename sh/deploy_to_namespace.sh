@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+readonly NAMESPACE="${1}" # eg beta
+
 # misc env-vars are in ci context
 
 echo ${GCP_K8S_CREDENTIALS} > /gcp/gcp-credentials.json
@@ -17,10 +19,10 @@ helm init --client-only
 helm repo add praqma https://praqma-helm-repo.s3.amazonaws.com/
 helm upgrade \
   --install \
-  --namespace=prod \
+  --namespace=${NAMESPACE} \
   --set-string containers[0].tag=${CIRCLE_SHA1:0:7} \
   --values .circleci/ragger-values.yaml \
-  --values .circleci/ragger-env-prod.yaml \
-  prod-ragger \
+  --values .circleci/ragger-env-${NAMESPACE}.yaml \
+  ${NAMESPACE}-ragger \
   praqma/cyber-dojo-service \
   --version 0.2.4
