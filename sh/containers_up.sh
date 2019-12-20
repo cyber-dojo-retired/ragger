@@ -61,7 +61,7 @@ wait_till_up()
       sleep 0.5
     fi
   done
-  echo "${1} not up after 5 seconds"
+  echo "${1} not up after ${max_tries} attempts"
   docker logs "${1}"
   exit 42
 }
