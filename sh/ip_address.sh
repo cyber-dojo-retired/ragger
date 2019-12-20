@@ -9,5 +9,3 @@ ip_address()
     echo localhost
   fi
 }
-
-export -f ip_address
