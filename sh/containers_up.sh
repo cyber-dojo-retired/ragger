@@ -13,7 +13,7 @@ wait_until_ready()
   local -r max_tries=10
   printf "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries}); do
-    if ready ${port}; then
+    if curl_ready "${port}"; then
       printf '.OK\n'
       return
     else
@@ -31,17 +31,19 @@ wait_until_ready()
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-ready()
+curl_ready()
 {
   local -r port="${1}"
   local -r path=ready?
-  local -r curl_cmd="curl --fail --output $(ready_filename) --silent -X GET http://${IP_ADDRESS}:${port}/${path}"
+  local -r url="http://${IP_ADDRESS}:${port}/${path}"
   rm -f "$(ready_filename)"
-  if ${curl_cmd} && [ "$(cat "$(ready_filename)")" = '{"ready?":true}' ]; then
-    true
-  else
-    false
-  fi
+  curl \
+    --fail \
+    --output $(ready_filename) \
+    --silent \
+    -X GET \
+    "${url}"
+  [ "$?" == '0' ] && [ "$(cat "$(ready_filename)")" == '{"ready?":true}' ]
 }
 
 # - - - - - - - - - - - - - - - - - - - -
