@@ -2,6 +2,9 @@
 set -e
 
 # misc env-vars are in ci context
+echo "arg1=:${1}:"
+echo "CIRCLE_SHA1=:${CIRCLE_SHA1}:"
+exit 42
 
 echo ${GCP_K8S_CREDENTIALS} > /gcp/gcp-credentials.json
 

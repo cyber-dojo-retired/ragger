@@ -24,7 +24,7 @@ jobs:
           name: Authenticate with gcloud and deploy to beta with helm
           command: |
             set -e
-            ./sh/deploy_to_beta.sh
+            ./sh/deploy_to_beta.sh "${CIRCLE_SHA1}"
 
   deploy-to-prod:
     docker:
