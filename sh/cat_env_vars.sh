@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 cat_env_vars()
 {
