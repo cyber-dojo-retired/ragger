@@ -31,7 +31,6 @@ run_server_tests()
         | tar Cxf "${ROOT_DIR}/test_server/" -
 
   echo "Coverage report copied to ${MY_NAME}/test_server/coverage/"
-  cat "${ROOT_DIR}/test_server/coverage/done.txt"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,7 +53,6 @@ run_client_tests()
         | tar Cxf "${ROOT_DIR}/test_client/" -
 
   echo "Coverage report copied to ${MY_NAME}/test_client/coverage/"
-  cat "${ROOT_DIR}/test_client/coverage/done.txt"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
