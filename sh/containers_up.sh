@@ -53,25 +53,28 @@ ready_filename()
 # - - - - - - - - - - - - - - - - - - - -
 wait_till_up()
 {
+  local -r name="${1}"
   local -r max_tries=10
   for _ in $(seq ${max_tries}); do
-    if running_container_names | grep --quiet ^${1}$ ; then
+    if running_container "${name}" ; then
       return
     else
       sleep 0.5
     fi
   done
-  echo "${1} not up after ${max_tries} attempts"
-  docker logs "${1}"
+  echo "${1} not running after ${max_tries} tries"
+  docker logs "${name}"
   exit 42
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-running_container_names()
+running_container()
 {
+  local -r name="${1}"
   docker ps \
     --all \
     --filter status=running \
+    --filter name="^/${name}$" \
     --format '{{.Names}}' \
     --no-trunc
 }
