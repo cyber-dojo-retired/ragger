@@ -3,7 +3,7 @@ LABEL maintainer=jon@jaggersoft.com
 
 RUN gem install 'concurrent-ruby'
 
-COPY --chown=nobody:nogroup . /
+COPY --chown=nobody:nogroup . /app
 
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}

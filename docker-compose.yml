@@ -21,7 +21,7 @@ services:
 
   ragger:
     build:
-      context: .
+      context: app
       args: [ COMMIT_SHA, CYBER_DOJO_RAGGER_PORT ]
     user: nobody
     image: ${CYBER_DOJO_RAGGER_IMAGE}
