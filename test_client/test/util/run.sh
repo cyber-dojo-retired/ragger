@@ -17,3 +17,5 @@ ruby ${MY_DIR}/check_test_results.rb \
   ${TEST_LOG_PART} \
   ${COVERAGE_ROOT}/index.html \
     2>&1 | tee -a ${TEST_LOG}
+
+exit ${PIPESTATUS[0]}
