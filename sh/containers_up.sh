@@ -13,16 +13,16 @@ wait_until_ready()
   local -r max_tries=10
   printf "Waiting until ${name} is ready"
   for _ in $(seq ${max_tries}); do
-    printf '.'
     if ready ${port}; then
-      printf 'OK\n'
+      printf '.OK\n'
       return
     else
+      printf '.'
       sleep 0.1
     fi
   done
   printf 'FAIL\n'
-  echo "${name} not ready after ${max_tries} tries"
+  echo "not ready after ${max_tries} tries"
   if [ -f "$(ready_filename)" ]; then
     cat "$(ready_filename)"
   fi
@@ -51,30 +51,32 @@ ready_filename()
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-wait_till_up()
+wait_until_running()
 {
   local -r name="${1}"
   local -r max_tries=10
+  printf "Waiting until ${name} is running"
   for _ in $(seq ${max_tries}); do
-    if running_container "${name}" ; then
+    if running_containers | grep --quiet "^${name}$"; then
+      printf '.OK\n'
       return
     else
-      sleep 0.5
+      printf .
+      sleep 0.1
     fi
   done
-  echo "${1} not running after ${max_tries} tries"
+  printf 'FAIL\n'
+  echo "not running after ${max_tries} tries"
   docker logs "${name}"
   exit 42
 }
 
 # - - - - - - - - - - - - - - - - - - - -
-running_container()
+running_containers()
 {
-  local -r name="${1}"
   docker ps \
     --all \
     --filter status=running \
-    --filter name="^/${name}$" \
     --format '{{.Names}}' \
     --no-trunc
 }
@@ -118,4 +120,4 @@ docker-compose \
 wait_until_ready  test-ragger-server 5537
 exit_unless_clean test-ragger-server
 
-wait_till_up      test-ragger-client
+wait_until_running test-ragger-client
