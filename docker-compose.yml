@@ -14,8 +14,7 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    depends_on:
-      - ragger
+    depends_on: [ ragger ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -32,10 +31,8 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes:
-      - ./test_server:/app/test/:ro
-    depends_on:
-      - runner
+    volumes: [ "./test_server:/app/test/:ro" ]
+    depends_on: [ runner ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -45,9 +42,8 @@ services:
     init: true
     container_name: test-ragger-runner-server
     environment: [ NO_PROMETHEUS ]
-    ports: [ "4597:4597" ]
+    ports: [ "${CYBER_DOJO_RUNNER_PORT}:${CYBER_DOJO_RUNNER_PORT}" ]
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+    volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
