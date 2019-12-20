@@ -4,7 +4,7 @@ export RUBYOPT='-W2'
 
 rackup \
   --env production  \
-  --port 5537       \
+  --port ${PORT}    \
   --server thin     \
   --warn            \
     config.ru

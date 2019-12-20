@@ -22,13 +22,13 @@ services:
   ragger:
     build:
       context: .
-      args: [ COMMIT_SHA ]
+      args: [ COMMIT_SHA, CYBER_DOJO_RAGGER_PORT ]
     user: nobody
-    image: cyberdojo/ragger
+    image: ${CYBER_DOJO_RAGGER_IMAGE}
     init: true
     container_name: test-ragger-server
     environment: [ NO_PROMETHEUS ]
-    ports: [ "5537:5537" ]
+    ports: [ "${CYBER_DOJO_RAGGER_PORT}:${CYBER_DOJO_RAGGER_PORT}" ]
     read_only: true
     tmpfs: /tmp
     restart: 'no'
@@ -41,7 +41,7 @@ services:
 
   runner:
     user: root
-    image: cyberdojo/runner:${CYBER_DOJO_RUNNER_TAG}
+    image: ${CYBER_DOJO_RUNNER_IMAGE}:${CYBER_DOJO_RUNNER_TAG}
     init: true
     container_name: test-ragger-runner-server
     environment: [ NO_PROMETHEUS ]
