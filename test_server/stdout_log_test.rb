@@ -1,5 +1,5 @@
 require_relative 'test_base'
-require_relative '../src/stdout_log'
+require_relative '../stdout_log'
 
 class StdoutLogTest < TestBase
 

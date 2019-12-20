@@ -1,4 +1,4 @@
-require_relative '../src/rack_dispatcher'
+require_relative '../rack_dispatcher'
 require_relative 'data/json'
 require_relative 'data/python_pytest'
 require_relative 'http_stub'
