@@ -55,7 +55,7 @@ wait_till_up()
 {
   local -r max_tries=10
   for _ in $(seq ${max_tries}); do
-    if docker ps --filter status=running --format '{{.Names}}' | grep --quiet ^${1}$ ; then
+    if running_container_names | grep --quiet ^${1}$ ; then
       return
     else
       sleep 0.5
@@ -67,11 +67,21 @@ wait_till_up()
 }
 
 # - - - - - - - - - - - - - - - - - - - -
+running_container_names()
+{
+  docker ps \
+    --all \
+    --filter status=running \
+    --format '{{.Names}}' \
+    --no-trunc
+}
+
+# - - - - - - - - - - - - - - - - - - - -
 exit_unless_clean()
 {
   local -r name="${1}"
   local -r docker_log=$(docker logs "${name}" 2>&1)
-  local -r line_count=$(echo -n "${docker_log}" | grep -c '^')
+  local -r line_count=$(echo -n "${docker_log}" | grep --count '^')
   printf "Checking ${name} started cleanly..."
   if [ "${line_count}" == '3' ]; then
     printf 'OK\n'
