@@ -12,9 +12,24 @@ tag_the_image()
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
+on_ci()
+{
+  [ -z "${CIRCLECI}" ]
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
+on_ci_pull_dependent_images()
+{
+  # Otherwise it interferes with timing tests
+  if on_ci; then
+    docker pull cyberdojofoundation/python_pytest
+  fi
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - -
 on_ci_publish_tagged_images()
 {
-  if [ -z "${CIRCLECI}" ]; then
+  if on_ci; then
     echo 'not on CI so not publishing tagged images'
     return
   fi
@@ -35,6 +50,7 @@ export $(cat_env_vars)
 
 ${SH_DIR}/build_images.sh
 ${SH_DIR}/containers_up.sh
+on_ci_pull_dependent_images
 ${SH_DIR}/run_tests_in_containers.sh "$@"
 ${SH_DIR}/containers_down.sh
 

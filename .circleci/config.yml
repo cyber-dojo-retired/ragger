@@ -10,11 +10,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Prepull images to avoid pulls affecting test durations
-          command: |
-            set -e
-            docker pull cyberdojofoundation/python_pytest
-      - run:
           name: Build image, test it, tag it, publish it
           command: |
             set -e
