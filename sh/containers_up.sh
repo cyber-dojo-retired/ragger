@@ -104,7 +104,4 @@ docker-compose \
 wait_until_ready  test-ragger-server 5537
 exit_unless_clean test-ragger-server
 
-wait_until_ready  test-ragger-runner-server 4597
-exit_unless_clean test-ragger-runner-server
-
 wait_till_up      test-ragger-client

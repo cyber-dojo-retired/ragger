@@ -42,7 +42,6 @@ services:
     init: true
     container_name: test-ragger-runner-server
     environment: [ NO_PROMETHEUS ]
-    ports: [ "${CYBER_DOJO_RUNNER_PORT}:${CYBER_DOJO_RUNNER_PORT}" ]
     read_only: true
     tmpfs: /tmp
     restart: 'no'
