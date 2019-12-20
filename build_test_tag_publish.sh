@@ -29,7 +29,7 @@ on_ci_pull_dependent_images()
 # - - - - - - - - - - - - - - - - - - - - - - - -
 on_ci_publish_tagged_images()
 {
-  if on_ci; then
+  if ! on_ci; then
     echo 'not on CI so not publishing tagged images'
     return
   fi
