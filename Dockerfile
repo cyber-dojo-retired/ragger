@@ -3,7 +3,8 @@ LABEL maintainer=jon@jaggersoft.com
 
 RUN gem install 'concurrent-ruby'
 
-COPY --chown=nobody:nogroup . /app
+WORKDIR /app
+COPY --chown=nobody:nogroup . .
 
 ARG COMMIT_SHA
 ENV SHA=${COMMIT_SHA}
@@ -13,4 +14,4 @@ ENV PORT=${CYBER_DOJO_RAGGER_PORT}
 EXPOSE ${CYBER_DOJO_RAGGER_PORT}
 
 USER nobody
-CMD [ "/app/up.sh" ]
+CMD [ "./up.sh" ]
