@@ -14,4 +14,4 @@ ENV PORT=${CYBER_DOJO_RAGGER_PORT}
 EXPOSE ${CYBER_DOJO_RAGGER_PORT}
 
 USER nobody
-CMD [ "./up.sh" ]
+CMD [ "/app/src/up.sh" ]
