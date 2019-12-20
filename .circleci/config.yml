@@ -19,7 +19,6 @@ jobs:
     docker:
       - image: cyberdojo/gcloud-kubectl-helm
     steps:
-      - checkout
       - run:
           name: Authenticate with gcloud and deploy with helm
           command: |
@@ -48,7 +47,6 @@ jobs:
     docker:
       - image: cyberdojo/gcloud-kubectl-helm
     steps:
-      - checkout
       - run:
           name: Authenticate with gcloud and deploy with helm
           command: |
