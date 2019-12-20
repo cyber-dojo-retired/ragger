@@ -44,6 +44,7 @@ ready()
   fi
 }
 
+# - - - - - - - - - - - - - - - - - - - -
 ready_filename()
 {
   printf /tmp/curl-ready-output
@@ -54,7 +55,7 @@ wait_till_up()
 {
   local -r max_tries=10
   for _ in $(seq ${max_tries}); do
-    if docker ps --filter status=running --format '{{.Names}}' | grep -q ^${1}$ ; then
+    if docker ps --filter status=running --format '{{.Names}}' | grep --quiet ^${1}$ ; then
       return
     else
       sleep 0.5
