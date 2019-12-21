@@ -31,7 +31,7 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ "./test_server:/app/test/:ro" ]
+    volumes: [ ./test_server:/app/test/:ro ]
     depends_on: [ runner ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,4 +44,4 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
+    volumes: [ /var/run/docker.sock:/var/run/docker.sock ]

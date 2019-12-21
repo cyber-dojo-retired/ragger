@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly SH_DIR="$( cd "$( dirname "${0}" )" && pwd )/sh"
+readonly SH_DIR="$( cd "$( dirname "${0}" )" && cd .. && pwd )/sh"
 source ${SH_DIR}/cat_env_vars.sh
 readonly VERSION=${1:-latest}
 export $(cat_env_vars ${VERSION})
