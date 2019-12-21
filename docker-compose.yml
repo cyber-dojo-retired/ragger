@@ -40,7 +40,6 @@ services:
     user: root
     image: ${CYBER_DOJO_RUNNER_IMAGE}:${CYBER_DOJO_RUNNER_TAG}
     init: true
-    container_name: test-ragger-runner-server
     environment: [ NO_PROMETHEUS ]
     read_only: true
     tmpfs: /tmp
