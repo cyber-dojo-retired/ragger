@@ -24,7 +24,7 @@ wait_until_ready()
   printf 'FAIL\n'
   echo "not ready after ${max_tries} tries"
   if [ -f "$(ready_filename)" ]; then
-    cat "$(ready_filename)"
+    ready_response
   fi
   docker logs ${name}
   exit 42
@@ -43,7 +43,13 @@ curl_ready()
     --silent \
     -X GET \
     "${url}"
-  [ "$?" == '0' ] && [ "$(cat "$(ready_filename)")" == '{"ready?":true}' ]
+  [ "$?" == '0' ] && [ "$(ready_response)" == '{"ready?":true}' ]
+}
+
+# - - - - - - - - - - - - - - - - - - -
+ready_response()
+{
+  cat "$(ready_filename)"
 }
 
 # - - - - - - - - - - - - - - - - - - - -
