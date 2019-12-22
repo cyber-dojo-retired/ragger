@@ -1,3 +1,2 @@
-
-/test_client/coverage/
-/test_server/coverage/
+/test/client/coverage/
+/test/server/coverage/
