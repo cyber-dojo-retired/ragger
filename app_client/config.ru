@@ -1,6 +1,6 @@
 require 'rack'
-require_relative 'src/externals'
-require_relative 'src/demo'
+require_relative 'externals'
+require_relative 'demo'
 
 externals = Externals.new
 run Demo.new(externals)

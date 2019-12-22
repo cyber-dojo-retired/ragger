@@ -1,5 +1,5 @@
-require_relative '../src/data/python_pytest'
-require_relative '../src/ragger_exception'
+require_relative '../../data/python_pytest'
+require_relative '../../ragger_exception'
 require_relative 'http_stub'
 require_relative 'test_base'
 require 'json'

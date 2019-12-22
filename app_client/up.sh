@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Note that the --host is needed for IPv4 and IPv6 addresses
+export RUBYOPT='-W2'
 
 rackup \
   --warn \
@@ -9,4 +9,4 @@ rackup \
   --port 5538 \
   --server thin \
   --env production \
-    config.ru
+    /app/config.ru

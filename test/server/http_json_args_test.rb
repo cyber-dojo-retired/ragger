@@ -1,5 +1,5 @@
-require_relative '../http_json/request_error'
-require_relative '../http_json_args'
+require_relative '../../http_json/request_error'
+require_relative '../../http_json_args'
 require_relative 'data/json'
 require_relative 'data/python_pytest'
 require_relative 'test_base'

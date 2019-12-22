@@ -1,6 +1,6 @@
 require_relative 'hex_mini_test'
-require_relative '../src/externals'
-require_relative '../src/ragger_service'
+require_relative '../../externals'
+require_relative '../../ragger_service'
 
 class TestBase < HexMiniTest
 
