@@ -37,6 +37,9 @@ run_tests()
 
   echo "Coverage report copied to ${test_dir}/coverage/"
   echo "${type} test status == ${status}"
+  if [ "${status}" != '0' ]; then
+    docker logs "${container_name}"
+  fi
   return ${status}
 }
 
