@@ -14,7 +14,7 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ ./test:/app/test/:ro ]
+    volumes: [ "./test:/app/test/:ro" ]
     depends_on: [ ragger ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,7 +32,7 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ ./test:/app/test/:ro ]
+    volumes: [ "./test:/app/test/:ro" ]
     depends_on: [ runner ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -45,4 +45,4 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ /var/run/docker.sock:/var/run/docker.sock ]
+    volumes: [ "/var/run/docker.sock:/var/run/docker.sock" ]
