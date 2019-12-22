@@ -52,7 +52,7 @@ Shared files?
 test/client and test/server usefully share a number of files:
 - check_test_results.rb
 - coverage.rb
-- hex_mini_test.rb
+- id58_test_base.rb
 - require_src.rb
 - run.sh
 

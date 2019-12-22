@@ -8,7 +8,7 @@ class Id58TestBase < MiniTest::Test
     super
   end
 
-  @@args = (ARGV.sort.uniq - ['--']).map(&:upcase) # eg 2E4
+  @@args = (ARGV.sort.uniq - ['--']) # eg 2m4
   @@seen_ids = []
   @@timings = {}
 
@@ -60,14 +60,25 @@ class Id58TestBase < MiniTest::Test
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
+  ID58_ALPHABET = %w{
+    0 1 2 3 4 5 6 7 8 9
+    A B C D E F G H   J K L M N   P Q R S T U V W X Y Z
+    a b c d e f g h   j k l m n   p q r s t u v w x y z
+  }.join.freeze
+
+  def self.id58?(s)
+    s.is_a?(String) &&
+      s.chars.all?{ |ch| ID58_ALPHABET.include?(ch) }
+  end
+
   def self.checked_id58(id58_suffix, lines)
-    method = 'def self.hex_prefix'
+    method = 'def self.id58_prefix'
     pointer = ' ' * method.index('.') + '!'
     pointee = (['',pointer,method,'','']).join("\n")
     pointer.prepend("\n\n")
     raise "#{pointer}missing#{pointee}" unless respond_to?(:id58_prefix)
     raise "#{pointer}empty#{pointee}" if id58_prefix === ''
-    raise "#{pointer}not id58#{pointee}" unless id58_prefix =~ /^[0-9A-F]+$/ # TODO
+    raise "#{pointer}not id58#{pointee}" unless id58?(id58_prefix)
 
     method = "test '#{id58_suffix}',"
     pointer = ' ' * method.index("'") + '!'
@@ -76,7 +87,7 @@ class Id58TestBase < MiniTest::Test
     id58 = id58_prefix + id58_suffix
     pointer.prepend("\n\n")
     raise "#{pointer}empty#{pointee}" if id58_suffix === ''
-    raise "#{pointer}not id58#{pointee}" unless id58_suffix =~ /^[0-9A-F]+$/
+    raise "#{pointer}not id58#{pointee}" unless id58?(id58_suffix)
     raise "#{pointer}duplicate#{pointee}" if @@seen_ids.include?(id58)
     raise "#{pointer}overlap#{pointee}" if id58_prefix[-2..-1] === id58_suffix[0..1]
     @@seen_ids << id58
