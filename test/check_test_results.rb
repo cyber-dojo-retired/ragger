@@ -107,16 +107,16 @@ line_ratio = (test_stats[:line_count].to_f / app_stats[:line_count].to_f)
 hits_ratio = (app_stats[:hits_per_line].to_f / test_stats[:hits_per_line].to_f)
 
 table = [
-  [ 'tests',                  test_count,     '!=',  METRICS[:test_count] ],
-  [ 'failures',               failure_count,  '==',  METRICS[:failures] ],
-  [ 'errors',                 error_count,    '==',  METRICS[:errors] ],
-  [ 'warnings',               warning_count,  '==',  METRICS[:warnings] ],
-  [ 'skips',                  skip_count,     '==',  METRICS[:skips] ],
-  [ 'duration(test)[s]',      test_duration,  '<=',  METRICS[:duration] ],
-  [ 'coverage(src)[%]',       app_coverage,   '==',  METRICS[:src_coverage] ],
-  [ 'coverage(test)[%]',      test_coverage,  '==',  METRICS[:test_coverage] ],
-  [ 'lines(test)/lines(src)', f2(line_ratio), '>=',  METRICS[:line_ratio] ],
-  [ 'hits(src)/hits(test)',   f2(hits_ratio), '>=',  METRICS[:hits_ratio] ],
+  [ 'tests',                  test_count,     '>=',  MIN[:test_count] ],
+  [ 'coverage(src)[%]',       app_coverage,   '>=',  MIN[:src_coverage] ],
+  [ 'coverage(test)[%]',      test_coverage,  '>=',  MIN[:test_coverage] ],
+  [ 'lines(test)/lines(src)', f2(line_ratio), '>=',  MIN[:line_ratio] ],
+  [ 'hits(src)/hits(test)',   f2(hits_ratio), '>=',  MIN[:hits_ratio] ],
+  [ 'failures',               failure_count,  '<=',  MAX[:failures] ],
+  [ 'errors',                 error_count,    '<=',  MAX[:errors] ],
+  [ 'warnings',               warning_count,  '<=',  MAX[:warnings] ],
+  [ 'skips',                  skip_count,     '<=',  MAX[:skips] ],
+  [ 'duration(test)[s]',      test_duration,  '<=',  MAX[:duration] ],
 ]
 
 # - - - - - - - - - - - - - - - - - - - - - - -
