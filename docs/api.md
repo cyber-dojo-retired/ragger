@@ -1,12 +1,12 @@
 # API
 - - - -
 # GET colour(image_name,id,stdout,stderr,status)
-- parameters
+- parameters [(JSON-in)](#json-in)
   * **image_name:String** names a Docker image.
   * **id:String** for tracing, must be in [base58](https://github.com/cyber-dojo/ragger/blob/master/src/base58.rb).
-  * **stdout:String** from a [runner](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
-  * **stderr:String** from a [runner](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
-  * **status:Integer** from a [runner](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
+  * **stdout:String** from a [runner](https://github.com/cyber-dojo/runner/blob/master/README.md#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
+  * **stderr:String** from a [runner](https://github.com/cyber-dojo/runner/blob/master/README.md#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
+  * **status:Integer** from a [runner](https://github.com/cyber-dojo/runner/blob/master/README.md#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
   * eg
   ```json
     {        "image_name": "cyberdojofoundation/gcc_assert",
@@ -90,13 +90,13 @@ The git commit sha used to create the Docker image.
   * If the method raises an exception, a string key equals ```"exception"```, with
     a json-hash as its value. eg
     ```bash
-    $ curl --silent -X POST http://${IP_ADDRESS}:${PORT}/create_group | jq      
+    $ curl --silent -X POST http://${IP_ADDRESS}:${PORT}/colour | jq      
     {
       "exception": {
-        "path": "/create_group",
+        "path": "/colour",
         "body": "",
         "class": "CreatorService",
-        "message": "manifest is missing",
+        "message": "image_name is missing",
         "backtrace": [
           ...
           "/usr/bin/rackup:23:in `<main>'"
