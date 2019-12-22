@@ -22,7 +22,10 @@ class Id58TestBase < MiniTest::Test
     if @@args === [] || @@args.any?{ |arg| id58.include?(arg) }
       name58 = lines.join(space = ' ')
       execute_around = lambda {
-        _id58_setup_caller(id58, name58)
+        ENV['ID58'] = id58
+        @_id58 = id58
+        @_name58 = name58
+        id58_setup
         begin
           t1 = Time.now
           self.instance_eval(&test_block)
@@ -30,7 +33,7 @@ class Id58TestBase < MiniTest::Test
           @@timings[id58+':'+src_file+':'+src_line+':'+name58] = (t2 - t1)
         ensure
           puts $!.message unless $!.nil?
-          _id58_teardown_caller
+          id58_teardown
         end
       }
       name = "id58 '#{id58_suffix}',\n'#{name58}'"
@@ -78,19 +81,6 @@ class Id58TestBase < MiniTest::Test
     raise "#{pointer}overlap#{pointee}" if id58_prefix[-2..-1] === id58_suffix[0..1]
     @@seen_ids << id58
     id58
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - -
-
-  def _id58_setup_caller(id58, name58)
-    ENV['ID58'] = id58
-    @_id58 = id58
-    @_name58 = name58
-    id58_setup
-  end
-
-  def _id58_teardown_caller
-    id58_teardown
   end
 
   # - - - - - - - - - - - - - - - - - - - - - -
