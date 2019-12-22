@@ -52,7 +52,7 @@ class Id58TestBase < MiniTest::Test
     puts "Slowest #{size} tests are..." if size != 0
     sorted.each_with_index { |(name,secs),index|
       puts "%3.4f - %-72s" % [secs,name]
-      break if index == size
+      break if index === size
     }
     puts
   })
