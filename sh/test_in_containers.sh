@@ -8,16 +8,17 @@ readonly my_name=ragger
 run_tests()
 {
   local -r coverage_root=/tmp/coverage
-  local -r user="${1}"                           # eg nobody
-  local -r test_dir="test/${2}"                  # eg test/server
-  local -r container_name="test-${my_name}-${2}" # eg test-ragger-server
+  local -r user="${1}" # eg nobody
+  local -r type="${2}" # eg server
+  local -r test_dir="test/${type}"                  # eg test/server
+  local -r container_name="test-${my_name}-${type}" # eg test-ragger-server
 
   set +e
   docker exec \
     --user "${user}" \
     --env COVERAGE_ROOT=${coverage_root} \
     "${container_name}" \
-      sh -c "/app/test/${2}/util/run.sh ${@:3}"
+      sh -c "/app/test/run.sh ${@:2}"
   local -r status=$?
   set -e
 
@@ -31,7 +32,7 @@ run_tests()
         | tar Cxf "${root_dir}/${test_dir}/" -
 
   echo "Coverage report copied to ${test_dir}/coverage/"
-  echo "${2} test status == ${status}"
+  echo "${type} test status == ${status}"
   return ${status}
 }
 

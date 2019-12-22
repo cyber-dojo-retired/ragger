@@ -1,7 +1,7 @@
 require 'simplecov'
 
 def app_root
-  File.expand_path('../../..', __dir__) # eg /app
+  File.expand_path('..', __dir__) # eg /app
 end
 
 def test_file?(filename)

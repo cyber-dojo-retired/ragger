@@ -1,3 +1,4 @@
+require_relative 'metrics'
 
 def number
   '[\.|\d]+'
@@ -100,8 +101,6 @@ test_coverage = test_stats[:coverage].to_f
 
 line_ratio = (test_stats[:line_count].to_f / app_stats[:line_count].to_f)
 hits_ratio = (app_stats[:hits_per_line].to_f / test_stats[:hits_per_line].to_f)
-
-require_relative 'metrics'
 
 table = [
   [ 'tests',                  test_count,     '!=',  METRICS[:test_count] ],
