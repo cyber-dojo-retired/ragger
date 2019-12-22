@@ -22,8 +22,7 @@ end
 
 def coloured(tf)
   red = 31
-  green = 32
-  colourize(tf ? green : red, tf)
+  tf ? 'true' : colourize(red,false)
 end
 
 def colourize(code, word)
