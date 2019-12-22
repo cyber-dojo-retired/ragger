@@ -8,10 +8,15 @@ readonly TEST_ARGS=(${*})
 readonly TEST_LOG=${COVERAGE_ROOT}/test.log
 readonly TEST_LOG_PART=${COVERAGE_ROOT}/test.log.part
 
-readonly SCRIPT="([ '${MY_DIR}/coverage.rb' ] + %w(${TEST_FILES[*]})).each{ |file| require file }"
+readonly SCRIPT="
+require '${MY_DIR}/coverage.rb';
+%w(${TEST_FILES[*]}).shuffle.each{ |file|
+  require file
+}"
 
 export RUBYOPT='-W2'
 mkdir -p ${COVERAGE_ROOT}
+
 ruby -e "${SCRIPT}" -- ${TEST_ARGS[@]} \
   2>&1 | tee ${TEST_LOG} ${TEST_LOG_PART}
 
