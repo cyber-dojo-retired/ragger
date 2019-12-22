@@ -1,0 +1,29 @@
+The main src code is in the /app dir.
+This is added to the docker image using the Dockerfile command:
+COPY --chown=nobody:nogroup . /app
+Note: this sets the ownership of everything underneath /app
+but it does not set the ownership of /app itself.
+
+There are some tests in /test/server
+These are volume-mounted into, and run from inside a docker container
+using docker-compose.yml:
+
+  ragger:
+    read_only: true
+    volumes: [ "./test:/app/test:ro" ]
+
+I would prefer to have code and tests in a 'non-parental' dir structure. Eg
+/app
+/test
+
+The problem is that I want full coverage of both the source _and_ tests
+and SimpleCov appears unable to work 'across' two dirs like this.
+If you try SimpleCov.root('/') it just does not work.
+
+It might be possible to add sym-link to fake it, but the ln command
+would not be possible inside the read-only file-system.
+
+test/client and test/server usefully share a number of files:
+- check_test_results.rb
+- coverage.rb
+- run.sh
