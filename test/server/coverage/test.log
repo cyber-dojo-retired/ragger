@@ -1,0 +1,22 @@
+Run options: --seed 36369
+
+# Running:
+
+.......................................................
+
+Finished in 2.565268s, 21.4403 runs/s, 191.0132 assertions/s.
+
+55 runs, 490 assertions, 0 failures, 0 errors, 0 skips
+Coverage report generated for MiniTest to /tmp/coverage. 703 / 703 LOC (100.0%) covered.
+
+                    tests |      55 !=     0 | [32mtrue[0m
+                 failures |       0 ==     0 | [32mtrue[0m
+                   errors |       0 ==     0 | [32mtrue[0m
+                 warnings |       0 ==     0 | [32mtrue[0m
+                    skips |       0 ==     0 | [32mtrue[0m
+        duration(test)[s] |    2.57 <=     7 | [32mtrue[0m
+         coverage(src)[%] |   100.0 ==   100 | [32mtrue[0m
+        coverage(test)[%] |   100.0 ==   100 | [32mtrue[0m
+   lines(test)/lines(src) |    2.68 >=   2.0 | [32mtrue[0m
+     hits(src)/hits(test) |    0.58 >=   0.5 | [32mtrue[0m
+

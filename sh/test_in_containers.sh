@@ -8,9 +8,9 @@ readonly my_name=ragger
 run_tests()
 {
   local -r coverage_root=/tmp/coverage
-  local -r user="${1}"
-  local -r test_dir="test_${2}"
-  local -r container_name="test-${my_name}-${2}"
+  local -r user="${1}"                           # eg nobody
+  local -r test_dir="test/${2}"                  # eg test/server
+  local -r container_name="test-${my_name}-${2}" # eg test-ragger-server
 
   set +e
   docker exec \
