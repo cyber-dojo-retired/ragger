@@ -76,8 +76,8 @@ The git commit sha used to create the Docker image.
 - - - -
 ## JSON in
 - All methods pass any arguments as a json hash in the http request body.
-  * If there are no arguments you can use ```''``` (which is the default
-    for ```curl --data```) instead of ```'{}'```.
+  * If there are no arguments you can use `''` (which is the default
+    for `curl --data`) instead of `'{}'`.
 
 - - - -
 ## JSON out      
@@ -87,7 +87,7 @@ The git commit sha used to create the Docker image.
     $ curl --silent -X GET http://${IP_ADDRESS}:${PORT}/ready?
     {"ready?":true}
     ```
-  * If the method raises an exception, a string key equals ```"exception"```, with
+  * If the method raises an exception, a string key equals `"exception"`, with
     a json-hash as its value. eg
     ```bash
     $ curl --silent -X POST http://${IP_ADDRESS}:${PORT}/colour | jq      
