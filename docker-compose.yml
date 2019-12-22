@@ -5,7 +5,7 @@ services:
 
   ragger-client:
     build:
-      context: app_client
+      context: client
     user: nobody
     image: cyberdojo/ragger-client
     init: true
