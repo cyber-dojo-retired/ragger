@@ -5,7 +5,7 @@ require_relative 'stdout_log_spy'
 
 class ColourTest < TestBase
 
-  def self.hex_prefix
+  def self.id58_prefix
     'C60'
   end
 

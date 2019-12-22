@@ -3,7 +3,7 @@ require 'oj'
 
 class ReadyTest < TestBase
 
-  def self.hex_prefix
+  def self.id58_prefix
     '872'
   end
 

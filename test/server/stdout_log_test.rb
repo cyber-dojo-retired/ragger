@@ -4,7 +4,7 @@ require_src 'stdout_log'
 
 class StdoutLogTest < TestBase
 
-  def self.hex_prefix
+  def self.id58_prefix
     'CD476'
   end
 

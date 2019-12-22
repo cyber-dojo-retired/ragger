@@ -9,7 +9,7 @@ require 'ostruct'
 
 class RackDispatcherTest < TestBase
 
-  def self.hex_prefix
+  def self.id58_prefix
     'D06'
   end
 

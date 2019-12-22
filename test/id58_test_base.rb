@@ -1,33 +1,39 @@
 require 'minitest/autorun'
 
-class HexMiniTest < MiniTest::Test
+class Id58TestBase < MiniTest::Test
+
+  def initialize(arg)
+    @_test_id58 = nil
+    @_test_name58 = nil
+    super
+  end
 
   @@args = (ARGV.sort.uniq - ['--']).map(&:upcase) # eg 2E4
-  @@seen_hex_ids = []
+  @@seen_ids = []
   @@timings = {}
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  def self.test(hex_suffix, *lines, &test_block)
+  def self.test(id58_suffix, *lines, &test_block)
     src = test_block.source_location
     src_file = File.basename(src[0])
     src_line = src[1].to_s
-    hex_id = checked_hex_id(hex_suffix, lines)
-    if @@args === [] || @@args.any?{ |arg| hex_id.include?(arg) }
-      hex_name = lines.join(space = ' ')
+    id58 = checked_id58(id58_suffix, lines)
+    if @@args === [] || @@args.any?{ |arg| id58.include?(arg) }
+      name58 = lines.join(space = ' ')
       execute_around = lambda {
-        _hex_setup_caller(hex_id, hex_name)
+        _id58_setup_caller(id58, name58)
         begin
           t1 = Time.now
           self.instance_eval(&test_block)
           t2 = Time.now
-          @@timings[hex_id+':'+src_file+':'+src_line+':'+hex_name] = (t2 - t1)
+          @@timings[id58+':'+src_file+':'+src_line+':'+name58] = (t2 - t1)
         ensure
           puts $!.message unless $!.nil?
-          _hex_teardown_caller
+          _id58_teardown_caller
         end
       }
-      name = "hex '#{hex_suffix}',\n'#{hex_name}'"
+      name = "id58 '#{id58_suffix}',\n'#{name58}'"
       define_method("test_\n#{name}".to_sym, &execute_around)
     end
   end
@@ -51,59 +57,59 @@ class HexMiniTest < MiniTest::Test
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  def self.checked_hex_id(hex_suffix, lines)
+  def self.checked_id58(id58_suffix, lines)
     method = 'def self.hex_prefix'
     pointer = ' ' * method.index('.') + '!'
     pointee = (['',pointer,method,'','']).join("\n")
     pointer.prepend("\n\n")
-    raise "#{pointer}missing#{pointee}" unless respond_to?(:hex_prefix)
-    raise "#{pointer}empty#{pointee}" if hex_prefix === ''
-    raise "#{pointer}not hex#{pointee}" unless hex_prefix =~ /^[0-9A-F]+$/
+    raise "#{pointer}missing#{pointee}" unless respond_to?(:id58_prefix)
+    raise "#{pointer}empty#{pointee}" if id58_prefix === ''
+    raise "#{pointer}not id58#{pointee}" unless id58_prefix =~ /^[0-9A-F]+$/ # TODO
 
-    method = "test '#{hex_suffix}',"
+    method = "test '#{id58_suffix}',"
     pointer = ' ' * method.index("'") + '!'
     proposition = lines.join(space = ' ')
     pointee = ['',pointer,method,"'#{proposition}'",'',''].join("\n")
-    hex_id = hex_prefix + hex_suffix
+    id58 = id58_prefix + id58_suffix
     pointer.prepend("\n\n")
-    raise "#{pointer}empty#{pointee}" if hex_suffix === ''
-    raise "#{pointer}not hex#{pointee}" unless hex_suffix =~ /^[0-9A-F]+$/
-    raise "#{pointer}duplicate#{pointee}" if @@seen_hex_ids.include?(hex_id)
-    raise "#{pointer}overlap#{pointee}" if hex_prefix[-2..-1] === hex_suffix[0..1]
-    @@seen_hex_ids << hex_id
-    hex_id
+    raise "#{pointer}empty#{pointee}" if id58_suffix === ''
+    raise "#{pointer}not id58#{pointee}" unless id58_suffix =~ /^[0-9A-F]+$/
+    raise "#{pointer}duplicate#{pointee}" if @@seen_ids.include?(id58)
+    raise "#{pointer}overlap#{pointee}" if id58_prefix[-2..-1] === id58_suffix[0..1]
+    @@seen_ids << id58
+    id58
   end
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  def _hex_setup_caller(hex_id, hex_name)
-    ENV['RAGGER_HEX_TEST_ID'] = hex_id
-    @_hex_test_id = hex_id
-    @_hex_test_name = hex_name
-    hex_setup
+  def _id58_setup_caller(id58, name58)
+    ENV['TEST_ID58'] = id58
+    @_test_id58 = id58
+    @_test_name58 = name58
+    id58_setup
   end
 
-  def _hex_teardown_caller
-    hex_teardown
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - -
-
-  def hex_setup
-  end
-
-  def hex_teardown
+  def _id58_teardown_caller
+    id58_teardown
   end
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  def hex_test_id
-    @_hex_test_id
+  def id58_setup
+  end
+
+  def id58_teardown
+  end
+
+  # - - - - - - - - - - - - - - - - - - - - - -
+
+  def test_id58
+    @_test_id58
   end
 
   # :nocov:
-  def hex_test_name
-    @_hex_test_name
+  def test_name58
+    @_test_name58
   end
   # :nocov:
 

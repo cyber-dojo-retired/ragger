@@ -9,8 +9,8 @@ require 'oj'
 
 class HttpJsonArgsTest < TestBase
 
-  def self.hex_prefix
-    '348'
+  def self.id58_prefix
+    'A48'
   end
 
   # - - - - - - - - - - - - - - - - -

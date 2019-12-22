@@ -2,7 +2,7 @@ require_relative 'test_base'
 
 class AliveTest < TestBase
 
-  def self.hex_prefix
+  def self.id58_prefix
     'A86'
   end
 

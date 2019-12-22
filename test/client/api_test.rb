@@ -7,7 +7,7 @@ require 'json'
 
 class ApiTest < TestBase
 
-  def self.hex_prefix
+  def self.id58_prefix
     '375'
   end
 

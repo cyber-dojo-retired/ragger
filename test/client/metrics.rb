@@ -4,7 +4,7 @@ MIN = {
   src_coverage:100,
   test_coverage:100,
   line_ratio:1.7,
-  hits_ratio:1
+  hits_ratio:0.9
 }
 
 MAX = {

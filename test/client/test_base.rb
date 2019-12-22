@@ -1,9 +1,9 @@
-require_relative '../hex_mini_test'
+require_relative '../id58_test_base'
 require_relative '../require_src'
 require_src 'externals'
 require_src 'ragger_service'
 
-class TestBase < HexMiniTest
+class TestBase < Id58TestBase
 
   def externals
     @externals ||= Externals.new
@@ -47,7 +47,7 @@ class TestBase < HexMiniTest
   # - - - - - - - - - - - - - - - - - - - - - - - - - -
 
   def id
-    hex_test_id[0..5]
+    test_id58[0..5]
   end
 
 end
