@@ -35,7 +35,7 @@ run_tests()
       - "$(basename "${coverage_root}")" \
         | tar Cxf "${root_dir}/${test_dir}/" -
 
-  echo "Coverage report copied to ${test_dir}/coverage/"
+  echo "Test reports copied to ${test_dir}/coverage/"
   echo "${type} test status == ${status}"
   if [ "${status}" != '0' ]; then
     docker logs "${container_name}"

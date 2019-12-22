@@ -9,10 +9,16 @@ readonly TEST_LOG=${COVERAGE_ROOT}/test.log
 readonly TEST_LOG_PART=${COVERAGE_ROOT}/test.log.part
 
 readonly SCRIPT="
-require '${MY_DIR}/coverage.rb';
+require 'ruby-prof'
+GC.disable
+RubyProf.start
+require '${MY_DIR}/coverage.rb'
 %w(${TEST_FILES[*]}).shuffle.each{ |file|
   require file
-}"
+}
+result = RubyProf.stop
+printer = RubyProf::FlatPrinter.new(result)
+printer.print(File.open('${COVERAGE_ROOT}/profile.log','w+'))"
 
 export RUBYOPT='-W2'
 mkdir -p ${COVERAGE_ROOT}
