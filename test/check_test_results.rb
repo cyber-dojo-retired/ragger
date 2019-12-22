@@ -1,4 +1,8 @@
-require_relative 'metrics'
+TYPE=ARGV[0]     # eg client|server
+TEST_LOG=ARGV[1]
+INDEX_HTML=ARGV[2]
+
+require_relative "#{TYPE}/metrics"
 
 def number
   '[\.|\d]+'
@@ -27,7 +31,7 @@ def colourize(code, word)
 end
 
 def get_index_stats(name)
-  html = `cat #{ARGV[1]}`
+  html = `cat #{INDEX_HTML}`
   html = cleaned(html)
   # It would be nice if simplecov saved the raw data to a json file
   # and created the html from that, but alas it does not.
@@ -57,7 +61,7 @@ end
 # - - - - - - - - - - - - - - - - - - - - - - -
 
 def get_test_log_stats
-  test_log = `cat #{ARGV[0]}`
+  test_log = `cat #{TEST_LOG}`
   test_log = cleaned(test_log)
 
   stats = {}
