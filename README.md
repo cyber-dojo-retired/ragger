@@ -3,7 +3,7 @@
 
 - The source for the [cyberdojo/ragger](https://hub.docker.com/r/cyberdojo/ragger/tags) Docker image.
 - A docker-containerized micro-service for [https://cyber-dojo.org](http://cyber-dojo.org).
-- Returns the traffic-light colour, "red", "amber", or "green" for the
+- An http service to get the traffic-light colour, ```"red"```, ```"amber"```, or ```"green"``` for the
 [stdout,stderr,status] produced by a
 [runner.run_cyber_dojo_sh(...)](https://github.com/cyber-dojo/runner#get-run_cyber_dojo_shimage_nameidfilesmax_seconds) call.
 
