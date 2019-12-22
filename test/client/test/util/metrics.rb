@@ -7,8 +7,8 @@ METRICS = {
   skips:0,
   src_coverage:100,
   test_coverage:100,
-
-  duration:7,
-  line_ratio:2.0,
-  hits_ratio:0.5
+  
+  duration:2,
+  line_ratio:1.7,
+  hits_ratio:1
 }

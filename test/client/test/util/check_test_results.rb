@@ -45,12 +45,12 @@ def get_index_stats(name)
   \s*<b>#{number}<\/b> files in total.
   \s*<b>(#{number})<\/b> relevant lines./m
   r = html.match(pattern)
-  h = {}
-  h[:coverage]      = f2(r[1])
-  h[:hits_per_line] = f2(r[2])
-  h[:line_count]    = r[3].to_i
-  h[:name] = name
-  h
+  {
+    :coverage      => f2(r[1]),
+    :hits_per_line => f2(r[2]),
+    :line_count    => r[3].to_i,
+    :name          => name
+  }
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +84,7 @@ end
 
 log_stats = get_test_log_stats
 test_stats = get_index_stats('test')
-src_stats = get_index_stats('app')
+app_stats = get_index_stats('app')
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -95,30 +95,26 @@ warning_count = log_stats[:warning_count]
 skip_count    = log_stats[:skip_count]
 test_duration = log_stats[:time].to_f
 
-src_coverage  = src_stats[:coverage].to_f
+app_coverage  = app_stats[:coverage].to_f
 test_coverage = test_stats[:coverage].to_f
 
-line_ratio = (test_stats[:line_count].to_f / src_stats[:line_count].to_f)
-hits_ratio = (src_stats[:hits_per_line].to_f / test_stats[:hits_per_line].to_f)
+line_ratio = (test_stats[:line_count].to_f / app_stats[:line_count].to_f)
+hits_ratio = (app_stats[:hits_per_line].to_f / test_stats[:hits_per_line].to_f)
 
-# - - - - - - - - - - - - - - - - - - - - - - -
-# It is useful to keep these tolerances quite close
-# to their limit. It helps to show large jumps which
-# can be a sign of too much work in progres.
+require_relative 'metrics'
 
-table =
-  [
-    [ 'tests',                  test_count,     '!=',   0 ],
-    [ 'failures',               failure_count,  '==',   0 ],
-    [ 'errors',                 error_count,    '==',   0 ],
-    [ 'warnings',               warning_count,  '==',   0 ],
-    [ 'skips',                  skip_count,     '==',   0 ],
-    [ 'duration(test)[s]',      test_duration,  '<=',   2 ],
-    [ 'coverage(src)[%]',       src_coverage,   '==', 100 ],
-    [ 'coverage(test)[%]',      test_coverage,  '==', 100 ],
-    [ 'lines(test)/lines(src)', f2(line_ratio), '>=', 1.7 ],
-    [ 'hits(src)/hits(test)',   f2(hits_ratio), '>=',   1 ],
-  ]
+table = [
+  [ 'tests',                  test_count,     '!=',  METRICS[:test_count] ],
+  [ 'failures',               failure_count,  '==',  METRICS[:failures] ],
+  [ 'errors',                 error_count,    '==',  METRICS[:errors] ],
+  [ 'warnings',               warning_count,  '==',  METRICS[:warnings] ],
+  [ 'skips',                  skip_count,     '==',  METRICS[:skips] ],
+  [ 'duration(test)[s]',      test_duration,  '<=',  METRICS[:duration] ],
+  [ 'coverage(src)[%]',       app_coverage,   '==',  METRICS[:src_coverage] ],
+  [ 'coverage(test)[%]',      test_coverage,  '==',  METRICS[:test_coverage] ],
+  [ 'lines(test)/lines(src)', f2(line_ratio), '>=',  METRICS[:line_ratio] ],
+  [ 'hits(src)/hits(test)',   f2(hits_ratio), '>=',  METRICS[:hits_ratio] ],
+]
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 
