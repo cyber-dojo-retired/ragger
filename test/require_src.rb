@@ -33,12 +33,13 @@ a 'non-parental' dir structure, to mirror the git-repo dir/ structure. Eg
   /test
 
 However, I want full coverage of both app-code and test-code
-and SimpleCov appears unable to work 'across' two dirs like this :-(
+and SimpleCov appears unable to work across two root dirs like this :-(
+Although it does work if the dirs are not rooted, eg, /jj/app and /jj/test
 
 It might be possible to add a sym-link to fake it, but the ln command
 would not be possible inside the read-only file-system.
 
-So, when looking at test-code in the git-repo you expect to access
+So, when looking at test-code in the git-repo you'd expect to access
 the app-code like this:
    require_relative '../app/wibble'
 But the access is like this:
