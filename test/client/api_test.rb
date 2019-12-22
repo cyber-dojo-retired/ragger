@@ -1,7 +1,8 @@
-require_relative '../../data/python_pytest'
-require_relative '../../ragger_exception'
 require_relative 'http_stub'
 require_relative 'test_base'
+require_relative '../require_src'
+require_src 'data/python_pytest'
+require_src 'ragger_exception'
 require 'json'
 
 class ApiTest < TestBase

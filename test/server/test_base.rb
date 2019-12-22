@@ -1,6 +1,7 @@
 require_relative 'hex_mini_test'
-require_relative '../../externals'
-require_relative '../../traffic_light'
+require_relative '../require_src'
+require_src 'externals'
+require_src 'traffic_light'
 require 'oj'
 
 class TestBase < HexMiniTest

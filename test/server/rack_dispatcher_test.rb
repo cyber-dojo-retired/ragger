@@ -1,9 +1,10 @@
-require_relative '../../rack_dispatcher'
 require_relative 'data/json'
 require_relative 'data/python_pytest'
 require_relative 'http_stub'
 require_relative 'rack_request_stub'
 require_relative 'test_base'
+require_relative '../require_src'
+require_src 'rack_dispatcher'
 require 'ostruct'
 
 class RackDispatcherTest < TestBase
