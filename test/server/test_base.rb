@@ -1,4 +1,4 @@
-require_relative 'hex_mini_test'
+require_relative '../hex_mini_test'
 require_relative '../require_src'
 require_src 'externals'
 require_src 'traffic_light'

@@ -4,26 +4,50 @@ class HexMiniTest < MiniTest::Test
 
   @@args = (ARGV.sort.uniq - ['--']).map(&:upcase) # eg 2E4
   @@seen_hex_ids = []
+  @@timings = {}
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
   def self.test(hex_suffix, *lines, &test_block)
+    src = test_block.source_location
+    src_file = File.basename(src[0])
+    src_line = src[1].to_s
     hex_id = checked_hex_id(hex_suffix, lines)
     if @@args === [] || @@args.any?{ |arg| hex_id.include?(arg) }
       hex_name = lines.join(space = ' ')
       execute_around = lambda {
         _hex_setup_caller(hex_id, hex_name)
         begin
+          t1 = Time.now
           self.instance_eval(&test_block)
+          t2 = Time.now
+          @@timings[hex_id+':'+src_file+':'+src_line+':'+hex_name] = (t2 - t1)
         ensure
+          puts $!.message unless $!.nil?
           _hex_teardown_caller
         end
       }
-      proposition = lines.join(space = ' ')
-      name = "hex '#{hex_suffix}',\n'#{proposition}'"
+      name = "hex '#{hex_suffix}',\n'#{hex_name}'"
       define_method("test_\n#{name}".to_sym, &execute_around)
     end
   end
+
+  # - - - - - - - - - - - - - - - - - - - - - -
+
+  # :nocov:
+  ObjectSpace.define_finalizer(self, proc {
+    slow = @@timings.select{ |_name,secs| secs > 0.000 }
+    sorted = slow.sort_by{ |name,secs| -secs }.to_h
+    size = sorted.size < 5 ? sorted.size : 5
+    puts
+    puts "Slowest #{size} tests are..." if size != 0
+    sorted.each_with_index { |(name,secs),index|
+      puts "%3.4f - %-72s" % [secs,name]
+      break if index == size
+    }
+    puts
+  })
+  # :nocov:
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
@@ -55,6 +79,7 @@ class HexMiniTest < MiniTest::Test
   def _hex_setup_caller(hex_id, hex_name)
     ENV['RAGGER_HEX_TEST_ID'] = hex_id
     @_hex_test_id = hex_id
+    @_hex_test_name = hex_name
     hex_setup
   end
 
@@ -75,5 +100,11 @@ class HexMiniTest < MiniTest::Test
   def hex_test_id
     @_hex_test_id
   end
+
+  # :nocov:
+  def hex_test_name
+    @_hex_test_name
+  end
+  # :nocov:
 
 end

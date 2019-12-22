@@ -13,6 +13,10 @@ run_tests()
   local -r test_dir="test/${type}"                  # eg test/server
   local -r container_name="test-${my_name}-${type}" # eg test-ragger-server
 
+  echo '=================================='
+  echo "Running ${type} tests"
+  echo '=================================='
+
   set +e
   docker exec \
     --user "${user}" \
