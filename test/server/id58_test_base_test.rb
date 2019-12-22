@@ -10,7 +10,7 @@ class Id58TestBaseTest < TestBase
 
   test 'C80',
   'test-id is available via environment variable' do
-    assert_equal '89876C80', ENV['TEST_ID58']
+    assert_equal '89876C80', ENV['ID58']
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
@@ -18,14 +18,14 @@ class Id58TestBaseTest < TestBase
   test '57B',
   'test-id is available via a method',
   'and is the id58_prefix concatenated with the id58' do
-    assert_equal '8987657B', test_id58
+    assert_equal '8987657B', id58
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
 
   test '18F',
   'test-name is available via a method' do
-    assert_equal 'test-name is available via a method', test_name58
+    assert_equal 'test-name is available via a method', name58
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
@@ -43,7 +43,7 @@ class Id58TestBaseTest < TestBase
       'and will automatically be',
       'joined with spaces'
     ].join(' ')
-    assert_equal expected, test_name58
+    assert_equal expected, name58
   end
 
   # - - - - - - - - - - - - - - - - - - - - -
@@ -62,7 +62,7 @@ class Id58TestBaseTest < TestBase
       'and will automatically be',
       'joined with spaces'
     ].join(' ')
-    assert_equal expected, test_name58
+    assert_equal expected, name58
   end
 
 end

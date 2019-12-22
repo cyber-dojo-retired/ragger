@@ -3,8 +3,8 @@ require 'minitest/autorun'
 class Id58TestBase < MiniTest::Test
 
   def initialize(arg)
-    @_test_id58 = nil
-    @_test_name58 = nil
+    @_id58 = nil
+    @_name58 = nil
     super
   end
 
@@ -83,9 +83,9 @@ class Id58TestBase < MiniTest::Test
   # - - - - - - - - - - - - - - - - - - - - - -
 
   def _id58_setup_caller(id58, name58)
-    ENV['TEST_ID58'] = id58
-    @_test_id58 = id58
-    @_test_name58 = name58
+    ENV['ID58'] = id58
+    @_id58 = id58
+    @_name58 = name58
     id58_setup
   end
 
@@ -103,13 +103,13 @@ class Id58TestBase < MiniTest::Test
 
   # - - - - - - - - - - - - - - - - - - - - - -
 
-  def test_id58
-    @_test_id58
+  def id58
+    @_id58
   end
 
   # :nocov:
-  def test_name58
-    @_test_name58
+  def name58
+    @_name58
   end
   # :nocov:
 
