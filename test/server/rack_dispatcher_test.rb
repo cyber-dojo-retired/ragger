@@ -22,7 +22,7 @@ class RackDispatcherTest < TestBase
   kubernetes liveness/readiness http probes ) do
     rack_call('sha', '')
     sha = assert_200('sha')
-    assert_sha(sha)
+    assert sha?(sha), sha
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -30,15 +30,15 @@ class RackDispatcherTest < TestBase
   test 'AB2', 'sha' do
     rack_call('sha', {}.to_json)
     sha = assert_200('sha')
-    assert_sha(sha)
+    assert sha?(sha), sha
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test 'AB3', 'alive' do
     rack_call('alive', {}.to_json)
-    ready = assert_200('alive?')
-    assert ready
+    alive = assert_200('alive?')
+    assert alive
   end
 
   # - - - - - - - - - - - - - - - - -

@@ -16,11 +16,10 @@ class TestBase < Id58TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def assert_sha(string)
-    assert_equal 40, string.size
-    string.each_char do |ch|
-      assert '0123456789abcdef'.include?(ch)
-    end
+  def sha?(s)
+    s.is_a?(String) &&
+      s.size === 40 &&
+        s.chars.all?{|ch| '0123456789abcdef'.include?(ch) }
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

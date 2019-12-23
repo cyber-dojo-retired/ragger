@@ -31,9 +31,9 @@ class ColourTest < TestBase
     image_name = 'anything-not-cached'
     with_captured_stdout_stderr {
       colour(image_name, id, '', '', '0')
+      assert_faulty
     }
     assert @stdout.start_with?('red_amber_green lambda error mapped to :faulty')
-    assert_faulty
   end
 
   # - - - - - - - - - - - - - - - - -
