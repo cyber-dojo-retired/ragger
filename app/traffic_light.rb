@@ -11,15 +11,15 @@ class TrafficLight
   end
 
   def sha
-    json_response({'sha' => ENV['SHA']})
+    ENV['SHA']
   end
 
   def alive?
-    json_response({'alive?' => true})
+    true
   end
 
   def ready?
-    json_response({'ready?' => runner.ready?})
+    runner.ready?
   end
 
   def colour(image_name, id, stdout, stderr, status)
@@ -28,10 +28,10 @@ class TrafficLight
       log << rag_message(rag.to_s)
       rag = :faulty
     end
-    json_response({'colour' => rag.to_s})
+    rag.to_s
   rescue => error
     log << rag_message(error.message)
-    json_response({'colour' => 'faulty'})
+    'faulty'
   end
 
   #def new_image(image_name)
@@ -39,15 +39,6 @@ class TrafficLight
   #end
 
   private
-
-  def json_response(json)
-    [ 200,
-      { 'Content-Type' => 'application/json' },
-      [ JSON.fast_generate(json) ]
-    ]
-  end
-
-  # - - - - - - - - - - - - - - - -
 
   def rag_message(message)
     "red_amber_green lambda error mapped to :faulty\n#{message}\n"

@@ -11,13 +11,7 @@ class ReadyTest < TestBase
 
   test '190',
   %w( its ready ) do
-    assert ready?
-  end
-
-  private
-
-  def ready?
-    Oj.strict_load(traffic_light.ready?[2][0])['ready?']
+    assert traffic_light.ready?
   end
 
 end

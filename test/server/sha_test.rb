@@ -10,13 +10,7 @@ class ShaTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '190', %w( sha is exposed via API ) do
-    assert_sha(sha)
-  end
-
-  private
-
-  def sha
-    Oj.strict_load(traffic_light.sha[2][0])['sha']
+    assert_sha traffic_light.sha
   end
 
 end

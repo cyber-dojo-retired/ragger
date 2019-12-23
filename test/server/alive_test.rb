@@ -10,13 +10,7 @@ class AliveTest < TestBase
 
   test '15A',
   %w( its alive ) do
-    assert alive?
-  end
-
-  private
-
-  def alive?
-    JSON.parse(traffic_light.alive?[2][0])['alive?']
+    assert traffic_light.alive?
   end
 
 end

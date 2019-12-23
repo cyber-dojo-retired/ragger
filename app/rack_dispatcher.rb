@@ -16,7 +16,8 @@ class RackDispatcher
     path = request.path_info
     body = request.body.read
     name,args = HttpJsonArgs.new(body).get(path)
-    @traffic_light.public_send(name, *args)
+    result = @traffic_light.public_send(name, *args)
+    json_response_200({name => result})
   rescue HttpJson::RequestError => error
     json_error_response(400, path, body, error)
   rescue Exception => error
@@ -24,6 +25,15 @@ class RackDispatcher
   end
 
   private
+
+  def json_response_200(json)
+    [ 200,
+      { 'Content-Type' => 'application/json' },
+      [ JSON.fast_generate(json) ]
+    ]
+  end
+
+  # - - - - - - - - - - - - - - - -
 
   def json_error_response(status, path, body, error)
     json = diagnostic(path, body, error)
