@@ -6,8 +6,8 @@ require 'oj'
 class HttpJsonArgs
 
   def initialize(body)
-    @args = json_parse(body)
-    unless @args.is_a?(Hash)
+    @json = json_parse(body)
+    unless @json.is_a?(Hash)
       raise request_error('body is not JSON Hash')
     end
   rescue Oj::ParseError
@@ -39,39 +39,32 @@ class HttpJsonArgs
   end
 
   def image_name
-    exists_arg('image_name')
+    arg('image_name')
   end
 
   def id
-    exists_arg('id')
+    arg('id')
   end
 
   def stdout
-    exists_arg('stdout')
+    arg('stdout')
   end
 
   def stderr
-    exists_arg('stderr')
+    arg('stderr')
   end
 
   def status
-    exists_arg('status')
+    arg('status')
   end
 
   # - - - - - - - - - - - - - - - -
 
-  def exists_arg(name)
-    unless @args.has_key?(name)
-      raise missing(name)
+  def arg(name)
+    unless @json.has_key?(name)
+      raise request_error("#{name} is missing")
     end
-    arg = @args[name]
-    arg
-  end
-
-  # - - - - - - - - - - - - - - - -
-
-  def missing(arg_name)
-    request_error("#{arg_name} is missing")
+    @json[name]
   end
 
   # - - - - - - - - - - - - - - - -

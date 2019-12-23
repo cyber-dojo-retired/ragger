@@ -36,6 +36,7 @@ exit ${PIPESTATUS[0]}
 #require 'ruby-prof'
 #GC.disable
 #RubyProf.start
+#...
 #result = RubyProf.stop
 #def print_profile(result, kind, name)
 #  kind.new(result).print(File.open(\"${COVERAGE_ROOT}/profile.#{name}.log\",'w+'))
