@@ -4,12 +4,14 @@ def app_root
   File.expand_path('..', __dir__) # eg /app
 end
 
-def test_file?(filename)
-  filename.start_with?("#{app_root}/test/")
+def app_file?(filename)
+  filename.start_with?("#{app_root}/" ) &&
+    !filename.start_with?("#{app_root}/test/")
 end
 
-def app_file?(filename)
-  filename.start_with?("#{app_root}/" ) && !test_file?(filename)
+def test_file?(filename)
+  filename.start_with?("#{app_root}/test/") &&
+    filename.end_with?('_test.rb')
 end
 
 SimpleCov.start do
