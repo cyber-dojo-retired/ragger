@@ -1,4 +1,5 @@
 require_relative 'test_base'
+require 'benchmark'
 require 'json'
 require 'oj'
 
@@ -13,14 +14,10 @@ class OjTest < TestBase
   test 'CB1',
   %w( oj is faster than standard json fast generation ) do
     o = any_hash
-    slower,_ = timed {
-      1000.times { JSON.fast_generate(o) }
-    }
-    faster,_ = timed {
-      1000.times { Oj.dump(o) }
-    }
+    slower = real_time { JSON.fast_generate(o) }
+    faster = real_time { Oj.dump(o) }
     diagnostic = "generating JSON:#{slower}: Oj:#{faster}:"
-    # generating JSON:0.0081: Oj:0.0015:
+    # generating JSON:0.000437: Oj:0.000155:
     assert faster < slower, diagnostic
   end
 
@@ -30,14 +27,10 @@ class OjTest < TestBase
   %w( oj is faster than the standard json gem at parsing ) do
     s = any_hash.to_json
     assert s.is_a?(String)
-    slower,_ = timed {
-      1000.times { JSON.parse(s) }
-    }
-    faster,_ = timed {
-      1000.times { Oj.strict_load(s) }
-    }
+    slower = real_time { JSON.parse(s) }
+    faster = real_time { Oj.strict_load(s) }
     diagnostic = "parsing JSON:#{slower}: Oj:#{faster}:"
-    # parsing JSON:0.0102: Oj:0.0052:
+    # parsing JSON:0.000789: Oj:0.000382:
     assert faster < slower, diagnostic
   end
 
@@ -96,12 +89,18 @@ class OjTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  def timed
-    started = Time.now
-    result = yield
-    finished = Time.now
-    duration = '%.4f' % (finished - started)
-    [duration,result]
+  def real_time(&block)
+    warm_caches(&block)
+    bm = Benchmark.measure do
+      100.times do
+        block.call
+      end
+    end
+    bm.real
+  end
+
+  def warm_caches(&block)
+    100.times { block.call }
   end
 
 end
