@@ -1,5 +1,4 @@
 require_relative 'test_base'
-require 'oj'
 
 class ShaTest < TestBase
 

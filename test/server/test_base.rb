@@ -2,7 +2,6 @@ require_relative '../id58_test_base'
 require_relative '../require_src'
 require_src 'externals'
 require_src 'traffic_light'
-require 'oj'
 
 class TestBase < Id58TestBase
 

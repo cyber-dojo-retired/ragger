@@ -5,7 +5,6 @@ require_relative '../require_src'
 require_src 'http_json/request_error'
 require_src 'http_json_args'
 require 'json'
-require 'oj'
 
 class HttpJsonArgsTest < TestBase
 
@@ -56,7 +55,7 @@ class HttpJsonArgsTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test 'AB5', 'for colour' do
-    body = Oj.dump(colour_body, {mode: :strict})
+    body = JSON.generate(colour_body)
     target = HttpJsonArgs.new(body)
     name,args = target.get('/colour')
     assert_equal 'colour', name
@@ -185,8 +184,6 @@ class HttpJsonArgsTest < TestBase
     body = colour_body
     body.delete(key)
     HttpJsonArgs.new(JSON.generate(body))
-    # TODO...
-    #HttpJsonArgs.new(Oj.dump(body, {mode: :strict}))
   end
 
   # - - - - - - - - - - - - - - - - -
