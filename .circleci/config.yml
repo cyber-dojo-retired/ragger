@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: Authenticate with gcloud, deploy to beta with helm
-          command: ./sh/deploy_to_namespace.sh beta
+          command: ./.circleci/deploy_to_namespace.sh beta
 
   deploy-to-prod:
     docker:
@@ -25,7 +25,7 @@ jobs:
       - checkout
       - run:
           name: Authenticate with gcloud, deploy to prod with helm
-          command: ./sh/deploy_to_namespace.sh prod
+          command: ./.circleci/deploy_to_namespace.sh prod
 
 workflows:
   version: 2
