@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'rag_lambda_cache'
-require 'oj'
 
 class TrafficLight
 

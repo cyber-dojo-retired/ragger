@@ -5,6 +5,7 @@ require_relative 'rack_request_stub'
 require_relative 'test_base'
 require_relative '../require_src'
 require_src 'rack_dispatcher'
+require 'json'
 require 'ostruct'
 
 class RackDispatcherTest < TestBase
@@ -197,13 +198,17 @@ class RackDispatcherTest < TestBase
 
   include Test::Data
 
+  def json_parse(s)
+    JSON.parse!(s)
+  end
+
   def assert_200(name)
     assert_equal 200, @status
     assert_body_contains(name)
     refute_body_contains('exception')
     refute_body_contains('trace')
     assert_nothing_logged
-    Oj.strict_load(@body)[name]
+    json_parse(@body)[name]
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -226,7 +231,7 @@ class RackDispatcherTest < TestBase
 
     [@body, @stderr].each do |s|
       refute_nil s
-      json = Oj.strict_load(s)
+      json = json_parse(s)
       ex = json['exception']
       refute_nil ex, 'there was no exception'
       assert_equal 'RaggerService', ex['class']
@@ -256,13 +261,13 @@ class RackDispatcherTest < TestBase
 
   def assert_body_contains(key)
     refute_nil @body
-    json = Oj.strict_load(@body)
+    json = json_parse(@body)
     assert json.has_key?(key)
   end
 
   def refute_body_contains(key)
     refute_nil @body
-    json = Oj.strict_load(@body)
+    json = json_parse(@body)
     refute json.has_key?(key)
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'oj'
+require 'json'
 
 module HttpJson
 
@@ -28,7 +28,7 @@ module HttpJson
         fail error_msg(body, 'is not JSON Hash')
       end
       if json.has_key?('exception')
-        fail Oj.dump(json['exception'])
+        fail JSON.fast_generate(json['exception'])
       end
       unless json.has_key?(path)
         fail error_msg(body, "has no key for '#{path}'")
@@ -39,8 +39,8 @@ module HttpJson
     # - - - - - - - - - - - - - - - - - - - - -
 
     def json_parse(body)
-      Oj.strict_load(body)
-    rescue Oj::ParseError
+      JSON.parse!(body)
+    rescue JSON::ParserError
       fail error_msg(body, 'is not JSON')
     end
 

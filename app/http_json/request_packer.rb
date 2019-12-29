@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'net/http'
-require 'oj'
+require 'json'
 require 'uri'
 
 module HttpJson
@@ -25,11 +25,9 @@ module HttpJson
       uri = URI.parse("#{@base_url}/#{path}")
       req = yield uri
       req.content_type = 'application/json'
-      req.body = Oj.dump(args, STRICT_MODE)
+      req.body = JSON.fast_generate(args)
       @http.request(req)
     end
-
-    STRICT_MODE = { mode: :strict }
 
   end
 

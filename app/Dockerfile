@@ -1,7 +1,7 @@
-FROM cyberdojo/rack-base
+FROM cyberdojo/docker-base
 LABEL maintainer=jon@jaggersoft.com
 
-RUN gem install 'concurrent-ruby'
+RUN gem install --no-document 'concurrent-ruby'
 
 COPY --chown=nobody:nogroup . /app
 
