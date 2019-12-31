@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
+#!/bin/bash -Ee
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
 tag_the_image()
@@ -44,16 +43,14 @@ on_ci_publish_tagged_images()
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
-readonly SH_DIR="$( cd "$( dirname "${0}" )" && pwd )/sh"
-source ${SH_DIR}/cat_env_vars.sh
-export $(cat_env_vars)
-
+readonly SH_DIR="$( cd "$( dirname "${0}" )/sh" && pwd )"
+source ${SH_DIR}/versioner_env_vars.sh
+export $(versioner_env_vars)
 ${SH_DIR}/build_images.sh
 ${SH_DIR}/containers_up.sh
 on_ci_pull_dependent_images
 ${SH_DIR}/test_in_containers.sh "$@"
 ${SH_DIR}/containers_down.sh
-
 source ${SH_DIR}/image_name.sh
 source ${SH_DIR}/image_sha.sh
 tag_the_image

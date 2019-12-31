@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
+#!/bin/bash -Ee
 
 readonly ROOT_DIR="$(cd "$( dirname "${0}" )" && cd .. && pwd)"
 
@@ -33,11 +32,6 @@ assert_equal()
 }
 
 #- - - - - - - - - - - - - - - - - - - - - - - -
-readonly SH_DIR="${ROOT_DIR}/sh"
-source ${SH_DIR}/cat_env_vars.sh
-readonly VERSION=${1:-latest}
-export $(cat_env_vars ${VERSION})
-source ${SH_DIR}/image_sha.sh
-
+source ${ROOT_DIR}/sh/image_sha.sh
 build_images
 assert_equal SHA "$(git_commit_sha)" "$(image_sha)"

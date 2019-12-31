@@ -1,5 +1,4 @@
-#!/bin/bash
-set -e
+#!/bin/bash -Ee
 
 readonly root_dir="$( cd "$( dirname "${0}" )" && cd .. && pwd )"
 readonly my_name=ragger
