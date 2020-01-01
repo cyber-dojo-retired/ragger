@@ -3,11 +3,10 @@
 # - - - - - - - - - - - - - - - - - - - - - - - -
 tag_the_image()
 {
-  local -r IMAGE="$(image_name)"
-  local -r SHA="$(image_sha)"
-  local -r cmd="docker tag ${IMAGE}:latest ${IMAGE}:${SHA:0:7}"
-  eval ${cmd}
-  echo "${cmd}"
+  local -r image="$(image_name)"
+  local -r sha="$(image_sha)"
+  local -r tag="${sha:0:7}"
+  docker tag "${image}:latest" "${image}:${tag}"
 }
 
 # - - - - - - - - - - - - - - - - - - - - - - - -
@@ -33,12 +32,13 @@ on_ci_publish_tagged_images()
     return
   fi
   echo 'on CI so publishing tagged images'
-  local -r IMAGE="$(image_name)"
-  local -r SHA="$(image_sha)"
+  local -r image="$(image_name)"
+  local -r sha="$(image_sha)"
+  local -r tag="${sha:0:7}"
   # DOCKER_USER, DOCKER_PASS are in ci context
   echo "${DOCKER_PASS}" | docker login --username "${DOCKER_USER}" --password-stdin
-  docker push ${IMAGE}:latest
-  docker push ${IMAGE}:${SHA:0:7}
+  docker push "${image}:latest"
+  docker push "${image}:${tag}"
   docker logout
 }
 
