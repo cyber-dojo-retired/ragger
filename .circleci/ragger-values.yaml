@@ -24,14 +24,14 @@ containers:
     image: cyberdojo/ragger
     securityContext:
       readOnlyRootFilesystem: true
-      allowPrivilegeEscalation: false      
+      allowPrivilegeEscalation: false
     volumeMounts:
       - name: ragger-tmp-dir
         mountPath: /tmp
         readOnly: false
     resources:
       requests:
-        cpu: 50m
+        cpu: 10m
         memory: 64Mi
       limits:
         cpu: 100m
