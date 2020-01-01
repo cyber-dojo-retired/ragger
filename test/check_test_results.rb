@@ -107,10 +107,10 @@ hits_ratio = (app_stats[:hits_per_line].to_f / test_stats[:hits_per_line].to_f)
 
 table = [
   [ 'tests',                  test_count,     '>=',  MIN[:test_count] ],
-  [ 'coverage(src)[%]',       app_coverage,   '>=',  MIN[:src_coverage] ],
+  [ 'coverage(app)[%]',       app_coverage,   '>=',  MIN[:app_coverage] ],
   [ 'coverage(test)[%]',      test_coverage,  '>=',  MIN[:test_coverage] ],
-  [ 'lines(test)/lines(src)', f2(line_ratio), '>=',  MIN[:line_ratio] ],
-  [ 'hits(src)/hits(test)',   f2(hits_ratio), '>=',  MIN[:hits_ratio] ],
+  [ 'lines(test)/lines(app)', f2(line_ratio), '>=',  MIN[:line_ratio] ],
+  [ 'hits(app)/hits(test)',   f2(hits_ratio), '>=',  MIN[:hits_ratio] ],
   [ 'failures',               failure_count,  '<=',  MAX[:failures] ],
   [ 'errors',                 error_count,    '<=',  MAX[:errors] ],
   [ 'warnings',               warning_count,  '<=',  MAX[:warnings] ],
