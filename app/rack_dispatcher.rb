@@ -17,7 +17,7 @@ class RackDispatcher
     body = request.body.read
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
-    json_response_200({name => result})
+    json_response_200(result)
   rescue HttpJson::RequestError => error
     json_error_response(400, path, body, error)
   rescue Exception => error

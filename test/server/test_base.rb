@@ -46,7 +46,7 @@ class TestBase < Id58TestBase
   end
 
   def assert_colour(expected)
-    assert_equal expected, @colour
+    assert_equal({ 'colour' => expected }, @colour)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

@@ -9,7 +9,7 @@ class ShaTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   test '190', %w( sha is exposed via API ) do
-    s = traffic_light.sha
+    s = traffic_light.sha['sha']
     assert sha?(s), s
   end
 

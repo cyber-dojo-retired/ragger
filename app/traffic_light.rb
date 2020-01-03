@@ -10,15 +10,15 @@ class TrafficLight
   end
 
   def sha
-    ENV['SHA']
+    { 'sha' => ENV['SHA'] }
   end
 
   def alive?
-    true
+    { 'alive?' => true }
   end
 
   def ready?
-    runner.ready?
+    { 'ready?' => runner.ready? }
   end
 
   def colour(image_name, id, stdout, stderr, status)
@@ -27,10 +27,10 @@ class TrafficLight
       log << rag_message(rag.to_s)
       rag = :faulty
     end
-    rag.to_s
+    { 'colour' => rag.to_s }
   rescue => error
     log << rag_message(error.message)
-    'faulty'
+    { 'colour' => 'faulty' }
   end
 
   #def new_image(image_name)
