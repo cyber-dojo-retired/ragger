@@ -24,7 +24,7 @@ class TestBase < Id58TestBase
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
   def colour(image_name, id, stdout, stderr, status)
-    @colour = traffic_light.colour(image_name, id, stdout, stderr, status)
+    @result = traffic_light.colour(image_name, id, stdout, stderr, status)
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,7 +46,7 @@ class TestBase < Id58TestBase
   end
 
   def assert_colour(expected)
-    assert_equal({ 'colour' => expected }, @colour)
+    assert_equal(expected, @result['colour'])
   end
 
   # - - - - - - - - - - - - - - - - - - - - - - - -

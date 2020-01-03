@@ -22,18 +22,51 @@ class TrafficLight
   end
 
   def colour(image_name, id, stdout, stderr, status)
-    cached = @cache.get(image_name, id)
-    #source  = cached[:source]
-    fn = cached[:fn]
-    rag = fn.call(stdout, stderr, status)
-    unless [:red,:amber,:green].include?(rag)
-      log << rag_message(rag.to_s) # add to returned hash
-      rag = :faulty
+    diagnostic = {
+      'image_name' => image_name,
+      'id' => id,
+      'stdout' => stdout,
+      'stderr' => stderr,
+      'status' => status
+    }
+
+    begin
+      cached = @cache.get(image_name, id, diagnostic)
+    rescue => error
+      diagnostic['exception'] = error.message
+      result = {
+        'diagnostic' => diagnostic,
+        'colour' => 'faulty'
+      }
+      log << JSON.pretty_generate(result)
+      return result
     end
+
+    begin
+      rag = cached[:fn].call(stdout, stderr, status)
+    rescue => error
+      diagnostic['message'] = 'calling the lambda raised an exception'
+      diagnostic['exception'] = error.message
+      result = {
+        'diagnostic' => diagnostic,
+        'colour' => 'faulty'
+      }
+      log << JSON.pretty_generate(result)
+      return result
+    end
+
+    rag = rag.to_s
+    unless %w( red amber green ).include?(rag)
+      diagnostic['message'] = "lambda returned '#{rag}' which is not 'red'|'amber'|'green'"
+      result = {
+        'diagnostic' => diagnostic,
+        'colour' => 'faulty'
+      }
+      log << JSON.pretty_generate(result)
+      return result
+    end
+
     { 'colour' => rag.to_s }
-  rescue => error
-    log << rag_message(error.message)
-    { 'colour' => 'faulty' } # add 'log' => ...
   end
 
   #def new_image(image_name)
@@ -41,12 +74,6 @@ class TrafficLight
   #end
 
   private
-
-  def rag_message(message)
-    "red_amber_green lambda error mapped to :faulty\n#{message}\n"
-  end
-
-  # - - - - - - - - - - - - - - - -
 
   def runner
     @external.runner
