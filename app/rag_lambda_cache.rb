@@ -21,7 +21,7 @@ class RagLambdaCache
     max_seconds = 1
     result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
     source = result['stdout']['content']
-    fn = eval(source, empty_binding)
+    fn = eval(source, empty_binding) # TODO: handle exception here?
     @cache.compute(image_name) {
       { source:source, fn:fn }
     }

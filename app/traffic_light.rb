@@ -22,15 +22,18 @@ class TrafficLight
   end
 
   def colour(image_name, id, stdout, stderr, status)
-    rag = @cache.get(image_name, id)[:fn].call(stdout, stderr, status)
+    cached = @cache.get(image_name, id)
+    source  = cached[:source]
+    fn = cached[:fn]
+    rag = fn.call(stdout, stderr, status)
     unless [:red,:amber,:green].include?(rag)
-      log << rag_message(rag.to_s)
+      log << rag_message(rag.to_s) # add to returned hash
       rag = :faulty
     end
     { 'colour' => rag.to_s }
   rescue => error
     log << rag_message(error.message)
-    { 'colour' => 'faulty' }
+    { 'colour' => 'faulty' } # add 'log' => ...
   end
 
   #def new_image(image_name)
