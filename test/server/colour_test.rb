@@ -11,19 +11,25 @@ class ColourTest < TestBase
 
   # - - - - - - - - - - - - - - - - -
 
-  test '6A1', 'red' do
-    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
-    assert_red
+  test '6A1', %w(
+  for a straight red only the colour is returned
+  ) do
+    result = colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_RED, '', '0')
+    assert_equal({'colour' => 'red'}, result)
   end
 
-  test '6A2', 'amber' do
-    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
-    assert_amber
+  test '6A2', %w(
+  for a straight amber only the colour is returned
+  ) do
+    result = colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_AMBER, '', '0')
+    assert_equal({'colour' => 'amber'}, result)
   end
 
-  test '6A3', 'green' do
-    colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
-    assert_green
+  test '6A3', %w(
+  for a straight green only the colour is returned
+  ) do
+    result = colour(PythonPytest::IMAGE_NAME, id, PythonPytest::STDOUT_GREEN, '', '0')
+    assert_equal({'colour' => 'green'}, result)
   end
 
   # - - - - - - - - - - - - - - - - -

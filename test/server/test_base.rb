@@ -29,18 +29,6 @@ class TestBase < Id58TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def assert_red
-    assert_colour('red')
-  end
-
-  def assert_amber
-    assert_colour('amber')
-  end
-
-  def assert_green
-    assert_colour('green')
-  end
-
   def assert_faulty
     assert_colour('faulty')
   end
