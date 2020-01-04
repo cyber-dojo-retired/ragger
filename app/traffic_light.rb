@@ -32,8 +32,7 @@ class TrafficLight
 
     begin
       cached = @cache.get(image_name, id, diagnostic)
-    rescue => error
-      diagnostic['exception'] = error.message
+    rescue
       result = {
         'diagnostic' => diagnostic,
         'colour' => 'faulty'

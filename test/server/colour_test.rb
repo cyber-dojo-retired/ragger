@@ -69,8 +69,8 @@ class ColourTest < TestBase
       expected_exception = "undefined local variable or method `sdf' for"
       assert_tri_equal expected_message, rd['message'], od['message']
       assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert od['exception'].start_with?(expected_exception), od
       assert rd['exception'].start_with?(expected_exception), rd
+      assert od['exception'].start_with?(expected_exception), od
     end
   end
 
@@ -154,6 +154,23 @@ class ColourTest < TestBase
       assert_tri_equal expected_message, rd['message'], od['message']
       assert_tri_equal stub, rd['lambda'], od['lambda']
       assert_tri_equal expected_exception, rd['exception'], od['exception']
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test '5A8', %w(
+  when rag-lambda has an eval SyntaxError exception,
+  then colour is mapped to faulty,
+  and a diagnostic is added to the json result
+  ) do
+    stub = 'return :red adsd'
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'eval(lambda) raised an exception'
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert rd['exception'].is_a?(String)
+      assert rd['exception'].include?('syntax error, unexpected tIDENTIFIER')
     end
   end
 

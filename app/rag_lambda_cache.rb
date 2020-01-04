@@ -22,8 +22,9 @@ class RagLambdaCache
 
     begin
       result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
-    rescue
+    rescue => error
       diagnostic['message'] = 'runner.run_cyber_dojo_sh() raised an exception'
+      diagnostic['exception'] = error.message
       raise
     end
 
@@ -32,9 +33,12 @@ class RagLambdaCache
 
     begin
       fn = eval(source, empty_binding)
-    rescue
+    rescue SyntaxError, StandardError => error
+      # eg SyntaxError -> ScriptError -> Exception -> Object
+      # eg NameError -> StandardError -> Exception -> Object
       diagnostic['message'] = 'eval(lambda) raised an exception'
-      raise
+      diagnostic['exception'] = error.message
+      raise StandardError.new
     end
 
     @cache.compute(image_name) {
