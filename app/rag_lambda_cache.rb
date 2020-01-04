@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'empty'
 require 'concurrent'
 
 class RagLambdaCache
@@ -32,7 +33,7 @@ class RagLambdaCache
     diagnostic['lambda'] = source
 
     begin
-      fn = eval(source, empty_binding)
+      fn = Empty.binding.eval(source)
     rescue SyntaxError, StandardError => error
       # eg SyntaxError -> ScriptError -> Exception -> Object
       # eg NameError -> StandardError -> Exception -> Object
@@ -47,10 +48,6 @@ class RagLambdaCache
   end
 
   private
-
-  def empty_binding
-    binding
-  end
 
   def runner
     @external.runner
