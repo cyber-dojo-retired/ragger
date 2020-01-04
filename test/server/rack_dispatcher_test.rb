@@ -217,12 +217,8 @@ class RackDispatcherTest < TestBase
     @externals = Externals.new({ 'http' => klass })
     rack_call('colour', colour_payload.to_json)
     assert_equal 200, @status
-    #puts "~~~~~~~~~~~~~"
-    #puts @body
-    #puts "~~~~~~~~~~~~~"
     assert_equal 'faulty', JSON.parse(@body)['colour'], :faulty
     assert_equal '', @stderr, :empty_stderr
-    #assert @stdout.include?('red_amber_green lambda error mapped to :faulty'), @stdout
     assert @stdout.include?(expected_msg), "stdout=#{@stdout}\nexpected=#{expected_msg}"
   end
 
