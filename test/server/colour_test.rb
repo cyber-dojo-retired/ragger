@@ -1,7 +1,6 @@
 require_relative 'test_base'
 require_relative 'data/python_pytest'
 require_relative 'http_stub'
-require_relative 'stdout_log_spy'
 
 class ColourTest < TestBase
 

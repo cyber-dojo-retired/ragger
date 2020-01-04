@@ -8,7 +8,7 @@ class Externals
 
   def initialize(options = {})
     @http = options['http'] || Net::HTTP
-    @log  = options['log' ] || StdoutLog.new
+    @log  = StdoutLog.new
     @runner = RunnerService.new(self)
   end
 
