@@ -188,6 +188,7 @@ class ColourTest < TestBase
       }
     })
     assert_faulty(PythonPytest::IMAGE_NAME, id, 'o34', 'e67', '3') do |rd,od|
+      HttpStub.unstub_request
       yield rd,od
     end
   end

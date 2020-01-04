@@ -10,7 +10,7 @@ MIN = {
 MAX = {
   failures:0,
   errors:0,
-  warnings:12,
+  warnings:0,
   skips:0,
   duration:10,
 }
