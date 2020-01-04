@@ -40,21 +40,17 @@ class ColourTest < TestBase
   and the colour is mapped to faulty,
   and a diagnostic is added to the json result
   ) do
-    #externals.instance_exec { @runner = Object.new }
     image_name = 'anything-not-cached'
-    stdout = 's1'
-    stderr = 't4'
-    status = '0'
-    with_captured_stdout_stderr {
-      colour(image_name, id, stdout, stderr, status)
-    }
-    assert_faulty
-    #assert @stdout.start_with?('red_amber_green lambda error mapped to :faulty')
-    #puts '~~~~~~~~~~'
-    #puts @result
-    #puts '~~~~~~~~~~'
-    #puts @stdout
-    #puts '~~~~~~~~~~'
+    assert_faulty(image_name, id, 'o1', 'e3', '0') do |rd,od|
+      message = 'runner.run_cyber_dojo_sh() raised an exception'
+      assert_tri_equal message, rd['message'], od['message']
+      assert_nil rd['lambda']
+      assert_nil od['lambda']
+      ex_rd = rd['exception']
+      ex_od = od['exception']
+      assert_equal ex_rd, ex_od
+      assert ex_rd.is_a?(String)
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -64,11 +60,19 @@ class ColourTest < TestBase
   then colour is mapped to faulty,
   and a diagnostic is added to the json result
   ) do
-    assert_faulty_error("undefined local variable or method `sdf'",
+    stub =
       <<~RUBY
       sdf
       RUBY
-    )
+
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'eval(lambda) raised an exception'
+      expected_exception = "undefined local variable or method `sdf' for"
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert od['exception'].start_with?(expected_exception), od
+      assert rd['exception'].start_with?(expected_exception), rd
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -78,13 +82,19 @@ class ColourTest < TestBase
   then the colour is mapped to faulty,
   and a diagnostic is added to the json result
   ) do
-    assert_faulty_error('wibble',
+    stub =
       <<~RUBY
       lambda { |stdout, stderr, status|
         raise ArgumentError.new('wibble')
       }
       RUBY
-    )
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'calling the lambda raised an exception'
+      expected_exception = 'wibble'
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert_tri_equal expected_exception, rd['exception'], od['exception']
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
@@ -94,48 +104,66 @@ class ColourTest < TestBase
   then the colour is mapped to faulty,
   and a diagnostic is added to the json result
   ) do
-    assert_faulty_error('orange',
-      <<~RUBY
-      lambda { |stdout, stderr, status|
-        return :orange
-      }
-      RUBY
-    )
+    stub =
+    <<~RUBY
+    lambda { |stdout, stderr, status|
+      return :orange
+    }
+    RUBY
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = "lambda returned 'orange' which is not 'red'|'amber'|'green'"
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert_nil rd['exception']
+      assert_nil od['exception']
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
 
-  test '5A6',
-  %w( too few parameters is a call-exception, mapped to colour faulty ) do
-    assert_faulty_error('wrong number of arguments (given 3, expected 2)',
-      <<~RUBY
-      lambda { |stdout, stderr|
-        return :red
-      }
-      RUBY
-    )
+  test '5A6', %w(
+    too few parameters is a call-exception, mapped to colour faulty
+  ) do
+    stub =
+    <<~RUBY
+    lambda { |stdout, stderr|
+      return :red
+    }
+    RUBY
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'calling the lambda raised an exception'
+      expected_exception = 'wrong number of arguments (given 3, expected 2)'
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert_tri_equal expected_exception, rd['exception'], od['exception']
+    end
   end
 
   # - - - - - - - - - - - - - - - - -
 
   test '5A7',
   %w( too many parameters is a call-exception, mapped to colour faulty ) do
-    assert_faulty_error('wrong number of arguments (given 3, expected 4)',
-      <<~RUBY
-      lambda { |stdout, stderr, status, extra|
-        return :red
-      }
-      RUBY
-    )
+    stub =
+    <<~RUBY
+    lambda { |stdout, stderr, status, extra|
+      return :red
+    }
+    RUBY
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'calling the lambda raised an exception'
+      expected_exception = 'wrong number of arguments (given 3, expected 4)'
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert_tri_equal expected_exception, rd['exception'], od['exception']
+    end
   end
 
   private
 
   include Test::Data
 
-  def assert_faulty_error(expected, rag_src)
-    spy = StdoutLogSpy.new
-    @externals = Externals.new({ 'http' => HttpStub, 'log' => spy })
+  def assert_lambda_stub_faulty(rag_src)
+    @externals = Externals.new({ 'http' => HttpStub })
     HttpStub.stub_request({
       'run_cyber_dojo_sh' => {
         'stdout' => {
@@ -143,29 +171,46 @@ class ColourTest < TestBase
         }
       }
     })
-    image_name = PythonPytest::IMAGE_NAME
-    stdout = 's1'
-    stderr = 's2'
-    status = '0'
+    assert_faulty(PythonPytest::IMAGE_NAME, id, 'o34', 'e67', '3') do |rd,od|
+      yield rd,od
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def assert_faulty(image_name, id, stdout, stderr, status)
     with_captured_stdout_stderr {
       colour(image_name, id, stdout, stderr, status)
     }
-    HttpStub.unstub_request
-    #puts JSON.pretty_generate(@result)
-    #puts '~~~~~~~~~~'
-    #puts @result
-    #puts '~~~~~~~~~~'
-    #puts @stdout
-    #puts '~~~~~~~~~~'
-    assert_faulty
-    assert_equal image_name, @result['diagnostic']['image_name'], :image_name
-    assert_equal id, @result['diagnostic']['id'], :id
-    assert_equal stdout, @result['diagnostic']['stdout'], :stdout
-    assert_equal stderr, @result['diagnostic']['stderr'], :stderr
-    assert_equal status, @result['diagnostic']['status'], :status
-    #assert @result['diagnostic']['exception'].include?(rag_src), :exception
-    #assert_equal 'rag_lambda raised an exception', @result['diagnostic']['message']
-    assert spy.spied?(expected)
+    assert_equal '', @stderr
+    json_stdout = JSON.parse(@stdout)
+
+    assert_equal 'faulty', @result.delete('colour'), :colour_result
+    assert_equal 'faulty', json_stdout.delete('colour'), :colour_stdout
+
+    assert_equal image_name, @result['diagnostic'].delete('image_name'), :RESULT_image_name
+    assert_equal image_name, json_stdout['diagnostic'].delete('image_name'), :STDOUT_image_name
+
+    assert_equal id, @result['diagnostic'].delete('id'), :RESULT_id
+    assert_equal id, json_stdout['diagnostic'].delete('id'), :STDOUT_id
+
+    assert_equal stdout, @result['diagnostic'].delete('stdout'), :RESULT_stdout
+    assert_equal stdout, json_stdout['diagnostic'].delete('stdout'), :STDOUT_stdout
+
+    assert_equal stderr, @result['diagnostic'].delete('stderr'), :RESULT_stderr
+    assert_equal stderr, json_stdout['diagnostic'].delete('stderr'), :STDOUT_stderr
+
+    assert_equal status, @result['diagnostic'].delete('status'), :RESULT_status
+    assert_equal status, json_stdout['diagnostic'].delete('status'), :STDOUT_status
+
+    yield @result['diagnostic'], json_stdout['diagnostic']
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  def assert_tri_equal(expected, from_result, from_stdout)
+    assert_equal expected, from_result, :result
+    assert_equal expected, from_stdout, :stdout
   end
 
 end

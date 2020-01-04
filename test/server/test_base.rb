@@ -29,16 +29,6 @@ class TestBase < Id58TestBase
 
   # - - - - - - - - - - - - - - - - - - - - - - - -
 
-  def assert_faulty
-    assert_colour('faulty')
-  end
-
-  def assert_colour(expected)
-    assert_equal(expected, @result['colour'])
-  end
-
-  # - - - - - - - - - - - - - - - - - - - - - - - -
-
   def id
     id58[0..5]
   end
