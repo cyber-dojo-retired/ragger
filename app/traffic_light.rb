@@ -36,12 +36,7 @@ class TrafficLight
       diagnostic['info'] = error.info
       diagnostic['message'] = error.message
       diagnostic['source'] = error.source unless error.source.nil?
-      result = {
-        'diagnostic' => diagnostic,
-        'colour' => 'faulty'
-      }
-      log << JSON.pretty_generate(result)
-      return result
+      return logged_faulty(diagnostic)
     end
 
     begin
@@ -50,27 +45,17 @@ class TrafficLight
       diagnostic['info'] = 'calling the lambda raised an exception'
       diagnostic['message'] = error.message
       diagnostic['source'] = cached[:source]
-      result = {
-        'diagnostic' => diagnostic,
-        'colour' => 'faulty'
-      }
-      log << JSON.pretty_generate(result)
-      return result
+      return logged_faulty(diagnostic)
     end
 
     rag = rag.to_s
     unless %w( red amber green ).include?(rag)
       diagnostic['info'] = "lambda returned '#{rag}' which is not 'red'|'amber'|'green'"
       diagnostic['source'] = cached[:source]
-      result = {
-        'diagnostic' => diagnostic,
-        'colour' => 'faulty'
-      }
-      log << JSON.pretty_generate(result)
-      return result
+      return logged_faulty(diagnostic)
     end
 
-    { 'colour' => rag.to_s }
+    { 'colour' => rag }
   end
 
   #def new_image(image_name)
@@ -83,6 +68,15 @@ class TrafficLight
   # coming from ragger via a poke from puller.
 
   private
+
+  def logged_faulty(diagnostic)
+    result = {
+      'diagnostic' => diagnostic,
+      'colour' => 'faulty'
+    }
+    log << JSON.pretty_generate(result)
+    result
+  end
 
   def runner
     @external.runner
