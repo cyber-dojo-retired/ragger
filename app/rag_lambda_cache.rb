@@ -13,21 +13,14 @@ class RagLambdaCache
     @cache = Concurrent::Map.new
   end
 
-  def get(image_name, id, diagnostic)
-    @cache[image_name] || new_image(image_name, id, diagnostic)
+  def get(image_name, id)
+    @cache[image_name] || new_image(image_name, id)
   end
 
-  def new_image(image_name, id = '111111', diagnostic = {}) # [1]
+  def new_image(image_name, id)
     @cache.compute(image_name) {
-      RagLambdaCreator.new(@external).create(image_name, id, diagnostic)
+      RagLambdaCreator.new(@external).create(image_name, id)
     }
   end
 
 end
-
-# [1]
-# The idea is that puller will be incorporated inside ragger
-# and when it pulls a new image, it will inform ragger, which
-# will run TrafficLight.new_image(...)
-# So '111111' will indicate a runner.run_cyber_dojo_sh() call
-# coming from ragger via a poke from puller.

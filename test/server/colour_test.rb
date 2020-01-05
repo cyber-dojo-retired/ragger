@@ -41,12 +41,12 @@ class ColourTest < TestBase
   ) do
     image_name = 'anything-not-cached'
     assert_faulty(image_name, id, 'o1', 'e3', '0') do |rd,od|
-      message = 'runner.run_cyber_dojo_sh() raised an exception'
-      assert_tri_equal message, rd['message'], od['message']
-      assert_nil rd['lambda']
-      assert_nil od['lambda']
-      ex_rd = rd['exception']
-      ex_od = od['exception']
+      info = 'runner.run_cyber_dojo_sh() raised an exception'
+      assert_tri_equal info, rd['info'], od['info']
+      assert_nil rd['source']
+      assert_nil od['source']
+      ex_rd = rd['message']
+      ex_od = od['message']
       assert_equal ex_rd, ex_od
       assert ex_rd.is_a?(String)
     end
@@ -65,12 +65,12 @@ class ColourTest < TestBase
       RUBY
 
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'eval(lambda) raised an exception'
-      expected_exception = "undefined local variable or method `sdf' for"
-      assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert rd['exception'].start_with?(expected_exception), rd
-      assert od['exception'].start_with?(expected_exception), od
+      expected_info = 'eval(lambda) raised an exception'
+      expected_message = "undefined local variable or method `sdf' for"
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
+      assert rd['message'].start_with?(expected_message), rd
+      assert od['message'].start_with?(expected_message), od
     end
   end
 
@@ -88,11 +88,11 @@ class ColourTest < TestBase
       }
       RUBY
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'calling the lambda raised an exception'
-      expected_exception = 'wibble'
+      expected_info = 'calling the lambda raised an exception'
+      expected_message = 'wibble'
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
       assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_tri_equal expected_exception, rd['exception'], od['exception']
     end
   end
 
@@ -110,11 +110,11 @@ class ColourTest < TestBase
     }
     RUBY
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = "lambda returned 'orange' which is not 'red'|'amber'|'green'"
-      assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_nil rd['exception']
-      assert_nil od['exception']
+      expected_info = "lambda returned 'orange' which is not 'red'|'amber'|'green'"
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
+      assert_nil rd['message']
+      assert_nil od['message']
     end
   end
 
@@ -130,11 +130,11 @@ class ColourTest < TestBase
     }
     RUBY
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'calling the lambda raised an exception'
-      expected_exception = 'wrong number of arguments (given 3, expected 2)'
+      expected_info = 'calling the lambda raised an exception'
+      expected_message = 'wrong number of arguments (given 3, expected 2)'
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
       assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_tri_equal expected_exception, rd['exception'], od['exception']
     end
   end
 
@@ -149,11 +149,11 @@ class ColourTest < TestBase
     }
     RUBY
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'calling the lambda raised an exception'
-      expected_exception = 'wrong number of arguments (given 3, expected 4)'
+      expected_info = 'calling the lambda raised an exception'
+      expected_message = 'wrong number of arguments (given 3, expected 4)'
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
       assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_tri_equal expected_exception, rd['exception'], od['exception']
     end
   end
 
@@ -166,11 +166,11 @@ class ColourTest < TestBase
   ) do
     stub = 'return :red adsd'
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'eval(lambda) raised an exception'
-      assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_equal rd['exception'], od['exception']
-      assert rd['exception'].include?('syntax error, unexpected tIDENTIFIER')
+      expected_info = 'eval(lambda) raised an exception'
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
+      assert_equal rd['message'], od['message']
+      assert rd['message'].include?('syntax error, unexpected tIDENTIFIER')
     end
   end
 
@@ -183,11 +183,11 @@ class ColourTest < TestBase
   ) do
     stub = 'raise Exception, "fubar"'
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'eval(lambda) raised an exception'
-      expected_exception = 'fubar'
+      expected_info = 'eval(lambda) raised an exception'
+      expected_message = 'fubar'
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
       assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_tri_equal expected_exception, rd['exception'], od['exception']
     end
   end
 
@@ -200,11 +200,11 @@ class ColourTest < TestBase
   ) do
     stub = 'raise Exception "fubar"' # no comma
     assert_lambda_stub_faulty(stub) do |rd,od|
-      expected_message = 'eval(lambda) raised an exception'
-      assert_tri_equal expected_message, rd['message'], od['message']
-      assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert_equal rd['exception'], od['exception']
-      assert rd['exception'].include?("undefined method `Exception' for Empty:Module")
+      expected_info = 'eval(lambda) raised an exception'
+      assert_tri_equal expected_info, rd['info'], od['info']
+      assert_tri_equal stub, rd['source'], od['source']
+      assert_equal rd['message'], od['message']
+      assert rd['message'].include?("undefined method `Exception' for Empty:Module")
     end
   end
 

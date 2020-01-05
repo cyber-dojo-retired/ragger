@@ -31,8 +31,11 @@ class TrafficLight
     }
 
     begin
-      cached = @cache.get(image_name, id, diagnostic)
-    rescue
+      cached = @cache.get(image_name, id)
+    rescue RagLambdaCreatorError => error
+      diagnostic['info'] = error.info
+      diagnostic['message'] = error.message
+      diagnostic['source'] = error.source unless error.source.nil?
       result = {
         'diagnostic' => diagnostic,
         'colour' => 'faulty'
@@ -44,8 +47,9 @@ class TrafficLight
     begin
       rag = cached[:fn].call(stdout, stderr, status)
     rescue => error
-      diagnostic['message'] = 'calling the lambda raised an exception'
-      diagnostic['exception'] = error.message
+      diagnostic['info'] = 'calling the lambda raised an exception'
+      diagnostic['message'] = error.message
+      diagnostic['source'] = cached[:source]
       result = {
         'diagnostic' => diagnostic,
         'colour' => 'faulty'
@@ -56,7 +60,8 @@ class TrafficLight
 
     rag = rag.to_s
     unless %w( red amber green ).include?(rag)
-      diagnostic['message'] = "lambda returned '#{rag}' which is not 'red'|'amber'|'green'"
+      diagnostic['info'] = "lambda returned '#{rag}' which is not 'red'|'amber'|'green'"
+      diagnostic['source'] = cached[:source]
       result = {
         'diagnostic' => diagnostic,
         'colour' => 'faulty'
@@ -69,8 +74,13 @@ class TrafficLight
   end
 
   #def new_image(image_name)
-  #  @cache.new_image(image_name)
+  #  @cache.new_image(image_name ,'111111')
   #end
+  # The idea is that puller will be incorporated inside ragger
+  # and when it pulls a new image, it will inform ragger, which
+  # will run TrafficLight.new_image(...)
+  # So '111111' will indicate a runner.run_cyber_dojo_sh() call
+  # coming from ragger via a poke from puller.
 
   private
 
