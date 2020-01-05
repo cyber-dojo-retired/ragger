@@ -213,7 +213,7 @@ class ColourTest < TestBase
   include Test::Data
 
   def assert_lambda_stub_faulty(rag_src)
-    @externals = Externals.new({ 'http' => HttpStub })
+    externals.instance_exec { @http = HttpStub }
     HttpStub.stub_request({
       'run_cyber_dojo_sh' => {
         'stdout' => {

@@ -6,12 +6,16 @@ require 'net/http'
 
 class Externals
 
-  def initialize(options = {})
-    @http = options['http'] || Net::HTTP
-    @log  = StdoutLog.new
-    @runner = Runner.new(self)
+  def http
+    @http ||= Net::HTTP
   end
 
-  attr_reader :http, :log, :runner
+  def log
+    @log ||= StdoutLog.new
+  end
+
+  def runner
+    @runner ||= Runner.new(self)
+  end
 
 end

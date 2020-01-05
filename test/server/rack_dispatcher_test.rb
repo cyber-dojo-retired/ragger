@@ -121,7 +121,7 @@ class RackDispatcherTest < TestBase
 
   test 'BB7',
   %w( other errors become 500 server error ) do
-    @externals = Externals.new({ 'http' => HttpStub })
+    externals.instance_exec { @http = HttpStub }
     HttpStub.stub_request({})
     expected = "http response.body has no key for 'ready?':{}"
     assert_rack_call_error(500, expected, 'ready', {}.to_json)
@@ -214,7 +214,7 @@ class RackDispatcherTest < TestBase
   # - - - - - - - - - - - - - - - - -
 
   def assert_service_error_is_mapped_to_faulty(klass, expected_msg)
-    @externals = Externals.new({ 'http' => klass })
+    externals.instance_exec { @http = klass }
     rack_call('colour', colour_payload.to_json)
     assert_equal 200, @status
     assert_equal 'faulty', JSON.parse(@body)['colour'], :faulty
