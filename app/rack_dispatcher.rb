@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'http_json/request_error'
+require_relative 'http_json_request_error'
 require_relative 'http_json_args'
 require 'rack'
 require 'json'
@@ -18,7 +18,7 @@ class RackDispatcher
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
     json_response_200(result)
-  rescue HttpJson::RequestError => error
+  rescue HttpJsonRequestError => error
     json_error_response(400, path, body, error)
   rescue Exception => error
     json_error_response(500, path, body, error)

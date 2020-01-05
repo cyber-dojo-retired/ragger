@@ -1,14 +1,19 @@
 # frozen_string_literal: true
 
-require_relative 'http_json/request_packer'
-require_relative 'http_json/response_unpacker'
-require_relative 'runner_exception'
+require_relative 'http_json/requester'
+require_relative 'http_json/responder'
 
-class RunnerService
+class Runner
+
+  class Error < StandardError
+    def initialize(message)
+      super
+    end
+  end
 
   def initialize(external)
-    requester = HttpJson::RequestPacker.new(external, 'runner', 4597)
-    @http = HttpJson::ResponseUnpacker.new(requester, RunnerException)
+    requester = HttpJson::Requester.new(external, 'runner', 4597)
+    @http = HttpJson::Responder.new(requester, Error)
   end
 
   def ready?

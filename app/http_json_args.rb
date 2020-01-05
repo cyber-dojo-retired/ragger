@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'http_json/request_error'
+require_relative 'http_json_request_error'
 require 'json'
 
 class HttpJsonArgs
@@ -24,7 +24,7 @@ class HttpJsonArgs
     when '/colour'     then ['colour',[image_name, id, stdout, stderr, status]]
     #when '/new_image' then ['new_image', [image_name]]
     else
-      fail HttpJson::RequestError, 'unknown path'
+      fail HttpJsonRequestError, 'unknown path'
     end
   end
 
@@ -72,7 +72,7 @@ class HttpJsonArgs
   def request_error(text)
     # Exception messages use the words 'body' and 'path'
     # to match RackDispatcher's exception keys.
-    HttpJson::RequestError.new(text)
+    HttpJsonRequestError.new(text)
   end
 
 end
