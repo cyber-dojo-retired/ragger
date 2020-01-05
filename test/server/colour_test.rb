@@ -40,15 +40,11 @@ class ColourTest < TestBase
   and a diagnostic is added to the json result
   ) do
     image_name = 'anything-not-cached'
-    assert_faulty(image_name, id, 'o1', 'e3', '0') do |rd,od|
+    assert_faulty(image_name, id, 'o1', 'e3', '0') do |error|
       info = 'runner.run_cyber_dojo_sh() raised an exception'
-      assert_tri_equal info, rd['info'], od['info']
-      assert_nil rd['source']
-      assert_nil od['source']
-      ex_rd = rd['message']
-      ex_od = od['message']
-      assert_equal ex_rd, ex_od
-      assert ex_rd.is_a?(String)
+      assert_equal info, error['info']
+      assert_nil error['source']
+      assert error['message'].is_a?(String) # json
     end
   end
 
@@ -64,13 +60,12 @@ class ColourTest < TestBase
       sdf
       RUBY
 
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'eval(lambda) raised an exception'
       expected_message = "undefined local variable or method `sdf' for"
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert rd['message'].start_with?(expected_message), rd
-      assert od['message'].start_with?(expected_message), od
+      assert_equal expected_info, error['info']
+      assert_equal stub, error['source']
+      assert error['message'].start_with?(expected_message), error
     end
   end
 
@@ -87,12 +82,12 @@ class ColourTest < TestBase
         raise ArgumentError.new('wibble')
       }
       RUBY
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'calling the lambda raised an exception'
       expected_message = 'wibble'
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_equal expected_info, error['info']
+      assert_equal expected_message, error['message']
+      assert_equal stub, error['source']
     end
   end
 
@@ -109,12 +104,11 @@ class ColourTest < TestBase
       return :orange
     }
     RUBY
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = "lambda returned 'orange' which is not 'red'|'amber'|'green'"
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_nil rd['message']
-      assert_nil od['message']
+      assert_equal expected_info, error['info']
+      assert_nil error['message']
+      assert_equal stub, error['source']
     end
   end
 
@@ -129,12 +123,12 @@ class ColourTest < TestBase
       return :red
     }
     RUBY
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'calling the lambda raised an exception'
       expected_message = 'wrong number of arguments (given 3, expected 2)'
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_equal expected_info, error['info']
+      assert_equal expected_message, error['message']
+      assert_equal stub, error['source']
     end
   end
 
@@ -148,12 +142,12 @@ class ColourTest < TestBase
       return :red
     }
     RUBY
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'calling the lambda raised an exception'
       expected_message = 'wrong number of arguments (given 3, expected 4)'
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_equal expected_info, error['info']
+      assert_equal expected_message, error['message']
+      assert_equal stub, error['source']
     end
   end
 
@@ -165,12 +159,11 @@ class ColourTest < TestBase
   and a diagnostic is added to the json result
   ) do
     stub = 'return :red adsd'
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'eval(lambda) raised an exception'
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_equal rd['message'], od['message']
-      assert rd['message'].include?('syntax error, unexpected tIDENTIFIER')
+      assert_equal expected_info, error['info']
+      assert error['message'].include?('syntax error, unexpected tIDENTIFIER')
+      assert_equal stub, error['source']
     end
   end
 
@@ -182,12 +175,12 @@ class ColourTest < TestBase
   and a diagnostic is added to the json result
   ) do
     stub = 'raise Exception, "fubar"'
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'eval(lambda) raised an exception'
       expected_message = 'fubar'
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_equal expected_info, error['info']
+      assert_equal expected_message, error['message']
+      assert_equal stub, error['source']
     end
   end
 
@@ -199,12 +192,11 @@ class ColourTest < TestBase
   and a diagnostic is added to the json result
   ) do
     stub = 'raise Exception "fubar"' # no comma
-    assert_lambda_stub_faulty(stub) do |rd,od|
+    assert_lambda_stub_faulty(stub) do |error|
       expected_info = 'eval(lambda) raised an exception'
-      assert_tri_equal expected_info, rd['info'], od['info']
-      assert_tri_equal stub, rd['source'], od['source']
-      assert_equal rd['message'], od['message']
-      assert rd['message'].include?("undefined method `Exception' for Empty:Module")
+      assert_equal expected_info, error['info']
+      assert error['message'].include?("undefined method `Exception' for Empty:Module")
+      assert_equal stub, error['source']
     end
   end
 
@@ -234,34 +226,15 @@ class ColourTest < TestBase
       colour(image_name, id, stdout, stderr, status)
     }
     assert_equal '', @stderr
-    json_stdout = JSON.parse(@stdout)
+    assert_equal @result, JSON.parse(@stdout)
 
-    assert_equal 'faulty', @result.delete('colour'), :colour_result
-    assert_equal 'faulty', json_stdout.delete('colour'), :colour_stdout
-
-    assert_equal image_name, @result['diagnostic'].delete('image_name'), :RESULT_image_name
-    assert_equal image_name, json_stdout['diagnostic'].delete('image_name'), :STDOUT_image_name
-
-    assert_equal id, @result['diagnostic'].delete('id'), :RESULT_id
-    assert_equal id, json_stdout['diagnostic'].delete('id'), :STDOUT_id
-
-    assert_equal stdout, @result['diagnostic'].delete('stdout'), :RESULT_stdout
-    assert_equal stdout, json_stdout['diagnostic'].delete('stdout'), :STDOUT_stdout
-
-    assert_equal stderr, @result['diagnostic'].delete('stderr'), :RESULT_stderr
-    assert_equal stderr, json_stdout['diagnostic'].delete('stderr'), :STDOUT_stderr
-
-    assert_equal status, @result['diagnostic'].delete('status'), :RESULT_status
-    assert_equal status, json_stdout['diagnostic'].delete('status'), :STDOUT_status
-
-    yield @result['diagnostic'], json_stdout['diagnostic']
-  end
-
-  # - - - - - - - - - - - - - - - - -
-
-  def assert_tri_equal(expected, from_result, from_stdout)
-    assert_equal expected, from_result, :result
-    assert_equal expected, from_stdout, :stdout
+    assert_equal 'faulty', @result.delete('colour'), :colour
+    assert_equal image_name, @result['diagnostic'].delete('image_name'), :image_name
+    assert_equal id, @result['diagnostic'].delete('id'), :id
+    assert_equal stdout, @result['diagnostic'].delete('stdout'), :stdout
+    assert_equal stderr, @result['diagnostic'].delete('stderr'), :stderr
+    assert_equal status, @result['diagnostic'].delete('status'), :status
+    yield @result['diagnostic']
   end
 
 end
