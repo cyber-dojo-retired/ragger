@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'rag_lambda_cache'
+require_relative 'rag_lambda_creator'
+require 'json'
 
 class TrafficLight
 
@@ -32,7 +34,7 @@ class TrafficLight
 
     begin
       cached = @cache.get(image_name, id)
-    rescue RagLambdaCreatorError => error
+    rescue RagLambdaCreator::Error => error
       diagnostic['info'] = error.info
       diagnostic['message'] = error.message
       diagnostic['source'] = error.source unless error.source.nil?

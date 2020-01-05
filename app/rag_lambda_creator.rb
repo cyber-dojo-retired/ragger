@@ -1,9 +1,18 @@
 # frozen_string_literal: true
 
 require_relative 'empty'
-require_relative 'rag_lambda_creator_error'
 
 class RagLambdaCreator
+
+  class Error < StandardError
+    def initialize(message, info, source = nil)
+      @message = message
+      @info = info
+      @source = source
+      super(message)
+    end
+    attr_reader :message, :info, :source
+  end
 
   def initialize(external)
     @external = external
@@ -15,13 +24,13 @@ class RagLambdaCreator
     begin
       result = runner.run_cyber_dojo_sh(image_name, id, files, max_seconds)
     rescue Exception => error
-      raise RagLambdaCreatorError.new(error.message, 'runner.run_cyber_dojo_sh() raised an exception')
+      raise Error.new(error.message, 'runner.run_cyber_dojo_sh() raised an exception')
     end
     begin
       source = result['stdout']['content']
       fn = Empty.binding.eval(source)
     rescue Exception => error
-      raise RagLambdaCreatorError.new(error.message, 'eval(lambda) raised an exception', source)
+      raise Error.new(error.message, 'eval(lambda) raised an exception', source)
     end
     { source:source, fn:fn }
   end
