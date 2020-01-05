@@ -169,8 +169,42 @@ class ColourTest < TestBase
       expected_message = 'eval(lambda) raised an exception'
       assert_tri_equal expected_message, rd['message'], od['message']
       assert_tri_equal stub, rd['lambda'], od['lambda']
-      assert rd['exception'].is_a?(String)
+      assert_equal rd['exception'], od['exception']
       assert rd['exception'].include?('syntax error, unexpected tIDENTIFIER')
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test '5A9', %w(
+  when rag-lambda raises Exception directly,
+  then colour is mapped to faulty,
+  and a diagnostic is added to the json result
+  ) do
+    stub = 'raise Exception, "fubar"'
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'eval(lambda) raised an exception'
+      expected_exception = 'fubar'
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert_tri_equal expected_exception, rd['exception'], od['exception']
+    end
+  end
+
+  # - - - - - - - - - - - - - - - - -
+
+  test '5AA', %w(
+  when rag-lambda raises Exception indirectly,
+  then colour is mapped to faulty,
+  and a diagnostic is added to the json result
+  ) do
+    stub = 'raise Exception "fubar"' # no comma
+    assert_lambda_stub_faulty(stub) do |rd,od|
+      expected_message = 'eval(lambda) raised an exception'
+      assert_tri_equal expected_message, rd['message'], od['message']
+      assert_tri_equal stub, rd['lambda'], od['lambda']
+      assert_equal rd['exception'], od['exception']
+      assert rd['exception'].include?("undefined method `Exception' for Empty:Module")
     end
   end
 

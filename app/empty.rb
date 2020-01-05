@@ -1,5 +1,5 @@
 
-module Empty 
+module Empty
   def self.binding
     super
   end
