@@ -1,23 +1,10 @@
 require 'simplecov'
 
-def app_root
-  File.expand_path('..', __dir__) # eg /app
-end
-
-def app_file?(filename)
-  filename.start_with?("#{app_root}/" ) &&
-    !filename.start_with?("#{app_root}/test/")
-end
-
-def test_file?(filename)
-  filename.start_with?("#{app_root}/test/") &&
-    filename.end_with?('_test.rb')
-end
-
 SimpleCov.start do
+  filters.clear
   #add_group('debug') {|src| puts src.filename; false; }
-  add_group('app') { |src| app_file?(src.filename) }
-  add_group('test') { |src| test_file?(src.filename) }
+  add_group('app') { |src| src.filename =~ %r"^/app/" }
+  add_group('test') { |src| src.filename =~ %r"^/test/.*_test\.rb$" }
 end
-SimpleCov.root(app_root)
+SimpleCov.root('/app')
 SimpleCov.coverage_dir(ENV['COVERAGE_ROOT'])

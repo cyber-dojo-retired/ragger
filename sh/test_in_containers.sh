@@ -21,7 +21,7 @@ run_tests()
     --user "${user}" \
     --env COVERAGE_ROOT=${coverage_root} \
     "${container_name}" \
-      sh -c "/app/test/run.sh ${type} ${@:3}"
+      sh -c "/test/run.sh ${type} ${@:3}"
   local -r status=$?
   set -e
 

@@ -1,5 +1,6 @@
-#!/bin/bash
-set -e
+#!/bin/bash -Eeu
+
+readonly MY_DIR="$( cd "$( dirname "${0}" )" && pwd )"
 
 export RUBYOPT='-W2'
 
@@ -9,4 +10,4 @@ rackup \
   --port 5538 \
   --server thin \
   --env production \
-    /app/config.ru
+  ${MY_DIR}/config.ru

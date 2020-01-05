@@ -14,7 +14,7 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ "./test:/app/test/:ro" ] # See test/require_src.rb
+    volumes: [ "./test:/test/:ro" ]
     depends_on: [ ragger ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,7 +32,7 @@ services:
     read_only: true
     tmpfs: /tmp
     restart: 'no'
-    volumes: [ "./test:/app/test/:ro" ] # See test/require_src.rb
+    volumes: [ "./test:/test/:ro" ]
     depends_on: [ runner ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
