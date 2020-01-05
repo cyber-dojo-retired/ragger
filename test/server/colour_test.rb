@@ -1,6 +1,7 @@
 require_relative 'test_base'
 require_relative 'data/python_pytest'
 require_relative 'http_stub'
+require 'json'
 
 class ColourTest < TestBase
 
@@ -42,9 +43,16 @@ class ColourTest < TestBase
     image_name = 'anything-not-cached'
     assert_faulty(image_name, id, 'o1', 'e3', '0') do |error|
       info = 'runner.run_cyber_dojo_sh() raised an exception'
-      assert_equal info, error['info']
-      assert_nil error['source']
-      assert error['message'].is_a?(String) # json
+      assert_equal info, error['info'], :info
+      assert_nil error['source'], :source
+      json = JSON.parse!(error['message'])
+      body = JSON.parse!(json['body'])
+      assert_equal '/run_cyber_dojo_sh', json['path'], :path
+      assert_equal image_name, body['image_name'], :image_name
+      assert_equal id, body['id'], :id
+      assert_equal 'RunnerService', json['class'], :class
+      assert json['message'].is_a?(String), :message
+      assert json['backtrace'].is_a?(Array), :backtrace
     end
   end
 
