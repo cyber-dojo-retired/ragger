@@ -2,7 +2,6 @@ require_relative 'data/json'
 require_relative 'data/python_pytest'
 require_relative 'test_base'
 require_relative '../require_src'
-require_src 'http_json_request_error'
 require_src 'http_json_args'
 require 'json'
 
@@ -168,7 +167,7 @@ class HttpJsonArgsTest < TestBase
   include Test::Data
 
   def assert_http_json_args_error(expected, body = nil)
-    error = assert_raises(HttpJsonRequestError) do
+    error = assert_raises(HttpJsonArgs::RequestError) do
       if block_given?
         yield
       else
