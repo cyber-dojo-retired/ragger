@@ -5,7 +5,7 @@ require_relative 'http_json/responder'
 
 class Runner
 
-  class Error < StandardError
+  class Error < RuntimeError
     def initialize(message)
       super
     end
