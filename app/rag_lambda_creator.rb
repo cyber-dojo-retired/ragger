@@ -4,7 +4,7 @@ require_relative 'empty'
 
 class RagLambdaCreator
 
-  class Error < StandardError
+  class Error < RuntimeError
     def initialize(message, info, source = nil)
       @message = message
       @info = info

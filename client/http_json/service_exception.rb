@@ -1,7 +1,7 @@
 
 module HttpJson
 
-  class ServiceException < StandardError
+  class ServiceException < RuntimeError
 
     def initialize(message)
       super
