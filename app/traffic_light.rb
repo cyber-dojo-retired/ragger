@@ -44,7 +44,7 @@ class TrafficLight
     begin
       rag = cached[:fn].call(stdout, stderr, status)
     rescue => error
-      diagnostic['info'] = 'calling the lambda raised an exception'
+      diagnostic['info'] = 'call(lambda) raised an exception'
       diagnostic['message'] = error.message
       diagnostic['source'] = cached[:source]
       return logged_faulty(diagnostic)
@@ -52,7 +52,7 @@ class TrafficLight
 
     rag = rag.to_s
     unless %w( red amber green ).include?(rag)
-      diagnostic['info'] = "lambda returned '#{rag}' which is not 'red'|'amber'|'green'"
+      diagnostic['info'] = "call(lambda) is '#{rag}' which is not 'red'|'amber'|'green'"
       diagnostic['source'] = cached[:source]
       return logged_faulty(diagnostic)
     end

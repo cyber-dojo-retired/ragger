@@ -91,7 +91,7 @@ class ColourTest < TestBase
       }
       RUBY
     assert_lambda_stub_faulty(stub) do |error|
-      expected_info = 'calling the lambda raised an exception'
+      expected_info = 'call(lambda) raised an exception'
       expected_message = 'wibble'
       assert_equal expected_info, error['info']
       assert_equal expected_message, error['message']
@@ -113,7 +113,7 @@ class ColourTest < TestBase
     }
     RUBY
     assert_lambda_stub_faulty(stub) do |error|
-      expected_info = "lambda returned 'orange' which is not 'red'|'amber'|'green'"
+      expected_info = "call(lambda) is 'orange' which is not 'red'|'amber'|'green'"
       assert_equal expected_info, error['info']
       assert_nil error['message']
       assert_equal stub, error['source']
@@ -132,7 +132,7 @@ class ColourTest < TestBase
     }
     RUBY
     assert_lambda_stub_faulty(stub) do |error|
-      expected_info = 'calling the lambda raised an exception'
+      expected_info = 'call(lambda) raised an exception'
       expected_message = 'wrong number of arguments (given 3, expected 2)'
       assert_equal expected_info, error['info']
       assert_equal expected_message, error['message']
@@ -151,7 +151,7 @@ class ColourTest < TestBase
     }
     RUBY
     assert_lambda_stub_faulty(stub) do |error|
-      expected_info = 'calling the lambda raised an exception'
+      expected_info = 'call(lambda) raised an exception'
       expected_message = 'wrong number of arguments (given 3, expected 4)'
       assert_equal expected_info, error['info']
       assert_equal expected_message, error['message']
