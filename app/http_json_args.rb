@@ -15,7 +15,7 @@ class HttpJsonArgs
     unless @json.is_a?(Hash)
       raise request_error('body is not JSON Hash')
     end
-  rescue JSON::ParserError
+  rescue JSON::JSONError
     raise request_error('body is not JSON')
   end
 

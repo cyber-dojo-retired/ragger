@@ -16,17 +16,17 @@ class RackDispatcher
     body = request.body.read
     name,args = HttpJsonArgs.new(body).get(path)
     result = @traffic_light.public_send(name, *args)
-    json_response_200(result)
+    json_response_pass(200, result)
   rescue HttpJsonArgs::RequestError => error
-    json_error_response(400, path, body, error)
+    json_response_fail(400, path, body, error)
   rescue Exception => error
-    json_error_response(500, path, body, error)
+    json_response_fail(500, path, body, error)
   end
 
   private
 
-  def json_response_200(json)
-    [ 200,
+  def json_response_pass(status, json)
+    [ status,
       { 'Content-Type' => 'application/json' },
       [ JSON.fast_generate(json) ]
     ]
@@ -34,8 +34,8 @@ class RackDispatcher
 
   # - - - - - - - - - - - - - - - -
 
-  def json_error_response(status, path, body, error)
-    json = diagnostic(path, body, error)
+  def json_response_fail(status, path, body, caught_error)
+    json = diagnostic(path, body, caught_error)
     body = JSON.pretty_generate(json)
     $stderr.puts(body)
     $stderr.flush
@@ -47,13 +47,13 @@ class RackDispatcher
 
   # - - - - - - - - - - - - - - - -
 
-  def diagnostic(path, body, error)
+  def diagnostic(path, body, caught_error)
     { 'exception' => {
         'path' => path,
         'body' => body,
         'class' => 'RaggerService',
-        'message' => error.message,
-        'backtrace' => error.backtrace
+        'message' => caught_error.message,
+        'backtrace' => caught_error.backtrace
       }
     }
   end

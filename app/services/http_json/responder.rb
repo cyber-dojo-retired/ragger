@@ -40,7 +40,7 @@ module HttpJson
 
     def json_parse(body)
       JSON.parse!(body)
-    rescue JSON::ParserError
+    rescue JSON::JSONError
       fail error_msg(body, 'is not JSON')
     end
 
