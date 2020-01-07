@@ -7,7 +7,7 @@ readonly TYPE="${3}"        # client|server
 shift; shift; shift
 
 readonly TEST_FILES=(${MY_DIR}/${TYPE}/*_test.rb)
-readonly TEST_ARGS=(${*})
+readonly TEST_ARGS=(${@})
 
 readonly SCRIPT="
 require '${MY_DIR}/coverage.rb'
