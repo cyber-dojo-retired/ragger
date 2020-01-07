@@ -9,7 +9,7 @@
 TEST_LOG=ARGV[0]   # eg /app/data/test.log
 INDEX_HTML=ARGV[1] # eg /app/data/index.html
 
-require_relative "data/metrics"
+require_relative 'metrics'
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def number
