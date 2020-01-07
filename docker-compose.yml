@@ -18,14 +18,7 @@ services:
     depends_on: [ ragger ]
 
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-  check-test-results:
-    build:
-      context: test/check-test-results
-    image: cyberdojo/check-test-results
-
-  # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
+  
   ragger:
     build:
       context: app
