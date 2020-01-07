@@ -22,17 +22,26 @@ run_tests()
     --env COVERAGE_ROOT=${coverage_root} \
     "${container_name}" \
       sh -c "/test/run.sh ${type} ${@:3}"
-  local -r status=$?
   set -e
 
-  # You can't [docker cp] from a tmpfs,
-  # so tar-piping coverage out.
+  # You can't [docker cp] from a tmpfs, so tar-piping coverage out.
   docker exec \
     "${container_name}" \
     tar Ccf \
       "$(dirname "${coverage_root}")" \
       - "$(basename "${coverage_root}")" \
         | tar Cxf "${root_dir}/${test_dir}/" -
+
+  set +e
+  docker run --rm \
+    --volume ${root_dir}/${test_dir}/coverage/test.log:/app/data/test.log:ro \
+    --volume ${root_dir}/${test_dir}/coverage/index.html:/app/data/index.html:ro \
+    --volume ${root_dir}/${test_dir}/metrics.rb:/app/data/metrics.rb:ro \
+    cyberdojo/check-test-results:latest \
+    sh -c 'ruby /app/check_test_results.rb /app/data/test.log /app/data/index.html' \
+      | tee -a ${root_dir}/${test_dir}/coverage/test.log
+  local -r status=${PIPESTATUS[0]}
+  set -e
 
   echo "Test reports copied to ${test_dir}/coverage/"
   echo "${type} test status == ${status}"

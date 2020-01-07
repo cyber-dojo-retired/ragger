@@ -1,8 +1,15 @@
-TYPE=ARGV[0]       # eg client|server
-TEST_LOG=ARGV[1]   # eg /tmp/coverage/test.log.part
-INDEX_HTML=ARGV[2] # eg /tmp/coverage/index.html
 
-require_relative "#{TYPE}/metrics"
+# This scrapes data from two sources
+# 0) The minitest stdout which is tee'd to test.log
+# 1) The simplecov coverage index.html file.
+#    This will be changing. At the moment its from simplecov 0.17.1
+#    Simplecov will soon support branch-coverage. There is some
+#    preparatory work for that in the differ repo (branch == server-branch-coverage)
+
+TEST_LOG=ARGV[0]   # eg /app/data/test.log
+INDEX_HTML=ARGV[1] # eg /app/data/index.html
+
+require_relative "data/metrics"
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def number
