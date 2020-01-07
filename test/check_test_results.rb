@@ -1,34 +1,41 @@
-TYPE=ARGV[0]     # eg client|server
-TEST_LOG=ARGV[1]
-INDEX_HTML=ARGV[2]
+TYPE=ARGV[0]       # eg client|server
+TEST_LOG=ARGV[1]   # eg /tmp/coverage/test.log.part
+INDEX_HTML=ARGV[2] # eg /tmp/coverage/index.html
 
 require_relative "#{TYPE}/metrics"
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 def number
   '[\.|\d]+'
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 def f2(s)
   result = ("%.2f" % s).to_s
   result += '0' if result.end_with?('.0')
   result
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 def cleaned(s)
   # guard against invalid byte sequence
   s = s.encode('UTF-16', 'UTF-8', :invalid => :replace, :replace => '')
   s = s.encode('UTF-8', 'UTF-16')
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 def coloured(tf)
   red = 31
-  tf ? 'true' : colourize(red,false)
+  green = 32
+  colourize(tf ? green : red, tf)
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 def colourize(code, word)
   "\e[#{code}m#{word}\e[0m"
 end
 
+# - - - - - - - - - - - - - - - - - - - - - - -
 def get_index_stats(name)
   html = `cat #{INDEX_HTML}`
   html = cleaned(html)
@@ -58,7 +65,6 @@ def get_index_stats(name)
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-
 def get_test_log_stats
   test_log = `cat #{TEST_LOG}`
   test_log = cleaned(test_log)
@@ -85,13 +91,11 @@ def get_test_log_stats
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-
 log_stats = get_test_log_stats
 test_stats = get_index_stats('test')
 app_stats = get_index_stats('app')
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-
 test_count    = log_stats[:test_count]
 failure_count = log_stats[:failure_count]
 error_count   = log_stats[:error_count]
@@ -106,20 +110,19 @@ line_ratio = (test_stats[:line_count].to_f / app_stats[:line_count].to_f)
 hits_ratio = (app_stats[:hits_per_line].to_f / test_stats[:hits_per_line].to_f)
 
 table = [
-  [ 'tests',                  test_count,     '>=',  MIN[:test_count] ],
-  [ 'coverage(app)[%]',       app_coverage,   '>=',  MIN[:app_coverage] ],
-  [ 'coverage(test)[%]',      test_coverage,  '>=',  MIN[:test_coverage] ],
-  [ 'lines(test)/lines(app)', f2(line_ratio), '>=',  MIN[:line_ratio] ],
-  [ 'hits(app)/hits(test)',   f2(hits_ratio), '>=',  MIN[:hits_ratio] ],
   [ 'failures',               failure_count,  '<=',  MAX[:failures] ],
   [ 'errors',                 error_count,    '<=',  MAX[:errors] ],
   [ 'warnings',               warning_count,  '<=',  MAX[:warnings] ],
   [ 'skips',                  skip_count,     '<=',  MAX[:skips] ],
   [ 'duration(test)[s]',      test_duration,  '<=',  MAX[:duration] ],
+  [ 'tests',                  test_count,     '>=',  MIN[:test_count] ],
+  [ 'coverage(app)[%]',       app_coverage,   '>=',  MIN[:app_coverage] ],
+  [ 'coverage(test)[%]',      test_coverage,  '>=',  MIN[:test_coverage] ],
+  [ 'lines(test)/lines(app)', f2(line_ratio), '>=',  MIN[:line_ratio] ],
+  [ 'hits(app)/hits(test)',   f2(hits_ratio), '>=',  MIN[:hits_ratio] ],
 ]
 
 # - - - - - - - - - - - - - - - - - - - - - - -
-
 done = []
 puts
 table.each do |name,value,op,limit|
