@@ -6,9 +6,10 @@ readonly my_name=ragger
 # - - - - - - - - - - - - - - - - - - - - - - - - - -
 run_tests()
 {
-  local -r coverage_root=/tmp/coverage
   local -r user="${1}" # eg nobody
   local -r type="${2}" # eg client|server
+  local -r reports_dir=reports
+  local -r coverage_root=/tmp/${reports_dir}
   local -r test_log=test.log
   local -r container_name="test-${my_name}-${type}" # eg test-ragger-server
 
@@ -35,15 +36,15 @@ run_tests()
   set +e
   local -r data_dir=/tmp
   docker run --rm \
-    --volume ${test_dir}/coverage:${data_dir}:ro \
+    --volume ${test_dir}/${reports_dir}:${data_dir}:ro \
     --volume ${test_dir}/metrics.rb:/app/metrics.rb:ro \
     cyberdojo/check-test-results:latest \
     sh -c "ruby /app/check_test_results.rb ${data_dir}/${test_log} ${data_dir}/index.html" \
-      | tee -a ${test_dir}/coverage/${test_log}
+      | tee -a ${test_dir}/${reports_dir}/${test_log}
   local -r status=${PIPESTATUS[0]}
   set -e
 
-  echo "Test reports copied to test/${type}/coverage/"
+  echo "Test files copied to test/${type}/${reports_dir}/"
   echo "${type} test status == ${status}"
   if [ "${status}" != '0' ]; then
     docker logs "${container_name}"

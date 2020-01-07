@@ -1,2 +1,2 @@
-/test/client/coverage/**
-/test/server/coverage/**
+/test/client/reports/**
+/test/server/reports/**
