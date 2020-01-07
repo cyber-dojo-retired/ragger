@@ -39,7 +39,7 @@ end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
 def colourize(code, word)
-  "\e[#{code}m#{word}\e[0m"
+  "\e[#{code}m #{word} \e[0m"
 end
 
 # - - - - - - - - - - - - - - - - - - - - - - -
