@@ -2,9 +2,12 @@
 # This scrapes data from two sources
 # 0) The minitest stdout which is tee'd to test.log
 # 1) The simplecov coverage index.html file.
-#    This will be changing. At the moment its from simplecov 0.17.1
-#    Simplecov will soon support branch-coverage. There is some
-#    preparatory work for that in the differ repo (branch == server-branch-coverage)
+#    It would be nice if simplecov saved the raw data to a json file
+#    and created the html from that, but alas it does not.
+#    At the moment its from simplecov 0.17.1
+#    Simplecov will soon support branch-coverage.
+#    There is some preparatory work for that in the differ
+#    repo (branch == server-branch-coverage)
 
 TEST_LOG=ARGV[0]   # eg /app/data/test.log
 INDEX_HTML=ARGV[1] # eg /app/data/index.html
@@ -46,8 +49,6 @@ end
 def get_index_stats(name)
   html = `cat #{INDEX_HTML}`
   html = cleaned(html)
-  # It would be nice if simplecov saved the raw data to a json file
-  # and created the html from that, but alas it does not.
   pattern = /<div class=\"file_list_container\" id=\"#{name}\">
   \s*<h2>\s*<span class=\"group_name\">#{name}<\/span>
   \s*\(<span class=\"covered_percent\"><span class=\"\w+\">([\d\.]*)\%<\/span><\/span>
