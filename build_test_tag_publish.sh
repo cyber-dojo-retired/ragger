@@ -18,7 +18,7 @@ on_ci()
 # - - - - - - - - - - - - - - - - - - - - - - - -
 on_ci_pull_dependent_images()
 {
-  # Otherwise it interferes with timing tests
+  # Otherwise the pull interferes with timing tests
   if on_ci; then
     docker pull cyberdojofoundation/python_pytest
   fi
