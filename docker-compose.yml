@@ -28,6 +28,7 @@ services:
     init: true
     container_name: test-ragger-server
     environment: [ NO_PROMETHEUS ]
+    export: ${CYBER_DOJO_RAGGER_PORT}
     ports: [ "${CYBER_DOJO_RAGGER_PORT}:${CYBER_DOJO_RAGGER_PORT}" ]
     read_only: true
     tmpfs: /tmp
@@ -42,6 +43,7 @@ services:
     image: ${CYBER_DOJO_RUNNER_IMAGE}:${CYBER_DOJO_RUNNER_TAG}
     init: true
     environment: [ NO_PROMETHEUS ]
+    export: ${CYBER_DOJO_RUNNER_PORT}
     read_only: true
     tmpfs: /tmp
     restart: 'no'

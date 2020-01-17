@@ -1,5 +1,8 @@
 #!/bin/bash -Eeu
 
+echo The ragger service is now part of the runner service
+exit 0
+
 readonly NAMESPACE="${1}" # eg beta
 
 # misc env-vars are in ci context

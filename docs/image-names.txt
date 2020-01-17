@@ -22,9 +22,9 @@ in the list served to the puller. Doing this makes it much more
 attractive to time-limit a kata so old image-names can be
 properly retired.
 
-Adding the commit SHA inside the image as an env-var means
-when you restart a session you can be notified if the target
-image has changed. Assuming the manifest holds the original sha.
+>>Adding the commit SHA inside the image as an env-var means
+>>when you restart a session you can be notified if the target
+>>image has changed. Assuming the manifest holds the original sha.
 
 With separate repos, the Dockerfile needs its commands to be
 more carefully written to install specific versions.

@@ -36,6 +36,6 @@ Possible names like linter...
   evaluator
   grader
   assessor
-  appraiser,
+  appraiser
   feedbacker
   signaller

@@ -6,13 +6,14 @@ if it detects the run is on CI. Otherwise it assumes
 to use ${ROOT_DIR}/../commander/cyber-dojo
 A better approach (which should be used in all the repos) is...
 
-if ${ROOT_DIR}/../commander/cyber-dojo exists
-  use it
-else if /tmp/cyber-dojo exists
-  use it
+if [ -f "${ROOT_DIR}/../commander/cyber-dojo" ]; then
+  echo "${ROOT_DIR}/../commander/cyber-dojo"
+elif [ -f "/tmp/cyber-dojo" ]; then
+  echo "/tmp/cyber-dojo"
 else
-  curl cyber-dojo into /tmp/cyber-dojo
-  use it
+  url=....
+  curl --fail --output /tmp/cyber-dojo --silent "${url}"
+  echo "/tmp/cyber-dojo"
 fi
 
 So in time, ragger will only be used if the rag-lambda is exposed.
